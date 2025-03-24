@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane fx:id="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <top>
+        <MenuBar>
+            <Menu text="Home">
+                <MenuItem text="Return To Main Page" />
+            </Menu>
+            <Menu text="Solvers">
+                <items>
+                    <MenuItem  text="Eurler Solver" />
+                    <MenuItem text="Runge Kutta 4 Solver" />
+                </items>
+            </Menu>
+            <Menu text="Help">
+                <items>
+                    <MenuItem text="About" />
+                </items>
+            </Menu>
+        </MenuBar>
+    </top>
+</BorderPane>
