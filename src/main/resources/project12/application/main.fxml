@@ -5,21 +5,21 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane fx:id="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane fx:id="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project12.application.MenuController">
     <top>
         <MenuBar>
             <Menu text="Home">
-                <MenuItem text="Return To Main Page" />
+                <MenuItem onAction="#switchToHome" text="Return To Main Page" />
             </Menu>
             <Menu text="Solvers">
                 <items>
-                    <MenuItem  text="Eurler Solver" />
-                    <MenuItem text="Runge Kutta 4 Solver" />
+                    <MenuItem onAction="#switchToEurler" text="Eurler Solver" />
+                    <MenuItem onAction="#switchToRK" text="Runge Kutta 4 Solver" />
                 </items>
             </Menu>
             <Menu text="Help">
                 <items>
-                    <MenuItem text="About" />
+                    <MenuItem onAction="#switchToAbout" text="About" />
                 </items>
             </Menu>
         </MenuBar>

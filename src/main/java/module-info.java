@@ -10,6 +10,7 @@ module project12.application {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires java.desktop;
 
     opens project12.application to javafx.fxml;
     exports project12.application;
