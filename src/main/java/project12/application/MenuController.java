@@ -8,9 +8,11 @@ public class MenuController {
     @FXML
     private BorderPane root;
 
+    @FXML
     public void initialize() throws IOException {
         switchToHome();
     }
+
     @FXML
     private void switchToHome() throws IOException {
         Parent scene = FXMLLoader.load(getClass().getResource("home.fxml"));

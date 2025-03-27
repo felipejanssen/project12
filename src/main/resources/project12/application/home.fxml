@@ -5,36 +5,37 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="486.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project12.application.HomePageController">
+
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="517.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project12.application.HomePageController">
    <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#aebecd" height="84.0" layoutX="16.0" layoutY="14.0" opacity="0.11" stroke="BLACK" strokeType="INSIDE" width="569.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#aebecd" height="362.0" layoutX="16.0" layoutY="113.0" opacity="0.11" stroke="BLACK" strokeType="INSIDE" width="569.0" />
-      <Label layoutX="35.0" layoutY="35.0" text="Welcome user">
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#aebecd" height="84.0" layoutX="16.0" layoutY="20.0" opacity="0.11" stroke="BLACK" strokeType="INSIDE" width="569.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#aebecd" height="379.0" layoutX="16.0" layoutY="119.0" opacity="0.11" stroke="BLACK" strokeType="INSIDE" width="569.0" />
+      <Label layoutX="35.0" layoutY="41.0" text="Welcome user">
          <font>
             <Font name="Berlin Sans FB" size="38.0" />
          </font>
       </Label>
-      <ChoiceBox fx:id="choiceBox" layoutX="64.0" layoutY="203.0" prefHeight="42.0" prefWidth="473.0" />
-      <Label layoutX="64.0" layoutY="174.0" prefHeight="29.0" prefWidth="371.0" text="Please choose a  Differential Solver">
+      <ChoiceBox fx:id="choiceBox" layoutX="64.0" layoutY="209.0" prefHeight="42.0" prefWidth="473.0" />
+      <Label layoutX="64.0" layoutY="180.0" prefHeight="29.0" prefWidth="371.0" text="Please choose a  Differential Solver">
          <font>
             <Font name="Berlin Sans FB" size="19.0" />
          </font>
       </Label>
-      <Button layoutX="64.0" layoutY="350.0" mnemonicParsing="false" onAction="#confirmButtonClicked" prefHeight="42.0" prefWidth="473.0" text="Confirm" />
-      <ImageView fitHeight="185.0" fitWidth="180.0" layoutX="389.0" layoutY="-34.0" opacity="0.04" pickOnBounds="true" preserveRatio="true">
+      <Button layoutX="64.0" layoutY="356.0" mnemonicParsing="false" onAction="#confirmButtonClicked" prefHeight="42.0" prefWidth="473.0" text="Confirm" />
+      <ImageView fitHeight="185.0" fitWidth="180.0" layoutX="389.0" layoutY="-28.0" opacity="0.04" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../images/G.png" />
          </image>
       </ImageView>
-      <Label layoutX="64.0" layoutY="260.0" prefHeight="29.0" prefWidth="371.0" text="Please Choose a Function">
+      <Label layoutX="64.0" layoutY="266.0" prefHeight="29.0" prefWidth="371.0" text="Please Choose a Function">
          <font>
             <Font name="Berlin Sans FB" size="19.0" />
          </font>
       </Label>
-      <ChoiceBox fx:id="choiceBox2" layoutX="64.0" layoutY="289.0" prefHeight="42.0" prefWidth="473.0" />
+      <ChoiceBox fx:id="choiceBox2" layoutX="64.0" layoutY="295.0" prefHeight="42.0" prefWidth="473.0" />
    </children>
-</Pane>
+</AnchorPane>

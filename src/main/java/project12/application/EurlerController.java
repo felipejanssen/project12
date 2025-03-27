@@ -44,12 +44,13 @@ public class EurlerController {
     private TextField output2;
 
 
-
+    @FXML
     public void initialize() {
         output.setEditable(false);
         output2.setEditable(false);
 
     }
+    @FXML
     public void confirmAction(ActionEvent event) {
         boolean flag = false;
         ArrayList<TextField> fields = new ArrayList<>();

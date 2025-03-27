@@ -17,7 +17,7 @@ import java.io.IOException;
 
 public class HomePageController {
     @FXML
-    Pane root;
+    AnchorPane root;
     @FXML
     private ChoiceBox<String> choiceBox;
     @FXML
