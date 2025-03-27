@@ -1,13 +1,21 @@
 package project12.application;
-
+import Backend.*;
+import java.util.Arrays;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
+import java.util.ArrayList;
+import java.util.function.BiFunction;
 
 
 public class EurlerController {
+    @FXML
+    private Label label;
     @FXML
     private TextField x;
     @FXML
@@ -15,15 +23,87 @@ public class EurlerController {
     @FXML
     private TextField z;
     @FXML
-    private TextField xv;
+    private TextField alpha;
     @FXML
-    private TextField yv;
+    private TextField beta;
     @FXML
-    private TextField zv;
+    private TextField gamma;
+    @FXML
+    private TextField delta;
     @FXML
     private TextField stepSize;
     @FXML
     private TextField totalDuration;
     @FXML
+    private TextField initialTime;
+    @FXML
     private Button confirm;
+    @FXML
+    private TextField output;
+    @FXML
+    private TextField output2;
+
+
+
+    public void initialize() {
+        output.setEditable(false);
+        output2.setEditable(false);
+
+    }
+    public void confirmAction(ActionEvent event) {
+        boolean flag = false;
+        ArrayList<TextField> fields = new ArrayList<>();
+
+        if (label.getText().equals("Lotka-Volterra")) {
+            System.out.println("Lotka-Volterra");
+            fields.addAll(Arrays.asList(x, y, alpha, beta, gamma, delta, stepSize, initialTime, totalDuration));
+        } else if (label.getText().equals("SIR")) {
+            fields.addAll(Arrays.asList(x, y, z, stepSize, initialTime, totalDuration));
+        } else if (label.getText().equals("FitzHugh-Nagumo")){
+            fields.addAll(Arrays.asList(x, y, alpha, beta, gamma, delta, stepSize, initialTime, totalDuration));
+        }
+        for (TextField field : fields) {
+            String input = field.getText();
+            if (input.isEmpty()) {
+                flag = true;
+                output.setText("Missing ODE solver parameter");
+                return;
+            }
+            try {
+                double value = Double.parseDouble(input);
+            } catch (NumberFormatException e) {
+                flag = true;
+                output.setText("Invalid type for ODE solver parameter");
+                return;
+            }
+        }
+
+        if (!flag){
+            ODEsolver solver;
+            if (label.getText().equals("Lotka-Volterra")){
+                double[] parameters = new double[fields.size()];
+                for (int i = 0; i < fields.size(); i++) {
+                    parameters[i] = Double.parseDouble(fields.get(i).getText());
+                }
+                LotkaVolterra function = new LotkaVolterra(parameters[2], parameters[3], parameters[4], parameters[5]);
+                double[] inputVector = {parameters[0], parameters[1]};
+                solver = new ODEsolver(function.getODEFunction());
+                double[] result = solver.eulerSolve((int) parameters[8], parameters[7], inputVector, parameters[6]);
+                output.setText(String.valueOf(result[0]));
+                output2.setText(String.valueOf(result[1]));
+
+            } else if (label.getText().equals("FitzHugh-Nagumo")){
+                double[] parameters = new double[fields.size()];
+                for (int i = 0; i < fields.size(); i++) {
+                    parameters[i] = Double.parseDouble(fields.get(i).getText());
+                }
+                FitzHughNagumo function = new FitzHughNagumo(parameters[2], parameters[3], parameters[4], parameters[5]);
+                solver = new ODEsolver(function.getODEFunction());
+                double[] inputVector = {parameters[0], parameters[1]};
+                double[] result = solver.eulerSolve((int) parameters[8], parameters[7], inputVector, parameters[6]);
+                output.setText(String.valueOf(result[0]));
+                output2.setText(String.valueOf(result[1]));
+            }
+        }
+    }
 }

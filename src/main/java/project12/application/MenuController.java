@@ -17,8 +17,18 @@ public class MenuController {
         root.setCenter(scene);
     }
     @FXML
-    private void switchToEurler() throws IOException {
-        Parent scene = FXMLLoader.load(getClass().getResource("eurler.fxml"));
+    private void switchToEurlerLV() throws IOException {
+        Parent scene = FXMLLoader.load(getClass().getResource("eurlerLV.fxml"));
+        root.setCenter(scene);
+    }
+    @FXML
+    private void switchToEurlerFHN() throws IOException {
+        Parent scene = FXMLLoader.load(getClass().getResource("eurlerFHN.fxml"));
+        root.setCenter(scene);
+    }
+    @FXML
+    private void switchToEurlerSIR() throws IOException {
+        Parent scene = FXMLLoader.load(getClass().getResource("eurlerSIR.fxml"));
         root.setCenter(scene);
     }
     @FXML

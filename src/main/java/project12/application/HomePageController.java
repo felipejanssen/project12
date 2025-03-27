@@ -21,19 +21,30 @@ public class HomePageController {
     @FXML
     private ChoiceBox<String> choiceBox;
     @FXML
+    private ChoiceBox<String> choiceBox2;
+    @FXML
     private Button confirmButton;
 
     String[] configs = {"Eurler Solver", "Runge-Kutta-4 Solver"};
+    String[] functions = {"Lotka-Volterra", "FitzHugh-Nagumo", "SIR"};
     @FXML
     public void initialize() {
         choiceBox.getItems().addAll(configs);
+        choiceBox2.getItems().addAll(functions);
     }
 
     @FXML
     public void confirmButtonClicked(ActionEvent event) throws IOException {
         String config = choiceBox.getValue();
+        String function = choiceBox2.getValue();
         if (config.equals("Eurler Solver")) {
-            switchToEurler();
+            if (function.equals("Lotka-Volterra")) {
+                switchToEurlerLV();
+            } else if (function.equals("FitzHugh-Nagumo")) {
+                switchToEurlerFHN();
+            } else if (function.equals("SIR")) {
+                switchToEurlerSIR();
+            }
         } else if(config.equals("Runge-Kutta-4 Solver")) {
             switchToRK();
             return;
@@ -41,8 +52,20 @@ public class HomePageController {
 
     }
     @FXML
-    private void switchToEurler() throws IOException {
-        Parent scene = FXMLLoader.load(getClass().getResource("eurler.fxml"));
+    private void switchToEurlerLV() throws IOException {
+        Parent scene = FXMLLoader.load(getClass().getResource("eurlerLV.fxml"));
+        root.getChildren().setAll(scene);
+        return;
+    }
+    @FXML
+    private void switchToEurlerFHN() throws IOException {
+        Parent scene = FXMLLoader.load(getClass().getResource("eurlerFHN.fxml"));
+        root.getChildren().setAll(scene);
+        return;
+    }
+    @FXML
+    private void switchToEurlerSIR() throws IOException {
+        Parent scene = FXMLLoader.load(getClass().getResource("eurlerSIR.fxml"));
         root.getChildren().setAll(scene);
         return;
     }

@@ -11,12 +11,18 @@
             <Menu text="Home">
                 <MenuItem onAction="#switchToHome" text="Return To Main Page" />
             </Menu>
-            <Menu text="Solvers">
+            <Menu text="Eurler Solver">
                 <items>
-                    <MenuItem onAction="#switchToEurler" text="Eurler Solver" />
-                    <MenuItem onAction="#switchToRK" text="Runge Kutta 4 Solver" />
+                    <MenuItem onAction="#switchToEurlerLV" text="Lotka Volterra" />
+                    <MenuItem onAction="#switchToEurlerFHN" text="Fitz Hugh Nagumo" />
                 </items>
             </Menu>
+         <Menu text="Eurler Solver">
+            <items>
+               <MenuItem text="Lotka Volterra" />
+               <MenuItem text="Fitz Hugh Nagumo" />
+            </items>
+         </Menu>
             <Menu text="Help">
                 <items>
                     <MenuItem onAction="#switchToAbout" text="About" />
