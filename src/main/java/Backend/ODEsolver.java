@@ -5,11 +5,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.function.BiFunction;
-//A bifunction takes time as the first argument, and a current vector of a single planet as a second argument
 import java.util.stream.IntStream;
 
 import Utils.vec;
 
+//Euler Solver
 public class ODEsolver {
 
     public ODEsolver(BiFunction<Double, double[], double[]> ode) {
@@ -18,16 +18,20 @@ public class ODEsolver {
 
     private BiFunction<Double, double[], double[]> ode;
 
+    //Step calculation, repeated for every iteration call in eulerSolve, returns the next state of the vector
     private double[] eulerStep(double time, double[] xCurrent, double h) {
+
         double[] dxdt = ode.apply(time, xCurrent);
         double[] xNext = new double[xCurrent.length];
+
         for (int i = 0; i < xCurrent.length; i++) {
             xNext[i] = xCurrent[i] + h * dxdt[i];
         }
         return xNext;
     }
-
+    //Main function to solve the ODE, returns the final state of the vector
     public double[] eulerSolve(int steps, double time0, double[] xCurrent, double h) {
+
         double[] x = xCurrent.clone();
         double time = time0;
 
