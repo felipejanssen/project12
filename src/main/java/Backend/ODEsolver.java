@@ -39,24 +39,17 @@ public class ODEsolver {
     }
 
     // Runge-Kutta 4
-    public double[] RK4Solve(int steps, double time0, double[] initialState, double h) {
-
-        // Check for valid step size
-        if (h == 0) {
-            throw new IllegalArgumentException("Step size cannot be zero");
-        }
-
-        double[] results = initialState.clone();
-        double t = time0;
-
-        for (int i = 0; i < steps; i++) {
-            results = RK4Step(t, results, h);
-            t += h;
-        }
-
-        return results;
-    }
-
+    /**
+     * Estimates the results of given ODE using RK4 with following parameters
+     * 
+     * @param steps        number of steps
+     * @param time0        starting time
+     * @param initialState initial state
+     * @param h            time step
+     * @param fileName     creates a file with given name under "src/main/java/Data"
+     *                     if provided
+     * @return results of ODE at end time = (time0+steps*h)
+     */
     public double[] RK4Solve(int steps, double time0, double[] initialState, double h, String fileName) {
         // Check for valid step size
         if (h == 0) {
@@ -113,7 +106,32 @@ public class ODEsolver {
         return results;
     }
 
-    // Runge-Kutta 4
+    public double[] RK4Solve(int steps, double time0, double[] initialState, double h) {
+
+        // Check for valid step size
+        if (h == 0) {
+            throw new IllegalArgumentException("Step size cannot be zero");
+        }
+
+        double[] results = initialState.clone();
+        double t = time0;
+
+        for (int i = 0; i < steps; i++) {
+            results = RK4Step(t, results, h);
+            t += h;
+        }
+
+        return results;
+    }
+
+    /**
+     * Step function for RK4 solver
+     * 
+     * @param time0        starting time
+     * @param initialState init state
+     * @param h            time step
+     * @return results at time0+h
+     */
     private double[] RK4Step(double time0, double[] initialState, double h) {
 
         int n = initialState.length;

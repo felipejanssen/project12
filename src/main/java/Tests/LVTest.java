@@ -49,6 +49,11 @@ public class LVTest {
         testRK4();
     }
 
+    /**
+     * Test run for Euler using Lotka-Volterra and predefined variables
+     * 
+     * @return results
+     */
     @SuppressWarnings("unused")
     private static double[] testEuler() {
         double[] result = solver.eulerSolve(steps, time0, initialState, stepSize);
@@ -57,6 +62,11 @@ public class LVTest {
         return result;
     }
 
+    /**
+     * Test run for RK4 using Lotka-Volterra and predefined variables
+     * 
+     * @return results
+     */
     private static double[] testRK4() {
         double[] result = solver.RK4Solve(steps, time0, initialState, stepSize, "test");
         System.out.println("Expected: " + Arrays.toString(expected));
