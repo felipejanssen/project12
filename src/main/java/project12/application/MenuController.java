@@ -28,14 +28,25 @@ public class MenuController {
         Parent scene = FXMLLoader.load(getClass().getResource("eurlerFHN.fxml"));
         root.setCenter(scene);
     }
+
     @FXML
     private void switchToEurlerSIR() throws IOException {
         Parent scene = FXMLLoader.load(getClass().getResource("eurlerSIR.fxml"));
         root.setCenter(scene);
     }
     @FXML
-    private void switchToRK() throws IOException {
-        Parent scene = FXMLLoader.load(getClass().getResource("rk.fxml"));
+    private void switchToRK4LV() throws IOException {
+        Parent scene = FXMLLoader.load(getClass().getResource("rk4LV.fxml"));
+        root.setCenter(scene);
+    }
+    @FXML
+    private void switchToRK4FHN() throws IOException {
+        Parent scene = FXMLLoader.load(getClass().getResource("rk4FHN.fxml"));
+        root.setCenter(scene);
+    }
+    @FXML
+    private void switchToRK4SIR() throws IOException {
+        Parent scene = FXMLLoader.load(getClass().getResource("rk4SIR.fxml"));
         root.setCenter(scene);
     }
     @FXML

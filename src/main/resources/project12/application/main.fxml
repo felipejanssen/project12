@@ -15,12 +15,14 @@
                 <items>
                     <MenuItem onAction="#switchToEurlerLV" text="Lotka Volterra" />
                     <MenuItem onAction="#switchToEurlerFHN" text="Fitz Hugh Nagumo" />
+               <MenuItem onAction="#switchToEurlerSIR" text="SIR Model" />
                 </items>
             </Menu>
          <Menu text="Runge Kutta 4 Solver">
             <items>
-               <MenuItem text="Lotka Volterra" />
-               <MenuItem text="Fitz Hugh Nagumo" />
+               <MenuItem onAction="#switchToRK4LV" text="Lotka Volterra" />
+               <MenuItem onAction="#switchToRK4FHN" text="Fitz Hugh Nagumo" />
+               <MenuItem onAction="#switchToRK4SIR" text="SIR Model" />
             </items>
          </Menu>
             <Menu text="Help">

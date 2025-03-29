@@ -46,8 +46,13 @@ public class HomePageController {
                 switchToEurlerSIR();
             }
         } else if(config.equals("Runge-Kutta-4 Solver")) {
-            switchToRK();
-            return;
+            if (function.equals("Lotka-Volterra")) {
+                switchToRK4LV();
+            }else if (function.equals("FitzHugh-Nagumo")) {
+                switchToRK4FHN();
+            } else if (function.equals("SIR")) {
+                switchToRK4SIR();
+            }
         }
 
     }
@@ -70,8 +75,20 @@ public class HomePageController {
         return;
     }
     @FXML
-    private void switchToRK() throws IOException {
-        Parent scene = FXMLLoader.load(getClass().getResource("rk.fxml"));
+    private void switchToRK4LV() throws IOException {
+        Parent scene = FXMLLoader.load(getClass().getResource("rk4LV.fxml"));
+        root.getChildren().setAll(scene);
+        return;
+    }
+    @FXML
+    private void switchToRK4FHN() throws IOException {
+        Parent scene = FXMLLoader.load(getClass().getResource("rk4FHN.fxml"));
+        root.getChildren().setAll(scene);
+        return;
+    }
+    @FXML
+    private void switchToRK4SIR() throws IOException {
+        Parent scene = FXMLLoader.load(getClass().getResource("rk4SIR.fxml"));
         root.getChildren().setAll(scene);
         return;
     }

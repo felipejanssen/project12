@@ -23,13 +23,13 @@ public class EurlerController {
     @FXML
     private TextField z;
     @FXML
-    private TextField alpha;
+    private TextField param1;
     @FXML
-    private TextField beta;
+    private TextField param2;
     @FXML
-    private TextField gamma;
+    private TextField param3;
     @FXML
-    private TextField delta;
+    private TextField param4;
     @FXML
     private TextField stepSize;
     @FXML
@@ -56,12 +56,11 @@ public class EurlerController {
         ArrayList<TextField> fields = new ArrayList<>();
 
         if (label.getText().equals("Lotka-Volterra")) {
-            System.out.println("Lotka-Volterra");
-            fields.addAll(Arrays.asList(x, y, alpha, beta, gamma, delta, stepSize, initialTime, totalDuration));
-        } else if (label.getText().equals("SIR")) {
-            fields.addAll(Arrays.asList(x, y, z, stepSize, initialTime, totalDuration));
+            fields.addAll(Arrays.asList(x, y, param1, param2, param3, param4, stepSize, initialTime, totalDuration));
+        } else if (label.getText().equals("SIR-Model")) {
+            fields.addAll(Arrays.asList(x, y, z, param1, param2, param3, stepSize, initialTime, totalDuration));
         } else if (label.getText().equals("FitzHugh-Nagumo")){
-            fields.addAll(Arrays.asList(x, y, alpha, beta, gamma, delta, stepSize, initialTime, totalDuration));
+            fields.addAll(Arrays.asList(x, y, param1, param2, param3, param4, stepSize, initialTime, totalDuration));
         }
         for (TextField field : fields) {
             String input = field.getText();
@@ -99,6 +98,17 @@ public class EurlerController {
                     parameters[i] = Double.parseDouble(fields.get(i).getText());
                 }
                 FitzHughNagumo function = new FitzHughNagumo(parameters[2], parameters[3], parameters[4], parameters[5]);
+                solver = new ODEsolver(function.getODEFunction());
+                double[] inputVector = {parameters[0], parameters[1]};
+                double[] result = solver.eulerSolve((int) parameters[8], parameters[7], inputVector, parameters[6]);
+                output.setText(String.valueOf(result[0]));
+                output2.setText(String.valueOf(result[1]));
+            } else if (label.getText().equals("SIR")){
+                double[] parameters = new double[fields.size()];
+                for (int i = 0; i < fields.size(); i++) {
+                    parameters[i] = Double.parseDouble(fields.get(i).getText());
+                }
+                SIRmodel function = new SIRmodel(parameters[2], parameters[3], parameters[4]);
                 solver = new ODEsolver(function.getODEFunction());
                 double[] inputVector = {parameters[0], parameters[1]};
                 double[] result = solver.eulerSolve((int) parameters[8], parameters[7], inputVector, parameters[6]);

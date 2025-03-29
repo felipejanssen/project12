@@ -56,10 +56,10 @@
             <Font name="Bodoni MT Italic" size="21.0" />
          </font>
       </Label>
-      <TextField fx:id="alpha" layoutX="231.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
-      <TextField fx:id="beta" layoutX="307.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
-      <TextField fx:id="gamma" layoutX="383.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
-      <TextField fx:id="delta" layoutX="459.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
+      <TextField fx:id="param1" layoutX="231.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
+      <TextField fx:id="param2" layoutX="307.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
+      <TextField fx:id="param3" layoutX="383.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
+      <TextField fx:id="param4" layoutX="459.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
       <Label layoutX="235.0" layoutY="139.0" prefHeight="0.0" prefWidth="66.0" text="a" />
       <Label layoutX="307.0" layoutY="139.0" prefHeight="0.0" prefWidth="66.0" text="b" />
       <Label layoutX="382.0" layoutY="139.0" prefHeight="0.0" prefWidth="66.0" text="epsilon" />
