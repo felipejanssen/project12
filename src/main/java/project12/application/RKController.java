@@ -42,6 +42,8 @@ public class RKController {
     private TextField output;
     @FXML
     private TextField output2;
+    @FXML
+    private TextField output3;
 
 
     @FXML
@@ -103,17 +105,19 @@ public class RKController {
                 double[] result = solver.RK4Solve((int) parameters[8], parameters[7], inputVector, parameters[6]);
                 output.setText(String.valueOf(result[0]));
                 output2.setText(String.valueOf(result[1]));
+
             } else if (label.getText().equals("SIR")){
                 double[] parameters = new double[fields.size()];
                 for (int i = 0; i < fields.size(); i++) {
                     parameters[i] = Double.parseDouble(fields.get(i).getText());
                 }
-                SIRmodel function = new SIRmodel(parameters[2], parameters[3], parameters[4]);
+                SIRmodel function = new SIRmodel(parameters[3], parameters[4], parameters[5]);
                 solver = new ODEsolver(function.getODEFunction());
-                double[] inputVector = {parameters[0], parameters[1]};
+                double[] inputVector = {parameters[0], parameters[1], parameters[2]};
                 double[] result = solver.RK4Solve((int) parameters[8], parameters[7], inputVector, parameters[6]);
                 output.setText(String.valueOf(result[0]));
                 output2.setText(String.valueOf(result[1]));
+                output3.setText(String.valueOf(result[2]));
             }
         }
     }
