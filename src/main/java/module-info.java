@@ -11,6 +11,7 @@ module project12.application {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires java.desktop;
+    requires java.scripting;
 
     opens project12.application to javafx.fxml;
     exports project12.application;

@@ -26,7 +26,7 @@ public class HomePageController {
     private Button confirmButton;
 
     String[] configs = {"Eurler Solver", "Runge-Kutta-4 Solver"};
-    String[] functions = {"Lotka-Volterra", "FitzHugh-Nagumo", "SIR"};
+    String[] functions = {"Custom", "Lotka-Volterra", "FitzHugh-Nagumo", "SIR"};
     @FXML
     public void initialize() {
         choiceBox.getItems().addAll(configs);
@@ -39,11 +39,13 @@ public class HomePageController {
         String function = choiceBox2.getValue();
         if (config.equals("Eurler Solver")) {
             if (function.equals("Lotka-Volterra")) {
-                switchToEurlerLV();
+                switchToEulerLV();
             } else if (function.equals("FitzHugh-Nagumo")) {
-                switchToEurlerFHN();
+                switchToEulerFHN();
             } else if (function.equals("SIR")) {
-                switchToEurlerSIR();
+                switchToEulerSIR();
+            } else if (function.equals("Custom")) {
+                switchToCustomEuler();
             }
         } else if(config.equals("Runge-Kutta-4 Solver")) {
             if (function.equals("Lotka-Volterra")) {
@@ -52,25 +54,40 @@ public class HomePageController {
                 switchToRK4FHN();
             } else if (function.equals("SIR")) {
                 switchToRK4SIR();
+            } else if (function.equals("Custom")) {
+                switchToCustomRK();
             }
         }
 
     }
+
     @FXML
-    private void switchToEurlerLV() throws IOException {
-        Parent scene = FXMLLoader.load(getClass().getResource("eurlerLV.fxml"));
+    private void switchToCustomEuler() throws IOException{
+        Parent scene = FXMLLoader.load(getClass().getResource("customEuler.fxml"));
         root.getChildren().setAll(scene);
         return;
     }
     @FXML
-    private void switchToEurlerFHN() throws IOException {
-        Parent scene = FXMLLoader.load(getClass().getResource("eurlerFHN.fxml"));
+    private void switchToCustomRK() throws IOException {
+        Parent scene = FXMLLoader.load(getClass().getResource("customRK.fxml"));
         root.getChildren().setAll(scene);
         return;
     }
     @FXML
-    private void switchToEurlerSIR() throws IOException {
-        Parent scene = FXMLLoader.load(getClass().getResource("eurlerSIR.fxml"));
+    private void switchToEulerLV() throws IOException {
+        Parent scene = FXMLLoader.load(getClass().getResource("eulerLV.fxml"));
+        root.getChildren().setAll(scene);
+        return;
+    }
+    @FXML
+    private void switchToEulerFHN() throws IOException {
+        Parent scene = FXMLLoader.load(getClass().getResource("eulerFHN.fxml"));
+        root.getChildren().setAll(scene);
+        return;
+    }
+    @FXML
+    private void switchToEulerSIR() throws IOException {
+        Parent scene = FXMLLoader.load(getClass().getResource("eulerSIR.fxml"));
         root.getChildren().setAll(scene);
         return;
     }

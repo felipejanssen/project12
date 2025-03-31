@@ -20,18 +20,28 @@ public class MenuController {
     }
     @FXML
     private void switchToEurlerLV() throws IOException {
-        Parent scene = FXMLLoader.load(getClass().getResource("eurlerLV.fxml"));
+        Parent scene = FXMLLoader.load(getClass().getResource("eulerLV.fxml"));
         root.setCenter(scene);
     }
     @FXML
     private void switchToEurlerFHN() throws IOException {
-        Parent scene = FXMLLoader.load(getClass().getResource("eurlerFHN.fxml"));
+        Parent scene = FXMLLoader.load(getClass().getResource("eulerFHN.fxml"));
+        root.setCenter(scene);
+    }
+    @FXML
+    private void switchToCustomEuler() throws IOException {
+        Parent scene = FXMLLoader.load(getClass().getResource("customEuler.fxml"));
+        root.setCenter(scene);
+    }
+    @FXML
+    private void switchToCustomRK() throws IOException {
+        Parent scene = FXMLLoader.load(getClass().getResource("customRK.fxml"));
         root.setCenter(scene);
     }
 
     @FXML
     private void switchToEurlerSIR() throws IOException {
-        Parent scene = FXMLLoader.load(getClass().getResource("eurlerSIR.fxml"));
+        Parent scene = FXMLLoader.load(getClass().getResource("eulerSIR.fxml"));
         root.setCenter(scene);
     }
     @FXML

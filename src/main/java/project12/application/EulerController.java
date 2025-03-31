@@ -3,17 +3,14 @@ import Backend.*;
 import java.util.Arrays;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.util.ArrayList;
-import java.util.function.BiFunction;
 
 
-public class EurlerController {
+public class EulerController {
     @FXML
     private Label label;
     @FXML

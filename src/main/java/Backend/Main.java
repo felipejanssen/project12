@@ -8,11 +8,11 @@ public class Main {
         BiFunction<Double, double[], double[]> testODE = (time, state) -> {
             double[] dxdt = new double[state.length];
             for (int i = 0; i < state.length; i++) {
-                dxdt[i] = -state[i]; //simple decay function for testing ODE solver
+                dxdt[i] = 0.1 * state[i]; //simple decay function for testing ODE solver
             }
             return dxdt;
         };
-        double[] initialVector = {40.0, 9.0};
+        double[] initialVector = {10};
         ODEsolver solver = new ODEsolver(testODE);
         double h = 0.1;
         int steps = 100;
