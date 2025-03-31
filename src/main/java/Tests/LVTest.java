@@ -56,7 +56,7 @@ public class LVTest {
      */
     @SuppressWarnings("unused")
     private static double[] testEuler() {
-        double[] result = solver.eulerSolve(steps, time0, initialState, stepSize);
+        double[] result = solver.eulerSolve(steps, time0, initialState, stepSize, "LVTest_Euler");
         System.out.println("Expected: " + Arrays.toString(expected));
         System.out.println("Actual result: " + Arrays.toString(result));
         return result;
@@ -68,7 +68,7 @@ public class LVTest {
      * @return results
      */
     private static double[] testRK4() {
-        double[] result = solver.RK4Solve(steps, time0, initialState, stepSize, "test");
+        double[] result = solver.RK4Solve(steps, time0, initialState, stepSize, "LVTest_RK4");
         System.out.println("Expected: " + Arrays.toString(expected));
         System.out.println("Actual result: " + Arrays.toString(result));
         return result;
