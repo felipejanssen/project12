@@ -18,7 +18,8 @@ public class ODEsolver {
 
     private BiFunction<Double, double[], double[]> ode;
 
-    //Step calculation, repeated for every iteration call in eulerSolve, returns the next state of the vector
+    // Step calculation, repeated for every iteration call in eulerSolve, returns
+    // the next state of the vector
     private double[] eulerStep(double time, double[] xCurrent, double h) {
 
         double[] dxdt = ode.apply(time, xCurrent);
@@ -29,8 +30,31 @@ public class ODEsolver {
         }
         return xNext;
     }
-    //Main function to solve the ODE, returns the final state of the vector
+
+    // Main function to solve the ODE, returns the final state of the vector
     public double[] eulerSolve(int steps, double time0, double[] xCurrent, double h) {
+
+        double[] x = xCurrent.clone();
+        double time = time0;
+
+        for (int i = 0; i < steps; i++) {
+            x = eulerStep(time, x, h);
+            time += h;
+        }
+        return x;
+    }
+
+    /**
+     * Euler solvr with save
+     * 
+     * @param steps
+     * @param time0
+     * @param xCurrent
+     * @param h
+     * @param fileName
+     * @return
+     */
+    public double[] eulerSolve(int steps, double time0, double[] xCurrent, double h, String fileName) {
 
         double[] x = xCurrent.clone();
         double time = time0;
