@@ -64,5 +64,11 @@ public class MenuController {
         Parent scene = FXMLLoader.load(getClass().getResource("about.fxml"));
         root.setCenter(scene);
     }
+    @FXML
+    private void switchToGraphView() throws IOException {
+        Parent scene = FXMLLoader.load(getClass().getResource("GraphView.fxml"));
+        root.setCenter(scene);
+    }
+
 
 }

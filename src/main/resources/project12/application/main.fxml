@@ -32,6 +32,10 @@
                     <MenuItem onAction="#switchToAbout" text="About" />
                 </items>
             </Menu>
+            <Menu text="Visualization">
+                <MenuItem onAction="#switchToGraphView" text="Graph Visualization" />
+            </Menu>
+
         </MenuBar>
     </top>
 </BorderPane>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.chart.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="project12.application.GraphController">
+    <!-- Method selection dropdown -->
+    <ComboBox fx:id="methodSelector" layoutX="20" layoutY="10" onAction="#onMethodSelected"/>
+
+    <!-- Line chart for visualizing the data -->
+    <LineChart fx:id="chart" layoutX="20" layoutY="50" prefWidth="600" prefHeight="400">
+        <xAxis>
+            <NumberAxis label="Time"/>
+        </xAxis>
+        <yAxis>
+            <NumberAxis label="Values"/>
+        </yAxis>
+    </LineChart>
+</AnchorPane>
