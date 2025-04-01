@@ -122,6 +122,7 @@ public class ODEParser {
     }
 
     public static void main(String[] args) {
+        // Example use
         Vector<String> equations = new Vector<>();
         equations.add("dy/dt = 0.1 * x0");
 
