@@ -1,6 +1,10 @@
 package project12.application;
-import Backend.*;
 import java.util.Arrays;
+
+import Backend.ODE.ODEsolver;
+import Backend.TestModels.FitzHughNagumo;
+import Backend.TestModels.LotkaVolterra;
+import Backend.TestModels.SIRmodel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

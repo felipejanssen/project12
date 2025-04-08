@@ -1,9 +1,9 @@
 package project12.application;
 
-import Backend.FitzHughNagumo;
-import Backend.LotkaVolterra;
-import Backend.ODEsolver;
-import Backend.SIRmodel;
+import Backend.TestModels.FitzHughNagumo;
+import Backend.TestModels.LotkaVolterra;
+import Backend.ODE.ODEsolver;
+import Backend.TestModels.SIRmodel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

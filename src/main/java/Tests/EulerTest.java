@@ -1,7 +1,7 @@
 package Tests;
 import java.util.function.BiFunction;
 
-import Backend.ODEsolver;
+import Backend.ODE.ODEsolver;
 
 public class EulerTest {
     public static void main(String[] args) {
