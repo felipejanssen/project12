@@ -13,6 +13,6 @@ module project12.application {
     requires java.desktop;
     requires java.scripting;
 
-    opens project12.application to javafx.fxml;
-    exports project12.application;
+    exports project12.DifferentialSolver;
+    opens project12.DifferentialSolver to javafx.fxml;
 }

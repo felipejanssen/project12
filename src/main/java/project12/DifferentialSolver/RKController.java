@@ -1,4 +1,4 @@
-package project12.application;
+package project12.DifferentialSolver;
 
 import Backend.TestModels.FitzHughNagumo;
 import Backend.TestModels.LotkaVolterra;

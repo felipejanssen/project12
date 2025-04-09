@@ -1,4 +1,4 @@
-package project12.application;
+package project12.DifferentialSolver;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

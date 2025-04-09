@@ -1,4 +1,4 @@
-package project12.application;
+package project12.DifferentialSolver;
 import java.util.Arrays;
 
 import Backend.ODE.ODEsolver;

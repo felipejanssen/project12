@@ -1,4 +1,4 @@
-package project12.application;
+package project12.DifferentialSolver;
 
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
