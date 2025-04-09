@@ -16,7 +16,7 @@ import java.io.InputStream;
  *
  */
 public class Planet extends Sphere {
-    private final double[] State = new double[6];
+    private double[] State = new double[6];
     private final double weight;
     private final double GravitationalConstant = 6.6743*Math.pow(10, -11);
 
@@ -30,14 +30,22 @@ public class Planet extends Sphere {
         State[5] = dz;
         this.weight = weight;
         setTexture(texturePath);
+
+        setTranslateX(x);
+        setTranslateY(y);
+        setTranslateZ(z);
     }
 
     public double[] getState() {
         return State;
     }
+    public void setState(double[] state) {
+        State = state;
+    }
     public double getWeight() {
         return weight;
     }
+
 
     /**
      * Tries to apply texture to Planet object, by using the given path to a texture png.
