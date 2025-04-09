@@ -1,6 +1,7 @@
 module project12.application {
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.graphics;
     requires javafx.web;
 
     requires org.controlsfx.controls;
@@ -15,4 +16,7 @@ module project12.application {
 
     exports project12.DifferentialSolver;
     opens project12.DifferentialSolver to javafx.fxml;
+
+    exports project12.SolarSystem;
+    opens project12.SolarSystem to javafx.fxml;
 }
