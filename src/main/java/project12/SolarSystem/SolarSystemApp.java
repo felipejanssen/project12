@@ -1,30 +1,29 @@
 package project12.SolarSystem;
 
-import Backend.SolarSystem.Planet;
+import Backend.SolarSystem.SolarSystemFunctions;
 import javafx.application.Application;
 import javafx.scene.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class SolarSystemApp extends Application {
-    private static int WIDTH = 1200;
-    private static int HEIGHT = 800;
+    private final static int WIDTH = 1500;
+    private final static int HEIGHT = 1000;
 
     @Override
-    public void start(Stage stage) throws Exception {
-        Planet Sun = new Planet(0,0,0,0,0,0, 50, 1.99*Math.pow(10, 30), "Sun.jpg");
-        Planet earth = new Planet(100,0,0,0,0,0,20,5.97*Math.pow(10, 24), "Earth.jpg");
+    public void start(Stage stage) {
+       /* Planet Sun = new Planet(0,0,0,0,0,0, 50, 1.99*Math.pow(10, 30), "Sun.jpg");
+        Planet earth = new Planet(100,0,0,0,0,0,20,5.97*Math.pow(10, 24), "Earth.jpg");*/
 
-        Group planets = new Group();
-        planets.getChildren().add(Sun);
-        planets.getChildren().add(earth);
+        String path = "SolarSystemValues.csv";
+        Group PlanetarySystemGroup = SolarSystemFunctions.GetAllPlanetsPlanetarySystem(path);
 
         PerspectiveCamera camera = new PerspectiveCamera(true);
-        camera.setTranslateZ(-500); // Move camera back
-        camera.setFarClip(1000);
-        camera.setNearClip(0);
+        camera.setTranslateZ(-1200);   // Move camera back
+        camera.setFarClip(4000);       // Maximum render limit
+        camera.setNearClip(0);         // minimum render limit
 
-        SubScene subScene = new SubScene(planets, WIDTH, HEIGHT, true, SceneAntialiasing.BALANCED);
+        SubScene subScene = new SubScene(PlanetarySystemGroup, WIDTH, HEIGHT, true, SceneAntialiasing.BALANCED);
         subScene.setFill(Color.BLACK);
         subScene.setCamera(camera);
 
