@@ -1,39 +1,58 @@
 package Backend.SolarSystem;
+import javafx.scene.DepthTest;
+import javafx.scene.Group;
 import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.Sphere;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Rotate;
 
 /**
- * The {@code Planet} class extends {@code Sphere} to give it additional information needed to represent a planet in a javafx scene.
+ * The {@code Planet} class extends {@code Group} to give it additional information needed to represent a planet in a javafx scene.
  * Adds State vector
  * Adds mass value
- * Adds general Gravitational Constant
  * Tries to apply texture
  *
  */
-public class Planet extends Sphere {
+public class Planet extends Group {
     private double[] State = new double[6];
+    private final Sphere sphere;
     private final double mass;
-    private final double GravitationalConstant = 6.6743*Math.pow(10, -11);
-    private static final double FXScalingConstant = 1e6;
+    private final double radius;
+    private static final double xScale = 1e6;
+    private static final double yScale = 5*(1e6);
+    private static final double zScale = 1e7;
 
-    public Planet(double x, double y, double z, double dx, double dy, double dz, double radius, double mass, String texturePath) {
-        super(radius);
+    public Planet(double x, double y, double z, double dx, double dy, double dz, double radius, double mass, int ringType, String texturePath) {
+        this.sphere = new Sphere(radius);
+        this.mass = mass;
+        this.radius = radius;
+
+        setState(x, y, z, dx, dy, dz);
+        setTexture(texturePath);
+        if(ringType != 0)
+            setRing(ringType);
+        scaleforFX(x,y,z);
+
+        addRandomTilt();
+
+        getChildren().add(sphere);
+
+        setDepthTest(DepthTest.ENABLE);
+
+    }
+
+    public double[] getState() {
+        return State;
+    }
+    public void setState(double x, double y, double z, double dx, double dy, double dz) {
         State[0] = x;
         State[1] = y;
         State[2] = z;
         State[3] = dx;
         State[4] = dy;
         State[5] = dz;
-        this.mass = mass;
-        setTexture(texturePath);
-
-        scaleforFX(x,y,z);
-    }
-
-    public double[] getState() {
-        return State;
     }
     public void setState(double[] state) {
         State = state;
@@ -41,6 +60,10 @@ public class Planet extends Sphere {
     public double getmass() {
         return mass;
     }
+    public double getRadius() {
+        return radius;
+    }
+
 
 
     /**
@@ -57,18 +80,54 @@ public class Planet extends Sphere {
 
             PhongMaterial material = new PhongMaterial();
             material.setDiffuseMap(texture);
-            this.setMaterial(material);
+            sphere.setMaterial(material);
 
         } catch (Exception e) {
-            System.err.println("Error loading texture: " + e.getMessage());
-            this.setMaterial(new PhongMaterial(Color.GRAY));
+            System.err.println("Error loading planet texture: " + e.getMessage());
+            sphere.setMaterial(new PhongMaterial(Color.GRAY));
         }
     }
 
+    private void setRing(int ringType) {
+        Cylinder ring = new Cylinder(getRadius() * 1.7, 0.1);
+
+        PhongMaterial ringMaterial = new PhongMaterial();
+
+        if (ringType == 2) {
+            ringMaterial.setDiffuseColor(Color.rgb(135, 206, 235, 0.7));
+            ringMaterial.setSpecularColor(Color.rgb(200, 230, 255, 0.4));
+            ringMaterial.setSpecularPower(20);
+
+            ring.getTransforms().add(new Rotate(90, Rotate.Z_AXIS));
+
+        }
+        else if (ringType == 1) {
+            ringMaterial.setDiffuseColor(Color.rgb(210, 180, 120, 0.7));
+            ringMaterial.setSpecularColor(Color.rgb(255, 235, 180, 0.3));
+            ringMaterial.setSpecularPower(15);
+
+            ring.getTransforms().add(new Rotate(0, Rotate.X_AXIS));
+        }
+
+        ring.setMaterial(ringMaterial);
+        getChildren().add(ring);
+    }
+
+    private void addRandomTilt() {
+        double tiltX = Math.random() * 20 - 10;
+        double tiltY = Math.random() * 20 - 10;
+        double tiltZ = Math.random() * 20 - 10;
+
+        Rotate rotateX = new Rotate(tiltX, Rotate.X_AXIS);
+        Rotate rotateY = new Rotate(tiltY, Rotate.Y_AXIS);
+        Rotate rotateZ = new Rotate(tiltZ, Rotate.Z_AXIS);
+
+        getTransforms().addAll(rotateX, rotateY, rotateZ);
+    }
     private void scaleforFX(double x, double y, double z) {
-        setTranslateX(x / FXScalingConstant);
-        setTranslateY(y / FXScalingConstant);
-        setTranslateZ(z / FXScalingConstant);
+        setTranslateX(x / xScale);
+        setTranslateY(y / yScale);
+        setTranslateZ(z / zScale);
     }
 
 }

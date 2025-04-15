@@ -1,13 +1,14 @@
 package Backend.SolarSystem;
 
-import javafx.scene.Group;
+import javafx.scene.DepthTest;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class SolarSystemFunctions {
-    public static Group GetAllPlanetsPlanetarySystem(String PlanetarySystemPath) {
-        Group SunAndPlanets = new Group();
+    public static ArrayList<Planet> GetAllPlanetsPlanetarySystem(String PlanetarySystemPath) {
+        ArrayList<Planet> SunAndPlanets = new ArrayList<>();
         try {
             InputStream is = SolarSystemFunctions.class.getClassLoader().getResourceAsStream(PlanetarySystemPath);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -15,7 +16,7 @@ public class SolarSystemFunctions {
             if (is == null) {
                 throw new RuntimeException("File not found: " + PlanetarySystemPath);
             }
-
+            br.readLine();
             String line;
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
@@ -30,10 +31,13 @@ public class SolarSystemFunctions {
 
                 double mass = Double.parseDouble(data[7]);
                 double radius = estimateRadiusFromMass(mass);
-                //double radius = 30;
+                int ringType = Integer.parseInt(data[8]);
+                //double radius = 3;
 
-                Planet planet = new Planet(x, y, z, dx, dy, dz, radius, mass, name + ".jpg");
-                SunAndPlanets.getChildren().add(planet);
+                Planet planet = new Planet(x, y, z, dx, dy, dz, radius, mass, ringType, name + ".jpg");
+                planet.setDepthTest(DepthTest.ENABLE);
+
+                SunAndPlanets.add(planet);
             }
             br.close();
 
@@ -44,19 +48,20 @@ public class SolarSystemFunctions {
     }
 
     /**
-     * Function estimates radius based on Earth's density and fits it to javafx platform.
-     * Uses formula to derive radius from volume.
-     * A bigger mass would mean a bigger planet in the application.
+     * Function estimates radius based on a set density and fits it to javafx platform.
+     * <p>Uses formula to derive radius from volume.</p>
+     * <p>Has minimum and maximum</p>
+     * <p>A bigger mass would mean a bigger planet in the application.</p>
      *
      * @param massKg The mass of the planetary object
      * @return Returns estimated radius
      */
     private static double estimateRadiusFromMass(double massKg) {
-        double density = 5500;
+        double density = 12000;
         double volume = massKg / density;
         double scaledRadius = (1e-6)*Math.cbrt((3 * volume) / (4 * Math.PI));
 
-        double minRadius = 1;
+        double minRadius = 3;
         double maxRadius = 50;
 
         return Math.max(minRadius, Math.min(scaledRadius, maxRadius));
