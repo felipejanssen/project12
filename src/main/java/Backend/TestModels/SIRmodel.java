@@ -3,9 +3,9 @@ package Backend.TestModels;
 import java.util.function.BiFunction;
 
 public class SIRmodel {
-    private final double k;      // Transmission rate
-    private final double gamma;  // Recovery rate
-    private final double mu;     // Birth/death rate
+    private final double k; // Transmission rate
+    private final double gamma; // Recovery rate
+    private final double mu; // Birth/death rate
 
     public SIRmodel(double k, double gamma, double mu) {
         this.k = k;
@@ -13,6 +13,7 @@ public class SIRmodel {
         this.mu = mu;
     }
 
+    @SuppressWarnings("unused")
     public BiFunction<Double, double[], double[]> getODEFunction() {
         return (time, state) -> {
             double S = state[0]; // Susceptible fraction
@@ -23,7 +24,7 @@ public class SIRmodel {
             double dIdt = k * S * I - (gamma + mu) * I;
             double dRdt = gamma * I - mu * R;
 
-            return new double[]{dSdt, dIdt, dRdt};
+            return new double[] { dSdt, dIdt, dRdt };
         };
     }
 }

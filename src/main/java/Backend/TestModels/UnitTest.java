@@ -7,8 +7,8 @@ import java.util.function.BiFunction;
 
 public class UnitTest {
     private final double sigma; // Prandtl number
-    private final double rho;   // Rayleigh number
-    private final double beta;  // Physical property of the system
+    private final double rho; // Rayleigh number
+    private final double beta; // Physical property of the system
 
     public UnitTest(double sigma, double rho, double beta) {
         this.sigma = sigma;
@@ -16,6 +16,7 @@ public class UnitTest {
         this.beta = beta;
     }
 
+    @SuppressWarnings("unused")
     public BiFunction<Double, double[], double[]> getODEFunction() {
         return (time, state) -> {
             double x = state[0];
@@ -26,13 +27,14 @@ public class UnitTest {
             double dydt = x * (rho - z) - y;
             double dzdt = x * y - beta * z;
 
-            return new double[]{dxdt, dydt, dzdt};
+            return new double[] { dxdt, dydt, dzdt };
         };
     }
+
     public static void main(String[] args) {
         UnitTest test = new UnitTest(10, 30, 3);
         ODEsolver solver = new ODEsolver(test.getODEFunction());
-        double[] initialVector = {0.1, 0.5, 0.2};
+        double[] initialVector = { 0.1, 0.5, 0.2 };
         double start = 0;
         double stepsize = 0.05;
         int totalSteps = 200;

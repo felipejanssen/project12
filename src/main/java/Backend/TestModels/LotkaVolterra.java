@@ -4,7 +4,7 @@ import java.util.function.BiFunction;
 
 public class LotkaVolterra {
     private final double alpha; // Prey birth rate
-    private final double beta;  // Predation rate
+    private final double beta; // Predation rate
     private final double gamma; // Predator death rate
     private final double delta; // Predator reproduction rate
 
@@ -15,6 +15,7 @@ public class LotkaVolterra {
         this.delta = delta;
     }
 
+    @SuppressWarnings("unused")
     public BiFunction<Double, double[], double[]> getODEFunction() {
         return (time, state) -> {
             double x = state[0]; // Prey population
@@ -23,7 +24,7 @@ public class LotkaVolterra {
             double dxdt = alpha * x - beta * x * y;
             double dydt = delta * x * y - gamma * y;
 
-            return new double[]{dxdt, dydt};
+            return new double[] { dxdt, dydt };
         };
     }
 }
