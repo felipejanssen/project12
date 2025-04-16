@@ -1,5 +1,6 @@
 package Backend.SolarSystem;
 
+import Backend.Physics.State;
 import com.almasb.fxgl.scene3d.Cone;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -11,28 +12,35 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 
 public class SpaceShip extends Group implements  CelestialObject {
-    private double[] State;
+    private State state;
     private double weight;
     private double fuel;
 
-    public SpaceShip(double weight, double fuel) {
+    private static final double xScale = 1e6;
+    private static final double yScale = 1e6;
+    private static final double zScale = 1e6;
+
+    public SpaceShip(double[] position, double[] velocity, double weight, double fuel) {
         createRocketShip();
+        this.state = new State(0, position, velocity);
         this.weight = weight;
         this.fuel = fuel;
+
+        moveCelestialObject(scaleforFX(position));
     }
     
-    public double[] getState() {
-        return State;
+    public State getState() {
+        return this.state;
     }
     public double getMass() {
-        return weight;
+        return this.weight;
     }
     public double getFuel() {
-        return fuel;
+        return this.fuel;
     }
     
-    public void setState(double[] state) {
-        this.State = state;
+    public void setState(State state) {
+        this.state = state;
     }
     public void setMass(double weight) {
         this.weight = weight;
@@ -115,7 +123,16 @@ public class SpaceShip extends Group implements  CelestialObject {
         getChildren().addAll(mainBody, noseCone, window, fin1, fin2, fin3, fin4, rocketFlames);
     }
 
-    public void moveForward(double distance) {
-        setTranslateY(getTranslateY() - distance);
+    public void moveCelestialObject(double[] position) {
+        setTranslateX(position[0]);
+        setTranslateY(position[1]);
+        setTranslateZ(position[2]);
+    }
+    public double[] scaleforFX(double[] position) {
+        return new double[]{
+                position[0] / xScale,
+                position[1] / yScale,
+                position[2] / zScale
+        };
     }
 }

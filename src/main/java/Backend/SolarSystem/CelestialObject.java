@@ -1,10 +1,15 @@
 package Backend.SolarSystem;
 
+import Backend.Physics.State;
+
 public interface CelestialObject {
     double getMass();
-    double[] getState();
+    State getState();
 
-    void setState(double[] state);
-    void setMass(double weight);
+    void setState(State state);
+    void setMass(double mass);
+
+    void moveCelestialObject(double[] position);
+    double[] scaleforFX(double[] position);
 }
 

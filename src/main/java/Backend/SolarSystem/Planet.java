@@ -1,5 +1,6 @@
 package Backend.SolarSystem;
-import javafx.scene.DepthTest;
+
+import Backend.Physics.State;
 import javafx.scene.Group;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Cylinder;
@@ -10,70 +11,56 @@ import javafx.scene.transform.Rotate;
 
 /**
  * The {@code Planet} class extends {@code Group} to give it additional information needed to represent a planet in a javafx scene.
- * Adds State vector
- * Adds mass value
- * Tries to apply texture
- *
+ * <ul>
+ *     <li>contains {@code State} object</li>
+ *     <li>contains {@code Mass} value</li>
+ *     <li>applies {@code Texture}, {@code Tilt} and {@code Ring}</li>
+ *     <li>scales for {@code JavaFX}</li>
+ * </ul>
  */
 public class Planet extends Group implements CelestialObject {
-    private double[] State = new double[6];
+    private final String name;
+    private State state;
     private double mass;
     private final double radius;
-
     private final Sphere sphere;
 
     private static final double xScale = 1e6;
     private static final double yScale = 1e6;
     private static final double zScale = 1e6;
 
-    public Planet(double x, double y, double z, double dx, double dy, double dz, double radius, double mass, int ringType, String texturePath) {
-        this.sphere = new Sphere(radius);
+    public Planet(String name, double[] position, double[] velocity, double mass, int ringType, String texturePath) {
+        this.name = name;
         this.mass = mass;
-        this.radius = radius;
+        this.radius = SolarSystemFunctions.estimateRadiusFromMass(mass);
+        this.sphere = new Sphere(radius);
+        this.state = new State(0, position, velocity);
 
-        setState(x, y, z, dx, dy, dz);
-        setTexture(texturePath);
         if(ringType != 0)
             setRing(ringType);
-        scaleforFX(x,y,z);
-
+        setTexture(texturePath);
+        moveCelestialObject(scaleforFX(position));
         addRandomTilt();
 
         getChildren().add(sphere);
-
-        setDepthTest(DepthTest.ENABLE);
-
     }
-
-    public double[] getState() {
-        return State;
+    public String getName() {
+        return name;
+    }
+    public State getState() {
+        return state;
     }
     public double getMass() {
         return mass;
     }
 
-    public void setState(double[] state) {
-        State = state;
-    }
-    public void setState(double x, double y, double z, double dx, double dy, double dz) {
-        State[0] = x;
-        State[1] = y;
-        State[2] = z;
-        State[3] = dx;
-        State[4] = dy;
-        State[5] = dz;
+    public void setState(State state) {
+        this.state = state;
     }
     public void setMass(double mass) {
         this.mass = mass;
     }
 
-
-    /**
-     * Tries to apply texture to Planet object, by using the given path to a texture png.
-     * If none is available it will assign the texture to be gray.
-     *
-     * @param texturePath The filepath to the texture png
-     */
     private void setTexture(String texturePath) {
 
         try {
@@ -89,7 +76,6 @@ public class Planet extends Group implements CelestialObject {
             sphere.setMaterial(new PhongMaterial(Color.GRAY));
         }
     }
-
     private void setRing(int ringType) {
         Cylinder ring = new Cylinder(radius * 1.7, 0.1);
 
@@ -107,7 +93,6 @@ public class Planet extends Group implements CelestialObject {
         ring.setMaterial(ringMaterial);
         getChildren().add(ring);
     }
-
     private void addRandomTilt() {
         double tiltX = Math.random() * 20 - 10;
         double tiltY = Math.random() * 20 - 10;
@@ -119,10 +104,17 @@ public class Planet extends Group implements CelestialObject {
 
         getTransforms().addAll(rotateX, rotateY, rotateZ);
     }
-    private void scaleforFX(double x, double y, double z) {
-        setTranslateX(x / xScale);
-        setTranslateY(y / yScale);
-        setTranslateZ(z / zScale);
-    }
 
+    public void moveCelestialObject(double[] position) {
+        setTranslateX(position[0]);
+        setTranslateY(position[1]);
+        setTranslateZ(position[2]);
+    }
+    public double[] scaleforFX(double[] position) {
+        return new double[]{
+                position[0] / xScale,
+                position[1] / yScale,
+                position[2] / zScale
+        };
+    }
 }

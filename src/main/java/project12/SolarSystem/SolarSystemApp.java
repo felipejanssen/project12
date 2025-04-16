@@ -24,19 +24,22 @@ public class SolarSystemApp extends Application {
 
     @Override
     public void start(Stage stage) {
-       /* Planet Sun = new Planet(0,0,0,0,0,0, 50, 1.99*Math.pow(10, 30), "Sun.jpg");
-        Planet earth = new Planet(100,0,0,0,0,0,20,5.97*Math.pow(10, 24), "Earth.jpg");*/
-
-        String path = "SolarSystemValues.csv";
-        ArrayList<Planet> PlanetList = SolarSystemFunctions.GetAllPlanetsPlanetarySystem(path); // Add all planets to a list
+        String csvpath = "SolarSystemValues.csv";
+        ArrayList<Planet> PlanetList = SolarSystemFunctions.GetAllPlanetsPlanetarySystem(csvpath); // Add all planets to a list
         Group SSystem = new Group();
         for (Planet p : PlanetList) {
             SSystem.getChildren().add(p);
         }
         SSystem.getTransforms().addAll(rotateX, rotateY); // Add all Systems to Planet Group
 
-        SpaceShip SpaceShip = new SpaceShip(50000,0);
-        SpaceShip.moveForward(100);
+        double[] posOfEarth = new double[]{0,0,0};
+        for (Planet p : PlanetList) {
+            if (p.getName().equals("Earth")) {
+                posOfEarth = p.getState().getPos();
+                break;
+            }
+        }
+        SpaceShip SpaceShip = new SpaceShip(posOfEarth, new double[]{0,0,0}, 50000, 0);
 
         SSystem.getChildren().add(SpaceShip);
 
@@ -71,7 +74,6 @@ public class SolarSystemApp extends Application {
             camera.setTranslateZ(cameraDistance);
         });
     }
-
     private void initMouseControl(Scene scene) {
         scene.setOnMousePressed(event -> {
             anchorX = event.getSceneX();
