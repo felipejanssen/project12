@@ -1,9 +1,7 @@
 package Tests;
 
-import Backend.ODEsolver;
+import Backend.ODE.ODEsolver;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.BiFunction;
 
 public class SolverComparisonTest {

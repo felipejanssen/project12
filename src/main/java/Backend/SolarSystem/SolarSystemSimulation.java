@@ -1,4 +1,4 @@
-package Backend;
+package Backend.SolarSystem;
 
 public class SolarSystemSimulation {
     public static void main(String[] args) {

@@ -1,19 +1,19 @@
-package project12.application;
-import Backend.*;
-import java.util.Arrays;
+package project12.DifferentialSolver;
+
+import Backend.TestModels.FitzHughNagumo;
+import Backend.TestModels.LotkaVolterra;
+import Backend.ODE.ODEsolver;
+import Backend.TestModels.SIRmodel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.util.ArrayList;
-import java.util.function.BiFunction;
+import java.util.Arrays;
 
-
-public class EurlerController {
+public class RKController {
     @FXML
     private Label label;
     @FXML
@@ -90,7 +90,7 @@ public class EurlerController {
                 LotkaVolterra function = new LotkaVolterra(parameters[2], parameters[3], parameters[4], parameters[5]);
                 double[] inputVector = {parameters[0], parameters[1]};
                 solver = new ODEsolver(function.getODEFunction());
-                double[] result = solver.eulerSolve((int) parameters[8], parameters[7], inputVector, parameters[6]);
+                double[] result = solver.RK4Solve((int) parameters[8], parameters[7], inputVector, parameters[6]);
                 output.setText(String.valueOf(result[0]));
                 output2.setText(String.valueOf(result[1]));
 
@@ -102,7 +102,7 @@ public class EurlerController {
                 FitzHughNagumo function = new FitzHughNagumo(parameters[2], parameters[3], parameters[4], parameters[5]);
                 solver = new ODEsolver(function.getODEFunction());
                 double[] inputVector = {parameters[0], parameters[1]};
-                double[] result = solver.eulerSolve((int) parameters[8], parameters[7], inputVector, parameters[6]);
+                double[] result = solver.RK4Solve((int) parameters[8], parameters[7], inputVector, parameters[6]);
                 output.setText(String.valueOf(result[0]));
                 output2.setText(String.valueOf(result[1]));
 
@@ -114,7 +114,7 @@ public class EurlerController {
                 SIRmodel function = new SIRmodel(parameters[3], parameters[4], parameters[5]);
                 solver = new ODEsolver(function.getODEFunction());
                 double[] inputVector = {parameters[0], parameters[1], parameters[2]};
-                double[] result = solver.eulerSolve((int) parameters[8], parameters[7], inputVector, parameters[6]);
+                double[] result = solver.RK4Solve((int) parameters[8], parameters[7], inputVector, parameters[6]);
                 output.setText(String.valueOf(result[0]));
                 output2.setText(String.valueOf(result[1]));
                 output3.setText(String.valueOf(result[2]));

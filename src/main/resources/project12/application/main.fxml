@@ -5,7 +5,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane fx:id="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project12.application.MenuController">
+<BorderPane fx:id="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project12.DifferentialSolver.MenuController">
     <top>
         <MenuBar>
             <Menu text="Home">
@@ -13,6 +13,7 @@
             </Menu>
             <Menu text="Eurler Solver">
                 <items>
+               <MenuItem onAction="#switchToCustomEuler" text="Custom" />
                     <MenuItem onAction="#switchToEurlerLV" text="Lotka Volterra" />
                     <MenuItem onAction="#switchToEurlerFHN" text="Fitz Hugh Nagumo" />
                <MenuItem onAction="#switchToEurlerSIR" text="SIR Model" />
@@ -20,6 +21,7 @@
             </Menu>
          <Menu text="Runge Kutta 4 Solver">
             <items>
+               <MenuItem onAction="#switchToCustomRK" text="Custom" />
                <MenuItem onAction="#switchToRK4LV" text="Lotka Volterra" />
                <MenuItem onAction="#switchToRK4FHN" text="Fitz Hugh Nagumo" />
                <MenuItem onAction="#switchToRK4SIR" text="SIR Model" />
@@ -30,6 +32,10 @@
                     <MenuItem onAction="#switchToAbout" text="About" />
                 </items>
             </Menu>
+            <Menu text="Visualization">
+                <MenuItem onAction="#switchToGraphView" text="Graph Visualization" />
+            </Menu>
+
         </MenuBar>
     </top>
 </BorderPane>

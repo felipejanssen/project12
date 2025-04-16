@@ -3,7 +3,7 @@ package Tests;
 import java.util.Arrays;
 import java.util.function.BiFunction;
 
-import Backend.ODEsolver;
+import Backend.ODE.ODEsolver;
 
 // Fitzhugh-Nagumo tester using RK4 (can change to euler if you want ofcourse)
 

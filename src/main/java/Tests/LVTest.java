@@ -3,7 +3,7 @@ package Tests;
 import java.util.Arrays;
 import java.util.function.BiFunction;
 
-import Backend.ODEsolver;
+import Backend.ODE.ODEsolver;
 
 /**
  * A class to test if our solvers are working as expected.
