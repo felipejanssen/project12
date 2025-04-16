@@ -10,6 +10,5 @@ public interface CelestialObject {
     void setMass(double mass);
 
     void moveCelestialObject(double[] position);
-    double[] scaleforFX(double[] position);
 }
 

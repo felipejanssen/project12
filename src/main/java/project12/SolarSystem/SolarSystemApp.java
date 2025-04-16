@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 
 public class SolarSystemApp extends Application {
-    private final static int WIDTH = 1500;
+    private final static int WIDTH = 1600;
     private final static int HEIGHT = 1000;
 
     private double cameraDistance = -1200;
@@ -39,8 +39,7 @@ public class SolarSystemApp extends Application {
                 break;
             }
         }
-        SpaceShip SpaceShip = new SpaceShip(posOfEarth, new double[]{0,0,0}, 50000, 0);
-
+        SpaceShip SpaceShip = new SpaceShip(new double[]{posOfEarth[0], posOfEarth[1]-22e6, posOfEarth[2]}, new double[]{0,0,0}, 50000, 0);
         SSystem.getChildren().add(SpaceShip);
 
         PerspectiveCamera camera = new PerspectiveCamera(true);

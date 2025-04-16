@@ -39,7 +39,7 @@ public class Planet extends Group implements CelestialObject {
         if(ringType != 0)
             setRing(ringType);
         setTexture(texturePath);
-        moveCelestialObject(scaleforFX(position));
+        moveCelestialObject(position);
         addRandomTilt();
 
         getChildren().add(sphere);
@@ -105,16 +105,9 @@ public class Planet extends Group implements CelestialObject {
         getTransforms().addAll(rotateX, rotateY, rotateZ);
     }
 
-    public void moveCelestialObject(double[] position) {
-        setTranslateX(position[0]);
-        setTranslateY(position[1]);
-        setTranslateZ(position[2]);
-    }
-    public double[] scaleforFX(double[] position) {
-        return new double[]{
-                position[0] / xScale,
-                position[1] / yScale,
-                position[2] / zScale
-        };
+    public void moveCelestialObject(double[] newPosition) {
+        setTranslateX(newPosition[0] / xScale);
+        setTranslateY(newPosition[1] / yScale);
+        setTranslateZ(newPosition[2] / zScale);
     }
 }

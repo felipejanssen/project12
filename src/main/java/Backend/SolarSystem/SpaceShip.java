@@ -26,7 +26,7 @@ public class SpaceShip extends Group implements  CelestialObject {
         this.weight = weight;
         this.fuel = fuel;
 
-        moveCelestialObject(scaleforFX(position));
+        moveCelestialObject(position);
     }
     
     public State getState() {
@@ -123,16 +123,9 @@ public class SpaceShip extends Group implements  CelestialObject {
         getChildren().addAll(mainBody, noseCone, window, fin1, fin2, fin3, fin4, rocketFlames);
     }
 
-    public void moveCelestialObject(double[] position) {
-        setTranslateX(position[0]);
-        setTranslateY(position[1]);
-        setTranslateZ(position[2]);
-    }
-    public double[] scaleforFX(double[] position) {
-        return new double[]{
-                position[0] / xScale,
-                position[1] / yScale,
-                position[2] / zScale
-        };
+    public void moveCelestialObject(double[] newPosition) {
+        setTranslateX(newPosition[0] / xScale);
+        setTranslateY(newPosition[1] / yScale);
+        setTranslateZ(newPosition[2] / zScale);
     }
 }
