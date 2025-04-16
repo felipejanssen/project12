@@ -1,5 +1,7 @@
 package Backend.Physics;
 
+import Utils.vec;
+
 public class Impulse {
 
     // which direction
@@ -15,8 +17,25 @@ public class Impulse {
         this.time = t;
     }
 
+    // TODO: Implement better fuel cost estimation
     public double getFuelCost() {
         return magnitude;
+    }
+
+    public double[] getDir() {
+        return this.direction;
+    }
+
+    public double[] getNormalizedDir() {
+        return vec.normalize(this.direction);
+    }
+
+    public double getTime() {
+        return this.time;
+    }
+
+    public double getMag() {
+        return this.magnitude;
     }
 
     public double changeMagBy(double value) {
