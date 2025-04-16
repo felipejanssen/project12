@@ -15,14 +15,16 @@ import javafx.scene.transform.Rotate;
  * Tries to apply texture
  *
  */
-public class Planet extends Group {
+public class Planet extends Group implements CelestialObject {
     private double[] State = new double[6];
-    private final Sphere sphere;
-    private final double mass;
+    private double mass;
     private final double radius;
+
+    private final Sphere sphere;
+
     private static final double xScale = 1e6;
-    private static final double yScale = 5*(1e6);
-    private static final double zScale = 1e7;
+    private static final double yScale = 1e6;
+    private static final double zScale = 1e6;
 
     public Planet(double x, double y, double z, double dx, double dy, double dz, double radius, double mass, int ringType, String texturePath) {
         this.sphere = new Sphere(radius);
@@ -46,6 +48,13 @@ public class Planet extends Group {
     public double[] getState() {
         return State;
     }
+    public double getMass() {
+        return mass;
+    }
+
+    public void setState(double[] state) {
+        State = state;
+    }
     public void setState(double x, double y, double z, double dx, double dy, double dz) {
         State[0] = x;
         State[1] = y;
@@ -54,16 +63,9 @@ public class Planet extends Group {
         State[4] = dy;
         State[5] = dz;
     }
-    public void setState(double[] state) {
-        State = state;
+    public void setMass(double mass) {
+        this.mass = mass;
     }
-    public double getmass() {
-        return mass;
-    }
-    public double getRadius() {
-        return radius;
-    }
-
 
 
     /**
@@ -89,23 +91,16 @@ public class Planet extends Group {
     }
 
     private void setRing(int ringType) {
-        Cylinder ring = new Cylinder(getRadius() * 1.7, 0.1);
+        Cylinder ring = new Cylinder(radius * 1.7, 0.1);
 
         PhongMaterial ringMaterial = new PhongMaterial();
 
         if (ringType == 2) {
-            ringMaterial.setDiffuseColor(Color.rgb(135, 206, 235, 0.7));
-            ringMaterial.setSpecularColor(Color.rgb(200, 230, 255, 0.4));
-            ringMaterial.setSpecularPower(20);
-
+            ringMaterial.setDiffuseColor(Color.rgb(135, 206, 235, 0.3));
             ring.getTransforms().add(new Rotate(90, Rotate.Z_AXIS));
-
         }
         else if (ringType == 1) {
-            ringMaterial.setDiffuseColor(Color.rgb(210, 180, 120, 0.7));
-            ringMaterial.setSpecularColor(Color.rgb(255, 235, 180, 0.3));
-            ringMaterial.setSpecularPower(15);
-
+            ringMaterial.setDiffuseColor(Color.rgb(210, 180, 120, 0.3));
             ring.getTransforms().add(new Rotate(0, Rotate.X_AXIS));
         }
 
