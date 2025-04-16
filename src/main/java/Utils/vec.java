@@ -30,6 +30,20 @@ public abstract class vec {
         return result;
     }
 
+    public static double[] substract(double[] vector1, double[] vector2) {
+        if (vector1.length != vector2.length) {
+            throw new IllegalArgumentException("The input vectors must have the same length");
+        }
+        int n = vector1.length;
+        double[] result = new double[n];
+
+        for (int i = 0; i < n; i++) {
+            result[i] = vector1[i] - vector2[i];
+        }
+
+        return result;
+    }
+
     public static double[] dot(double[] vector1, double[] vector2) {
 
         if (vector1.length != vector2.length) {
@@ -44,5 +58,27 @@ public abstract class vec {
         }
 
         return result;
+    }
+
+    public static double[] normalize(double[] vec) {
+        double sum = 0;
+        double[] nvec = new double[vec.length];
+        for (int i = 0; i < vec.length; i++) {
+            sum += vec[i];
+        }
+
+        for (int i = 0; i < vec.length; i++) {
+            nvec[i] = vec[i] / sum;
+        }
+        return nvec;
+    }
+
+    public static double magnitude(double[] vec) {
+        double sum = 0;
+
+        for (int i = 0; i < vec.length; i++) {
+            sum += vec[i] * vec[i];
+        }
+        return Math.sqrt(sum);
     }
 }

@@ -222,7 +222,7 @@ public class ODEsolver {
      *
      * @return results at time+h
      */
-    private double[] RK4Step(double time, double[] currentState, double h) {
+    public double[] RK4Step(double time, double[] currentState, double h) {
 
         int n = currentState.length;
         double[] temp;

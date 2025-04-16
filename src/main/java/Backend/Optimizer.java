@@ -4,14 +4,35 @@ import java.util.List;
 
 import Backend.Physics.Impulse;
 import Backend.Physics.Trajectory;
-import Backend.SolarSystem.SolarSystemSimulation;
+import Backend.SolarSystem.SolarSystem;
 
 public class Optimizer {
 
     private double LEARNING_RATE = 0.001;
+    private double tolerance = 1e-4;
+    private List<Impulse> impulses;
 
-    public void gradientDescent(List<Impulse> impulses) {
+    public Optimizer(List<Impulse> impulses) {
+        this.impulses = impulses;
+    }
 
+    public void gradientDescent() {
+
+        double lastCost = Double.POSITIVE_INFINITY;
+        int maxIters = 1000;
+        for (int i = 0; i < maxIters; i++) {
+
+            updateImpulses();
+
+            double currentCost = computeCost(impulses);
+            if (Math.abs(lastCost - currentCost) < tolerance) {
+                break;
+            }
+        }
+
+    }
+
+    private void updateImpulses() {
         double epsilon = 1e-4;
         for (Impulse imp : impulses) {
             imp.changeMagBy(epsilon);
@@ -25,24 +46,22 @@ public class Optimizer {
             imp.changeMagBy(epsilon); // reset
             imp.changeMagBy(-LEARNING_RATE * gradient);
         }
-
     }
 
     public double computeCost(List<Impulse> impulses) {
 
         double totalFuel = .0;
-        Trajectory path = SolarSystemSimulation.simulateMission(impulses);
+        Trajectory path = SolarSystem.simulateMission(impulses);
 
         for (Impulse imp : impulses) {
-            totalFuel += imp.getFuelCost(); // use CI = ||I|| * 1 m/s
+            totalFuel += imp.getFuelCost(); // CI = ||I|| * 1 m/s
         }
-
-        // Add penalties for missing target
         double penalty = computePenalty(path);
 
         return totalFuel + penalty;
     }
 
+    // TODO: Implement real penalty (e.g. based on distance from goal)
     private double computePenalty(Trajectory path) {
         return Double.POSITIVE_INFINITY;
     }
