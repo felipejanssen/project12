@@ -42,7 +42,8 @@ public class ODEsolver {
         // Create file path if a name was provided
         File filePath;
         if (fileName != null && !fileName.isEmpty()) {
-            filePath = new File(defaultDirectory, fileName);
+            String temp = fileName + ".csv";
+            filePath = new File(defaultDirectory, temp);
         } else {
             // If no file name provided, throw an exception
             throw new IllegalArgumentException("File name must be provided.");
@@ -152,7 +153,8 @@ public class ODEsolver {
         // Create file path if a name was provided
         File filePath;
         if (fileName != null && !fileName.isEmpty()) {
-            filePath = new File(defaultDirectory, fileName);
+            String temp = fileName + ".csv";
+            filePath = new File(defaultDirectory, temp);
         } else {
             // If no file name provided, throw an exception
             throw new IllegalArgumentException("File name must be provided.");
