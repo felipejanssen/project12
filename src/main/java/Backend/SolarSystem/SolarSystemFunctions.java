@@ -57,11 +57,11 @@ public class SolarSystemFunctions {
      * @return Returns estimated radius
      */
     private static double estimateRadiusFromMass(double massKg) {
-        double density = 12000;
+        double density = 10000;
         double volume = massKg / density;
         double scaledRadius = (1e-6)*Math.cbrt((3 * volume) / (4 * Math.PI));
 
-        double minRadius = 3;
+        double minRadius = 1;
         double maxRadius = 50;
 
         return Math.max(minRadius, Math.min(scaledRadius, maxRadius));

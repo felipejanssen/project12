@@ -1,6 +1,7 @@
 package project12.SolarSystem;
 
 import Backend.SolarSystem.Planet;
+import Backend.SolarSystem.SpaceShip;
 import Backend.SolarSystem.SolarSystemFunctions;
 import javafx.application.Application;
 import javafx.scene.*;
@@ -28,18 +29,24 @@ public class SolarSystemApp extends Application {
 
         String path = "SolarSystemValues.csv";
         ArrayList<Planet> PlanetList = SolarSystemFunctions.GetAllPlanetsPlanetarySystem(path); // Add all planets to a list
-        Group Planets = new Group();
+        Group SSystem = new Group();
         for (Planet p : PlanetList) {
-            Planets.getChildren().add(p);
+            SSystem.getChildren().add(p);
         }
-        Planets.getTransforms().addAll(rotateX, rotateY); // Add all Systems to Planet Group
+        SSystem.getTransforms().addAll(rotateX, rotateY); // Add all Systems to Planet Group
+
+        SpaceShip SpaceShip = new SpaceShip(50000,0);
+        SpaceShip.moveForward(100);
+
+        SSystem.getChildren().add(SpaceShip);
 
         PerspectiveCamera camera = new PerspectiveCamera(true);
         camera.setTranslateZ(-1200);   // Move camera back
-        camera.setFarClip(20000);       // Maximum render limit
+        camera.setFarClip(30000);       // Maximum render limit
         camera.setNearClip(0.1);         // minimum render limit
 
-        SubScene subScene = new SubScene(Planets, WIDTH, HEIGHT, true, SceneAntialiasing.BALANCED);
+        SubScene subScene = new SubScene(SSystem, WIDTH, HEIGHT, true, SceneAntialiasing.BALANCED);
+
         subScene.setFill(Color.BLACK);
         subScene.setCamera(camera);
 
@@ -60,7 +67,7 @@ public class SolarSystemApp extends Application {
             double delta = event.getDeltaY();
             cameraDistance += delta;
             double zoomSpeed = 4.0;
-            cameraDistance = Math.max(-8000, Math.min(-100, cameraDistance + delta * zoomSpeed));
+            cameraDistance = Math.max(-20000, Math.min(-100, cameraDistance + delta * zoomSpeed));
             camera.setTranslateZ(cameraDistance);
         });
     }
