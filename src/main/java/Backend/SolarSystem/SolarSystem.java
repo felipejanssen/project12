@@ -12,7 +12,9 @@ import Backend.Physics.State;
 public class SolarSystem {
 
     // Planets
-    private static final Planet Earth = new Planet(0, 0, 0, 0, 0, 0, 0, 0, 0, null);
+    @SuppressWarnings("unused")
+    private static final Planet Earth = new Planet("Earth", new double[] { 420, 420, 420 },
+            new double[] { 69, 69, 69 }, 69420, 0, null);
 
     // time parameters & step size
     private static final double t0 = 0;
@@ -29,8 +31,6 @@ public class SolarSystem {
 
         // Set up ODE
         initializeODE();
-        // Simulation
-        simulateMission(null);
     }
 
     // TODO: Implement the computation of gravity for multiple planets
@@ -63,6 +63,7 @@ public class SolarSystem {
     }
 
     private static void initializeODE() {
+
         BiFunction<Double, double[], double[]> ode = (time, state) -> {
             double[] derivative = new double[6];
 
@@ -76,7 +77,7 @@ public class SolarSystem {
             derivative[2] = velocity[2];
 
             // 2. Compute acceleration from gravity (and optionally thrust)
-            double[] acceleration = computeGravity(position, time); // this is key
+            double[] acceleration = computeGravity(position, time);
 
             derivative[3] = acceleration[0];
             derivative[4] = acceleration[1];
@@ -89,6 +90,12 @@ public class SolarSystem {
 
     }
 
+    /**
+     * This method is called to simulate a rocket launch
+     * 
+     * @param impulses Rocket thrusts and other external impulses
+     * @return the trajectory of the rocket containin all states
+     */
     public static Trajectory simulateMission(List<Impulse> impulses) {
 
         Trajectory trajectory = new Trajectory();
