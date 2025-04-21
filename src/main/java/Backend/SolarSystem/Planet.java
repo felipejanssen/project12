@@ -25,11 +25,9 @@ public class Planet extends Group implements CelestialObject {
     private final double radius;
     private final Sphere sphere;
 
-    private static final double xScale = 1e6;
-    private static final double yScale = 1e6;
-    private static final double zScale = 1e6;
+    private static final double SCALE = 1e4;
 
-    public Planet(String name, double[] position, double[] velocity, double mass, int ringType, String texturePath) {
+    public Planet(String name, double[] position, double[] velocity, double mass, int ringType) {
         this.name = name;
         this.mass = mass;
         this.radius = SolarSystemFunctions.estimateRadiusFromMass(mass);
@@ -38,7 +36,7 @@ public class Planet extends Group implements CelestialObject {
 
         if(ringType != 0)
             setRing(ringType);
-        setTexture(texturePath);
+        setTexture(name + ".jpg");
         moveCelestialObject(position);
         addRandomTilt();
 
@@ -106,8 +104,8 @@ public class Planet extends Group implements CelestialObject {
     }
 
     public void moveCelestialObject(double[] newPosition) {
-        setTranslateX(newPosition[0] / xScale);
-        setTranslateY(newPosition[1] / yScale);
-        setTranslateZ(newPosition[2] / zScale);
+        setTranslateX(newPosition[0]/SCALE);
+        setTranslateY(newPosition[1]/SCALE);
+        setTranslateZ(newPosition[2]/SCALE);
     }
 }

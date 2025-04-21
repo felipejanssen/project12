@@ -27,7 +27,7 @@ public class SolarSystemFunctions {
                 double mass = Double.parseDouble(data[7]);
                 int ringType = Integer.parseInt(data[8]);
 
-                Planet planet = new Planet(name, position, velocity, mass, ringType, name + ".jpg");
+                Planet planet = new Planet(name, position, velocity, mass, ringType);
                 planet.setDepthTest(DepthTest.ENABLE);
 
                 SunAndPlanets.add(planet);
@@ -41,12 +41,12 @@ public class SolarSystemFunctions {
     }
 
     public static double estimateRadiusFromMass(double massKg) {
-        double density = 10000;
+        double density = 500;
         double volume = massKg / density;
         double scaledRadius = (1e-6)*Math.cbrt((3 * volume) / (4 * Math.PI));
 
         double minRadius = 1;
-        double maxRadius = 50;
+        double maxRadius = 200;
 
         return Math.max(minRadius, Math.min(scaledRadius, maxRadius));
     }

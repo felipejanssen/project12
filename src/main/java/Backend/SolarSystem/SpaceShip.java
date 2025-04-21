@@ -9,21 +9,29 @@ import javafx.scene.shape.Box;
 import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 
+/**
+ * The {@code SpaceShip} class extends {@code Group} to give it additional information needed to represent the SpaceShip in a javafx scene.
+ * <ul>
+ *     <li>contains {@code State} object</li>
+ *     <li>contains {@code Mass} value</li>
+ *     <li>contains {@code Fuel} value</li>
+ *     <li>scales for JavaFX</li>
+ * </ul>
+ */
 public class SpaceShip extends Group implements  CelestialObject {
     private State state;
-    private double weight;
+    private double mass;
     private double fuel;
 
-    private static final double xScale = 1e6;
-    private static final double yScale = 1e6;
-    private static final double zScale = 1e6;
+    private static final double SCALE = 1e4;
 
     public SpaceShip(double[] position, double[] velocity, double weight, double fuel) {
-        createRocketShip();
+        createSpaceShip();
         this.state = new State(0, position, velocity);
-        this.weight = weight;
+        this.mass = weight;
         this.fuel = fuel;
 
         moveCelestialObject(position);
@@ -33,7 +41,7 @@ public class SpaceShip extends Group implements  CelestialObject {
         return this.state;
     }
     public double getMass() {
-        return this.weight;
+        return this.mass;
     }
     public double getFuel() {
         return this.fuel;
@@ -43,13 +51,13 @@ public class SpaceShip extends Group implements  CelestialObject {
         this.state = state;
     }
     public void setMass(double weight) {
-        this.weight = weight;
+        this.mass = weight;
     }
     public void setFuel(double fuel) {
         this.fuel = fuel;
     }
 
-    private void createRocketShip() {
+    private void createSpaceShip() {
         // create colours
         PhongMaterial bodyMaterial = new PhongMaterial();
         bodyMaterial.setDiffuseColor(Color.SILVER);
@@ -58,7 +66,7 @@ public class SpaceShip extends Group implements  CelestialObject {
         noseMaterial.setDiffuseColor(Color.RED);
 
         PhongMaterial windowMaterial = new PhongMaterial();
-        windowMaterial.setDiffuseColor(Color.SKYBLUE);
+        windowMaterial.setDiffuseColor(new Color(0.4, 0.8, 1.0, 0.5));
 
         PhongMaterial finMaterial = new PhongMaterial();
         finMaterial.setDiffuseColor(Color.RED);
@@ -82,7 +90,7 @@ public class SpaceShip extends Group implements  CelestialObject {
         Sphere window = new Sphere(2);
         window.setMaterial(windowMaterial);
         window.getTransforms().addAll(
-                new Translate(0, -2, 4)
+                new Translate(0, -2, -4)
         );
 
         Box fin1 = new Box(0.5, 10, 4);
@@ -121,11 +129,12 @@ public class SpaceShip extends Group implements  CelestialObject {
         );
 
         getChildren().addAll(mainBody, noseCone, window, fin1, fin2, fin3, fin4, rocketFlames);
+        getTransforms().add(new Scale(0.2, 0.2, 0.2));
     }
 
     public void moveCelestialObject(double[] newPosition) {
-        setTranslateX(newPosition[0] / xScale);
-        setTranslateY(newPosition[1] / yScale);
-        setTranslateZ(newPosition[2] / zScale);
+        setTranslateX(newPosition[0]/SCALE);
+        setTranslateY(newPosition[1]/SCALE);
+        setTranslateZ(newPosition[2]/SCALE);
     }
 }

@@ -14,7 +14,7 @@ public class SolarSystem {
     // Planets
     @SuppressWarnings("unused")
     private static final Planet Earth = new Planet("Earth", new double[] { 420, 420, 420 },
-            new double[] { 69, 69, 69 }, 69420, 0, null);
+            new double[] { 69, 69, 69 }, 69420, 0);
 
     // time parameters & step size
     private static final double t0 = 0;
