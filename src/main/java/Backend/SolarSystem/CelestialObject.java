@@ -3,6 +3,7 @@ package Backend.SolarSystem;
 import Backend.Physics.State;
 
 public interface CelestialObject {
+    String getName();
     double getMass();
     State getState();
 

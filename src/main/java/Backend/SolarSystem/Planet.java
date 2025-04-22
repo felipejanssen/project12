@@ -25,7 +25,7 @@ public class Planet extends Group implements CelestialObject {
     private final double radius;
     private final Sphere sphere;
 
-    private static final double SCALE = 1e4;
+    private static final double SCALE = 1e6;
 
     public Planet(String name, double[] position, double[] velocity, double mass, int ringType) {
         this.name = name;
@@ -105,7 +105,7 @@ public class Planet extends Group implements CelestialObject {
 
     public void moveCelestialObject(double[] newPosition) {
         setTranslateX(newPosition[0]/SCALE);
-        setTranslateY(newPosition[1]/SCALE);
-        setTranslateZ(newPosition[2]/SCALE);
+        setTranslateY(newPosition[2]/SCALE);
+        setTranslateZ(newPosition[1]/SCALE);
     }
 }

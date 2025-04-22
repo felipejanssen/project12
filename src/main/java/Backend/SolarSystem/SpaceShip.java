@@ -23,20 +23,25 @@ import javafx.scene.transform.Translate;
  */
 public class SpaceShip extends Group implements  CelestialObject {
     private State state;
+    private final String name;
     private double mass;
     private double fuel;
 
-    private static final double SCALE = 1e4;
+    private static final double SCALE = 1e6;
 
     public SpaceShip(String spaceShipName, double[] position, double[] velocity, double weight, double fuel) {
         createSpaceShip(spaceShipName);
+        this.name = spaceShipName;
         this.state = new State(0, position, velocity);
         this.mass = weight;
         this.fuel = fuel;
 
         moveCelestialObject(position);
     }
-    
+
+    public String getName() {
+        return this.name;
+    }
     public State getState() {
         return this.state;
     }
