@@ -11,11 +11,11 @@ public class SolarSystemFunctions {
         ArrayList<Planet> SunAndPlanets = new ArrayList<>();
         try {
             InputStream is = SolarSystemFunctions.class.getClassLoader().getResourceAsStream(PlanetarySystemPath);
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
             if (is == null) {
                 throw new RuntimeException("File not found: " + PlanetarySystemPath);
             }
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
             br.readLine();
             String line;
             while ((line = br.readLine()) != null) {
@@ -46,7 +46,7 @@ public class SolarSystemFunctions {
         double scaledRadius = (1e-6)*Math.cbrt((3 * volume) / (4 * Math.PI));
 
         double minRadius = 1;
-        double maxRadius = 200;
+        double maxRadius = 50;
 
         return Math.max(minRadius, Math.min(scaledRadius, maxRadius));
     }

@@ -28,8 +28,8 @@ public class SpaceShip extends Group implements  CelestialObject {
 
     private static final double SCALE = 1e4;
 
-    public SpaceShip(double[] position, double[] velocity, double weight, double fuel) {
-        createSpaceShip();
+    public SpaceShip(String spaceShipName, double[] position, double[] velocity, double weight, double fuel) {
+        createSpaceShip(spaceShipName);
         this.state = new State(0, position, velocity);
         this.mass = weight;
         this.fuel = fuel;
@@ -57,79 +57,81 @@ public class SpaceShip extends Group implements  CelestialObject {
         this.fuel = fuel;
     }
 
-    private void createSpaceShip() {
-        // create colours
-        PhongMaterial bodyMaterial = new PhongMaterial();
-        bodyMaterial.setDiffuseColor(Color.SILVER);
+    private void createSpaceShip(String spaceShipName) {
+        if (spaceShipName.equals("RocketShip")) {
+            // create colours
+            PhongMaterial bodyMaterial = new PhongMaterial();
+            bodyMaterial.setDiffuseColor(Color.SILVER);
 
-        PhongMaterial noseMaterial = new PhongMaterial();
-        noseMaterial.setDiffuseColor(Color.RED);
+            PhongMaterial noseMaterial = new PhongMaterial();
+            noseMaterial.setDiffuseColor(Color.RED);
 
-        PhongMaterial windowMaterial = new PhongMaterial();
-        windowMaterial.setDiffuseColor(new Color(0.4, 0.8, 1.0, 0.5));
+            PhongMaterial windowMaterial = new PhongMaterial();
+            windowMaterial.setDiffuseColor(new Color(0.4, 0.8, 1.0, 0.5));
 
-        PhongMaterial finMaterial = new PhongMaterial();
-        finMaterial.setDiffuseColor(Color.RED);
+            PhongMaterial finMaterial = new PhongMaterial();
+            finMaterial.setDiffuseColor(Color.RED);
 
-        PhongMaterial rocketFlamesMaterial = new PhongMaterial();
-        rocketFlamesMaterial.setDiffuseColor(new Color(1.0, 0.5, 0.0, 0.5));
+            PhongMaterial rocketFlamesMaterial = new PhongMaterial();
+            rocketFlamesMaterial.setDiffuseColor(new Color(1.0, 0.5, 0.0, 0.5));
 
-        // create shapes
-        Cylinder mainBody = new Cylinder(4, 20);
-        mainBody.setMaterial(bodyMaterial);
-        mainBody.getTransforms().addAll(
-                new Translate(0, 2, 0)
-        );
+            // create shapes
+            Cylinder mainBody = new Cylinder(4, 20);
+            mainBody.setMaterial(bodyMaterial);
+            mainBody.getTransforms().addAll(
+                    new Translate(0, 2, 0)
+            );
 
-        Cone noseCone = new Cone(4,1,4);
-        noseCone.setMaterial(noseMaterial);
-        noseCone.getTransforms().addAll(
-                new Translate(0, -10, 0)
-        );
+            Cone noseCone = new Cone(4, 1, 4);
+            noseCone.setMaterial(noseMaterial);
+            noseCone.getTransforms().addAll(
+                    new Translate(0, -10, 0)
+            );
 
-        Sphere window = new Sphere(2);
-        window.setMaterial(windowMaterial);
-        window.getTransforms().addAll(
-                new Translate(0, -2, -4)
-        );
+            Sphere window = new Sphere(2);
+            window.setMaterial(windowMaterial);
+            window.getTransforms().addAll(
+                    new Translate(0, -2, -4)
+            );
 
-        Box fin1 = new Box(0.5, 10, 4);
-        fin1.setMaterial(finMaterial);
-        fin1.getTransforms().addAll(
-                new Translate(0, 13, 4),
-                new Rotate(20, Rotate.X_AXIS)
-        );
+            Box fin1 = new Box(0.5, 10, 4);
+            fin1.setMaterial(finMaterial);
+            fin1.getTransforms().addAll(
+                    new Translate(0, 13, 4),
+                    new Rotate(20, Rotate.X_AXIS)
+            );
 
-        Box fin2 = new Box(0.5, 10, 4);
-        fin2.setMaterial(finMaterial);
-        fin2.getTransforms().addAll(
-                new Translate(0, 13, -4),
-                new Rotate(-20, Rotate.X_AXIS)
-        );
+            Box fin2 = new Box(0.5, 10, 4);
+            fin2.setMaterial(finMaterial);
+            fin2.getTransforms().addAll(
+                    new Translate(0, 13, -4),
+                    new Rotate(-20, Rotate.X_AXIS)
+            );
 
-        Box fin3 = new Box(4, 10, 0.5);
-        fin3.setMaterial(finMaterial);
-        fin3.getTransforms().addAll(
-                new Translate(4, 13, 0),
-                new Rotate(-20, Rotate.Z_AXIS)
+            Box fin3 = new Box(4, 10, 0.5);
+            fin3.setMaterial(finMaterial);
+            fin3.getTransforms().addAll(
+                    new Translate(4, 13, 0),
+                    new Rotate(-20, Rotate.Z_AXIS)
 
-        );
+            );
 
-        Box fin4 = new Box(4, 10, 0.5);
-        fin4.setMaterial(finMaterial);
-        fin4.getTransforms().addAll(
-                new Translate(-4, 13, 0),
-                new Rotate(20, Rotate.Z_AXIS)
-        );
+            Box fin4 = new Box(4, 10, 0.5);
+            fin4.setMaterial(finMaterial);
+            fin4.getTransforms().addAll(
+                    new Translate(-4, 13, 0),
+                    new Rotate(20, Rotate.Z_AXIS)
+            );
 
-        Cone rocketFlames = new Cone(0.4,2,8);
-        rocketFlames.setMaterial(rocketFlamesMaterial);
-        rocketFlames.getTransforms().addAll(
-                new Translate(0, 13, 0)
-        );
+            Cone rocketFlames = new Cone(0.4, 2, 8);
+            rocketFlames.setMaterial(rocketFlamesMaterial);
+            rocketFlames.getTransforms().addAll(
+                    new Translate(0, 13, 0)
+            );
 
-        getChildren().addAll(mainBody, noseCone, window, fin1, fin2, fin3, fin4, rocketFlames);
-        getTransforms().add(new Scale(0.2, 0.2, 0.2));
+            getChildren().addAll(mainBody, noseCone, window, fin1, fin2, fin3, fin4, rocketFlames);
+            getTransforms().add(new Scale(0.2, 0.2, 0.2));
+        }
     }
 
     public void moveCelestialObject(double[] newPosition) {
