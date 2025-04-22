@@ -7,6 +7,7 @@ import Utils.vec;
 import java.util.ArrayList;
 import java.util.function.BiFunction;
 
+
 public class Newton {
     public static State computeNextPlanetState(Planet target, ArrayList<Planet> others, double time, double h, ODEsolver solver) {
         BiFunction<Double, double[], double[]> ode = (t, state) -> {
