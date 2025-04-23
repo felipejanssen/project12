@@ -48,6 +48,7 @@ public class SolarSystemApp extends Application {
     private final Rotate rotateY = new Rotate(0, Rotate.Y_AXIS);
 
     private double[] currentFocus = new double[]{0, 0, 0};
+    private CelestialObject currentFocusObject = null;
 
     private final ArrayList<SpaceShip> availableSpaceShips = new ArrayList<>(Arrays.asList(
             new SpaceShip( "RocketShip", new double[]{-1.47E+08, -3E+07, 2.75E+04}, new double[]{0, 0, 0}, 50000, 0),
@@ -60,7 +61,7 @@ public class SolarSystemApp extends Application {
     public void start(Stage stage) {
         showMenuScene(stage);
     }
-    private void startAnimation(ArrayList<Planet> planets, SpaceShip spaceShip, SubScene subScene) {
+    private void startAnimation(ArrayList<Planet> planets, SpaceShip spaceShip, SubScene subScene, PerspectiveCamera camera) {
         ArrayList<CelestialObject> allBodies = new ArrayList<>(planets);
 
         SolarSystemEngine engine = new SolarSystemEngine(allBodies);
@@ -82,6 +83,7 @@ public class SolarSystemApp extends Application {
                         ((Group)subScene.getRoot()).getChildren().add(trailSphere);
                         body.moveCelestialObject(pos);
                     }
+                    changeCameraPos(currentFocusObject, camera);
                 }
                 lastUpdate = now;
             }
@@ -259,7 +261,7 @@ public class SolarSystemApp extends Application {
         stage.setTitle("Solar System Explorer - " + spaceShipNames[spaceShipIndex]);
         stage.centerOnScreen();
         stage.show();
-        startAnimation(planetList, selectedShip, subScene);
+        startAnimation(planetList, selectedShip, subScene, camera);
     }
     private SubScene createSubScene(ArrayList<Planet> PlanetList, SpaceShip spaceShip) {
         Group SolarSystem = new Group();
@@ -316,12 +318,11 @@ public class SolarSystemApp extends Application {
     }
     private void changeCameraPos(CelestialObject celObj, PerspectiveCamera camera) {
         currentFocus = celObj.getState().getPos();
+        currentFocusObject = celObj;
+        remainFocus();
         camera.setTranslateX(currentFocus[0]/SCALE);
         camera.setTranslateY(currentFocus[2]/SCALE);
         camera.setTranslateZ(currentFocus[1]/SCALE + cameraDistance);
-
-        rotateX.setAngle(0);
-        rotateY.setAngle(0);
     }
     private void initZoomControl(Scene scene, PerspectiveCamera camera) {
         scene.setOnScroll(event -> {
@@ -349,13 +350,16 @@ public class SolarSystemApp extends Application {
             rotateX.setAngle(angleX);
             rotateY.setAngle(angleY);
 
-            rotateX.setPivotX(currentFocus[0]/SCALE);
-            rotateX.setPivotY(currentFocus[2]/SCALE);
-            rotateX.setPivotZ(currentFocus[1]/SCALE);
-
-            rotateY.setPivotX(currentFocus[0]/SCALE);
-            rotateY.setPivotY(currentFocus[2]/SCALE);
-            rotateY.setPivotZ(currentFocus[1]/SCALE);
+           remainFocus();
         });
+    }
+    public void remainFocus() {
+        rotateX.setPivotX(currentFocus[0]/SCALE);
+        rotateX.setPivotY(currentFocus[2]/SCALE);
+        rotateX.setPivotZ(currentFocus[1]/SCALE);
+
+        rotateY.setPivotX(currentFocus[0]/SCALE);
+        rotateY.setPivotY(currentFocus[2]/SCALE);
+        rotateY.setPivotZ(currentFocus[1]/SCALE);
     }
 }

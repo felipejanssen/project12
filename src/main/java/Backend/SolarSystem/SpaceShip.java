@@ -141,7 +141,7 @@ public class SpaceShip extends Group implements  CelestialObject {
 
     public void moveCelestialObject(double[] newPosition) {
         setTranslateX(newPosition[0]/SCALE);
-        setTranslateY(newPosition[1]/SCALE);
-        setTranslateZ(newPosition[2]/SCALE);
+        setTranslateY(newPosition[2]/SCALE);
+        setTranslateZ(newPosition[1]/SCALE);
     }
 }
