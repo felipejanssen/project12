@@ -5,6 +5,7 @@ import Backend.SolarSystem.CelestialObject;
 import Backend.SolarSystem.Planet;
 import Backend.SolarSystem.SpaceShip;
 import Backend.SolarSystem.SolarSystemFunctions;
+import Utils.vec;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.*;
@@ -68,26 +69,51 @@ public class SolarSystemApp extends Application {
         final double timestep = 3600*3; // TIMES 3 TO SPEED UP VISUALISATION
 
         animationTimer = new AnimationTimer() {
-            private long lastUpdate = 0;
+            // ── physics state ──
+            private double simTime    = 0.0;
+            private final double physicsDt = 600.0;  // 10 minutes per RK4 step
+            private final int    substeps  = 100;    // 100 × 10 min = ~17 h per frame
+
             @Override
             public void handle(long now) {
-                if (lastUpdate > 0) {
-                    engine.evolve(0, timestep);
-
-                    for (CelestialObject body : allBodies) {
-                        double[] pos = body.getState().getPos();
-                        Sphere trailSphere = new Sphere(0.3);
-                        trailSphere.setTranslateX(pos[0] / SCALE);
-                        trailSphere.setTranslateY(pos[2] / SCALE);
-                        trailSphere.setTranslateZ(pos[1] / SCALE);
-                        ((Group)subScene.getRoot()).getChildren().add(trailSphere);
-                        body.moveCelestialObject(pos);
-                    }
-                    changeCameraPos(currentFocusObject, camera);
+                // 1) advance N small physics steps
+                for (int i = 0; i < substeps; i++) {
+                    engine.evolve(simTime, physicsDt);
+                    simTime += physicsDt;
                 }
-                lastUpdate = now;
+
+                // 2) get Sun’s position for rendering anchor
+                double[] sunPos = allBodies.get(0).getState().getPos();
+                Group root3D = (Group) subScene.getRoot();
+
+                // 3) draw each body and optional trail
+                for (CelestialObject body : allBodies) {
+                    // compute Sun-relative coordinates
+                    double[] relPos = vec.substract(body.getState().getPos(), sunPos);
+
+                    double[] vel = body.getState().getVel();
+                    System.out.printf("%-10s velocity: (%.3f, %.3f, %.3f) km/s%n",
+                            body.getName(), vel[0], vel[1], vel[2]);
+
+
+                    // every 3 steps (≈30 min) drop a trail dot
+                    if (((int)(simTime / physicsDt) % 3) == 0) {
+                        Sphere trail = new Sphere(0.3);
+                        trail.setTranslateX(relPos[0] / SCALE);
+                        trail.setTranslateY(relPos[2] / SCALE);
+                        trail.setTranslateZ(relPos[1] / SCALE);
+                        root3D.getChildren().add(trail);
+                    }
+
+                    // move the visual node
+                    body.moveCelestialObject(relPos);
+                }
+
+                // 4) update camera to track current focus
+                changeCameraPos(currentFocusObject, camera);
             }
         };
+
     }
 
     private void showMenuScene(Stage stage) {

@@ -60,17 +60,17 @@ public abstract class vec {
         return result;
     }
 
-    public static double[] normalize(double[] vec) {
-        double sum = 0;
-        double[] nvec = new double[vec.length];
-        for (int i = 0; i < vec.length; i++) {
-            sum += vec[i];
+    public static double[] normalize(double[] v) {
+        double mag = magnitude(v);
+        if (mag == 0) {
+            // avoid division by zero; return zero‐vector or throw
+            return new double[v.length];
         }
-
-        for (int i = 0; i < vec.length; i++) {
-            nvec[i] = vec[i] / sum;
+        double[] result = new double[v.length];
+        for (int i = 0; i < v.length; i++) {
+            result[i] = v[i] / mag;
         }
-        return nvec;
+        return result;
     }
 
     public static double magnitude(double[] vec) {
