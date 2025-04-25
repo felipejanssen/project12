@@ -1,14 +1,16 @@
 package Backend.SolarSystem;
 
 import javafx.scene.DepthTest;
+import javafx.scene.transform.Scale;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class SolarSystemFunctions {
-    public static ArrayList<Planet> GetAllPlanetsPlanetarySystem(String PlanetarySystemPath) {
-        ArrayList<Planet> SunAndPlanets = new ArrayList<>();
+    public static ArrayList<CelestialObject> GetAllPlanetsPlanetarySystem(String PlanetarySystemPath) {
+        ArrayList<CelestialObject> SunAndPlanets = new ArrayList<>();
         try {
             InputStream is = SolarSystemFunctions.class.getClassLoader().getResourceAsStream(PlanetarySystemPath);
             if (is == null) {
@@ -29,6 +31,7 @@ public class SolarSystemFunctions {
 
                 Planet planet = new Planet(name, position, velocity, mass, ringType);
                 planet.setDepthTest(DepthTest.ENABLE);
+                planet.getTransforms().add(new Scale(0.2, 0.2, 0.2));
 
                 SunAndPlanets.add(planet);
             }
@@ -41,11 +44,11 @@ public class SolarSystemFunctions {
     }
 
     public static double estimateRadiusFromMass(double massKg) {
-        double density = 500;
+        double density = 1000;
         double volume = massKg / density;
         double scaledRadius = (1e-6)*Math.cbrt((3 * volume) / (4 * Math.PI));
 
-        double minRadius = 1;
+        double minRadius = 5;
         double maxRadius = 50;
 
         return Math.max(minRadius, Math.min(scaledRadius, maxRadius));

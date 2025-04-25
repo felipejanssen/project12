@@ -22,15 +22,18 @@ import javafx.geometry.Pos;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class SolarSystemApp extends Application {
     private final static int WIDTH = 1600;
     private final static int HEIGHT = 1000;
 
-    private static final double SCALE = 1e6;
-    private final static String csvpath = "SolarSystemValues.csv";
+    private double SCALE = 1e6;
+    private double animationSpeed = 50;
 
     private AnimationTimer animationTimer;
+    private final static String csvpath = "SolarSystemValues.csv";
     private final String basicButtonStyle =
             "-fx-text-fill: white;" +
             "-fx-font-weight: bold; " +
@@ -39,6 +42,11 @@ public class SolarSystemApp extends Application {
             "-fx-border-color: #3498db; " +
             "-fx-border-width: 1px; " +
             "-fx-border-radius: 5px; ";
+    private final String basicTextStyle =
+            "-fx-text-fill: #90caf9; " +
+            "-fx-font-size: 14px; " +
+            "-fx-font-weight: bold; " +
+            "-fx-padding: 10px; ";
     private double cameraDistance = -2000;
 
     private double anchorX, anchorY;
@@ -51,6 +59,9 @@ public class SolarSystemApp extends Application {
     private double[] currentFocus = new double[]{0, 0, 0};
     private CelestialObject currentFocusObject = null;
 
+    private final int trialSphereCap = 1000;
+    private final Queue<Sphere> trailSpheres = new LinkedList<>();
+
     private final ArrayList<SpaceShip> availableSpaceShips = new ArrayList<>(Arrays.asList(
             new SpaceShip( "RocketShip", new double[]{-1.47E+08, -3E+07, 2.75E+04}, new double[]{0, 0, 0}, 50000, 0),
             new SpaceShip("RocketShip", new double[]{-1.47E+08, -3E+07, 2.75E+04}, new double[]{0, 0, 0}, 50000, 0)
@@ -62,39 +73,31 @@ public class SolarSystemApp extends Application {
     public void start(Stage stage) {
         showMenuScene(stage);
     }
-    private void startAnimation(ArrayList<Planet> planets, SpaceShip spaceShip, SubScene subScene, PerspectiveCamera camera) {
+
+    private void startAnimation(ArrayList<CelestialObject> planets, SpaceShip spaceShip, SubScene subScene, PerspectiveCamera camera) {
         ArrayList<CelestialObject> allBodies = new ArrayList<>(planets);
 
         SolarSystemEngine engine = new SolarSystemEngine(allBodies);
-        final double timestep = 3600*3; // TIMES 3 TO SPEED UP VISUALISATION
 
         animationTimer = new AnimationTimer() {
             // ── physics state ──
             private double simTime    = 0.0;
             private final double physicsDt = 600.0;  // 10 minutes per RK4 step
-            private final int    substeps  = 100;    // 100 × 10 min = ~17 h per frame
 
             @Override
             public void handle(long now) {
+                Group root3D = (Group) subScene.getRoot();
+
                 // 1) advance N small physics steps
-                for (int i = 0; i < substeps; i++) {
+                for (int i = 0; i < animationSpeed; i++) {
                     engine.evolve(simTime, physicsDt);
                     simTime += physicsDt;
                 }
 
-                // 2) get Sun’s position for rendering anchor
-                double[] sunPos = allBodies.get(0).getState().getPos();
-                Group root3D = (Group) subScene.getRoot();
-
-                // 3) draw each body and optional trail
+                // 2) draw each body and optional trail
                 for (CelestialObject body : allBodies) {
                     // compute Sun-relative coordinates
-                    double[] relPos = vec.substract(body.getState().getPos(), sunPos);
-
-                    double[] vel = body.getState().getVel();
-                    System.out.printf("%-10s velocity: (%.3f, %.3f, %.3f) km/s%n",
-                            body.getName(), vel[0], vel[1], vel[2]);
-
+                    double[] relPos = vec.substract(body.getState().getPos(), new double[]{0,0,0});
 
                     // every 3 steps (≈30 min) drop a trail dot
                     if (((int)(simTime / physicsDt) % 3) == 0) {
@@ -102,7 +105,14 @@ public class SolarSystemApp extends Application {
                         trail.setTranslateX(relPos[0] / SCALE);
                         trail.setTranslateY(relPos[2] / SCALE);
                         trail.setTranslateZ(relPos[1] / SCALE);
+
                         root3D.getChildren().add(trail);
+                        trailSpheres.offer(trail);
+
+                        if (trailSpheres.size() > trialSphereCap) {
+                            Sphere oldestTrail = trailSpheres.poll();
+                            root3D.getChildren().remove(oldestTrail);
+                        }
                     }
 
                     // move the visual node
@@ -113,7 +123,6 @@ public class SolarSystemApp extends Application {
                 changeCameraPos(currentFocusObject, camera);
             }
         };
-
     }
 
     private void showMenuScene(Stage stage) {
@@ -184,73 +193,26 @@ public class SolarSystemApp extends Application {
         stage.show();
     }
     private void showSolarSystemScene(Stage stage, int spaceShipIndex) {
-        ArrayList<Planet> planetList = SolarSystemFunctions.GetAllPlanetsPlanetarySystem(csvpath);
+        ArrayList<CelestialObject> planetList = SolarSystemFunctions.GetAllPlanetsPlanetarySystem(csvpath);
         SpaceShip selectedShip = availableSpaceShips.get(spaceShipIndex);
+        ArrayList<CelestialObject> bodies = new ArrayList<>(planetList); bodies.add(selectedShip);
 
         PerspectiveCamera camera = new PerspectiveCamera(true);
         camera.setFarClip(1e6);
         camera.setNearClip(0.1);
-        changeCameraPos(selectedShip, camera);
+        changeCameraPos(planetList.get(3), camera);
 
         SubScene subScene = createSubScene(planetList, selectedShip);
         subScene.setCamera(camera);
 
         VBox planetSelector = initPlanetSelector(planetList, camera);
-
         Button focusSpaceShipButton = initSpaceShipSelector(selectedShip, camera);
-        focusSpaceShipButton.setStyle(
-                basicButtonStyle +
-                "-fx-background-color: #1c608c; "
-        );
+        ToggleButton playPauseButton = initPlayPauseButton();
+        HBox scaleControl = initScaleControl(SCALE, bodies, subScene);
+        HBox speedControl = initAnimationSpeedControl(animationSpeed);
+        Button backToMenuButton = initBackToMenuButton(stage);
 
-        Button backToMenuButton = new Button("Return to Menu");
-        backToMenuButton.setOnAction(e -> {
-            animationTimer.stop();
-            showMenuScene(stage);
-        });
-
-        backToMenuButton.setStyle(
-                "-fx-background-color: #34495e; " +
-                "-fx-text-fill: white; " +
-                "-fx-font-weight: bold; " +
-                "-fx-background-radius: 5px; " +
-                "-fx-padding: 8px 12px;"
-        );
-        backToMenuButton.setAlignment(Pos.TOP_RIGHT);
-
-        ToggleButton playPauseButton = new ToggleButton("Play");
-        playPauseButton.setStyle(
-            basicButtonStyle +
-            "-fx-background-color: #3682ca; "
-        );
-        playPauseButton.setOnAction(e -> {
-            if (playPauseButton.isSelected()) {
-                playPauseButton.setText("Pause");
-                animationTimer.start();
-                playPauseButton.setStyle(
-                        basicButtonStyle +
-                        "-fx-background-color: #3682ca; "
-                );
-            } else {
-                playPauseButton.setText("Play");
-                animationTimer.stop();
-                playPauseButton.setStyle(
-                        basicButtonStyle +
-                        "-fx-background-color: #165286; "
-                );
-            }
-        });
-        Button clearTrails = new Button("Clear trails");
-        clearTrails.setStyle(
-                basicButtonStyle +
-                "-fx-background-color: #1c4e7c; "
-        );
-        clearTrails.setOnAction(e -> {
-            Group root = (Group) subScene.getRoot();
-            root.getChildren().removeIf(node -> node instanceof Sphere);
-        });
-
-        HBox leftControls = new HBox(15, planetSelector, focusSpaceShipButton, playPauseButton, clearTrails);
+        HBox leftControls = new HBox(15, planetSelector, focusSpaceShipButton, playPauseButton, scaleControl, speedControl);
         leftControls.setAlignment(Pos.CENTER_LEFT);
 
         HBox rightControls = new HBox(backToMenuButton);
@@ -258,10 +220,7 @@ public class SolarSystemApp extends Application {
 
         Label controlsTitle = new Label("Navigation Controls");
         controlsTitle.setStyle(
-                "-fx-text-fill: #90caf9; " +
-                "-fx-font-size: 14px; " +
-                "-fx-font-weight: bold; " +
-                "-fx-padding: 10px; "
+                basicTextStyle
         );
 
         BorderPane controlsPane = new BorderPane();
@@ -273,7 +232,6 @@ public class SolarSystemApp extends Application {
                 "-fx-border-color: #1a237e; " +
                 "-fx-border-width: 0 0 1px 0;"
         );
-
 
         BorderPane root = new BorderPane();
         root.setCenter(subScene);
@@ -289,10 +247,10 @@ public class SolarSystemApp extends Application {
         stage.show();
         startAnimation(planetList, selectedShip, subScene, camera);
     }
-    private SubScene createSubScene(ArrayList<Planet> PlanetList, SpaceShip spaceShip) {
+    private SubScene createSubScene(ArrayList<CelestialObject> planetList, SpaceShip spaceShip) {
         Group SolarSystem = new Group();
-        for (Planet p : PlanetList) {
-            SolarSystem.getChildren().add(p);
+        for (CelestialObject p : planetList) {
+            SolarSystem.getChildren().add((Planet) p);
         }
         SolarSystem.getTransforms().addAll(rotateX, rotateY);
         SolarSystem.getChildren().add(spaceShip);
@@ -302,9 +260,11 @@ public class SolarSystemApp extends Application {
         return subScene;
     }
 
-    private VBox initPlanetSelector(ArrayList<Planet> planetList, PerspectiveCamera camera) {
+    private VBox initPlanetSelector(ArrayList<CelestialObject> planetList, PerspectiveCamera camera) {
         ComboBox<Planet> planetSelector = new ComboBox<>();
-        planetSelector.getItems().addAll(planetList);
+        for (CelestialObject p : planetList) {
+            planetSelector.getItems().add((Planet) p);
+        }
         planetSelector.setPromptText("Select a planet");
         planetSelector.setStyle(
                 basicButtonStyle +
@@ -325,7 +285,7 @@ public class SolarSystemApp extends Application {
         });
 
         planetSelector.setOnAction(e -> {
-            Planet selected = planetSelector.getSelectionModel().getSelectedItem();
+            CelestialObject selected = planetSelector.getSelectionModel().getSelectedItem();
             if (selected != null) {
                 changeCameraPos(selected, camera);
             }
@@ -340,25 +300,106 @@ public class SolarSystemApp extends Application {
         focusSpaceShipButton.setOnAction(e -> {
             changeCameraPos(spaceShip, camera);
         });
+        focusSpaceShipButton.setStyle(
+                basicButtonStyle +
+                "-fx-background-color: #1c608c; "
+        );
         return focusSpaceShipButton;
     }
-    private void changeCameraPos(CelestialObject celObj, PerspectiveCamera camera) {
-        currentFocus = celObj.getState().getPos();
-        currentFocusObject = celObj;
-        remainFocus();
-        camera.setTranslateX(currentFocus[0]/SCALE);
-        camera.setTranslateY(currentFocus[2]/SCALE);
-        camera.setTranslateZ(currentFocus[1]/SCALE + cameraDistance);
+    private ToggleButton initPlayPauseButton() {
+        ToggleButton playPauseButton = new ToggleButton("Play");
+        playPauseButton.setPrefWidth(80);
+        playPauseButton.setStyle(
+                basicButtonStyle +
+                "-fx-background-color: #3682ca; "
+        );
+        playPauseButton.setOnAction(e -> {
+            if (playPauseButton.isSelected()) {
+                playPauseButton.setText("Pause");
+                animationTimer.start();
+                playPauseButton.setStyle(
+                        basicButtonStyle +
+                                "-fx-background-color: #165286; "
+                );
+            } else {
+                playPauseButton.setText("Play");
+                animationTimer.stop();
+                playPauseButton.setStyle(
+                        basicButtonStyle +
+                                "-fx-background-color: #3682ca; "
+                );
+            }
+        });
+        return playPauseButton;
     }
+    private HBox initScaleControl(double initialScale, ArrayList<CelestialObject> bodies, SubScene subScene) {
+        Label scaleLabel = new Label("Scale: ");
+        scaleLabel.setStyle(
+                basicTextStyle
+        );
+        Slider scaleSlider = new Slider(1e4, 1e6, initialScale);
+        scaleSlider.setPrefWidth(200);
+        scaleSlider.setStyle("-fx-control-inner-background: #263547;");
+
+        scaleSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            setScale(newVal.doubleValue(), bodies, subScene);
+        });
+
+        HBox scaleControl = new HBox(10, scaleLabel, scaleSlider);
+        scaleControl.setAlignment(Pos.CENTER);
+
+        return scaleControl;
+    }
+    private HBox initAnimationSpeedControl(double initialSpeed) {
+        Label speedLabel = new Label("Animation Speed: ");
+        speedLabel.setStyle(
+                basicTextStyle
+        );
+        Slider speedSlider = new Slider(1, 100, initialSpeed);
+        speedSlider.setPrefWidth(200);
+        speedSlider.setStyle("-fx-control-inner-background: #263547;");
+
+        speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            animationSpeed = newVal.doubleValue();
+        });
+
+        HBox speedControl = new HBox(10, speedLabel, speedSlider);
+        speedControl.setAlignment(Pos.CENTER);
+
+        return speedControl;
+    }
+    private Button initBackToMenuButton(Stage stage) {
+        Button backToMenuButton = new Button("Return to Menu");
+        backToMenuButton.setOnAction(e -> {
+            animationTimer.stop();
+            showMenuScene(stage);
+        });
+
+        backToMenuButton.setStyle(
+                "-fx-background-color: #34495e; " +
+                "-fx-text-fill: white; " +
+                "-fx-font-weight: bold; " +
+                "-fx-background-radius: 5px; " +
+                "-fx-padding: 8px 12px;"
+        );
+        backToMenuButton.setAlignment(Pos.TOP_RIGHT);
+        return backToMenuButton;
+    }
+
     private void initZoomControl(Scene scene, PerspectiveCamera camera) {
         scene.setOnScroll(event -> {
             double delta = event.getDeltaY();
-            double zoomSpeed = 4.0;
-            cameraDistance += delta * zoomSpeed;
-            cameraDistance = Math.max(-20000, Math.min(-100, cameraDistance));
-            camera.setTranslateX(currentFocus[0]/SCALE);
-            camera.setTranslateY(currentFocus[2]/SCALE);
-            camera.setTranslateZ(currentFocus[1]/SCALE + cameraDistance);
+            double zoomFactor = 1.3;
+            if (delta < 0) {
+                cameraDistance *= zoomFactor;
+            } else {
+                cameraDistance /= zoomFactor;
+            }
+            cameraDistance = Math.max(-20000, Math.min(-10, cameraDistance));
+
+            camera.setTranslateX(currentFocus[0] / SCALE);
+            camera.setTranslateY(currentFocus[2] / SCALE);
+            camera.setTranslateZ(currentFocus[1] / SCALE + cameraDistance);
         });
     }
     private void initMouseControl(Scene scene) {
@@ -379,7 +420,15 @@ public class SolarSystemApp extends Application {
            remainFocus();
         });
     }
-    public void remainFocus() {
+    private void changeCameraPos(CelestialObject celObj, PerspectiveCamera camera) {
+        currentFocus = celObj.getState().getPos();
+        currentFocusObject = celObj;
+        remainFocus();
+        camera.setTranslateX(currentFocus[0]/SCALE);
+        camera.setTranslateY(currentFocus[2]/SCALE);
+        camera.setTranslateZ(currentFocus[1]/SCALE + cameraDistance);
+    }
+    private void remainFocus() {
         rotateX.setPivotX(currentFocus[0]/SCALE);
         rotateX.setPivotY(currentFocus[2]/SCALE);
         rotateX.setPivotZ(currentFocus[1]/SCALE);
@@ -387,5 +436,18 @@ public class SolarSystemApp extends Application {
         rotateY.setPivotX(currentFocus[0]/SCALE);
         rotateY.setPivotY(currentFocus[2]/SCALE);
         rotateY.setPivotZ(currentFocus[1]/SCALE);
+    }
+    private void setScale(double scale, ArrayList<CelestialObject> bodies, SubScene subScene) {
+        this.SCALE = scale;
+        for (CelestialObject obj : bodies) {
+            obj.setScale(scale);
+            double[] pos = obj.getState().getPos();
+            obj.moveCelestialObject(pos);
+        }
+        clearTrails(subScene);
+    }
+    private void clearTrails(SubScene subScene) {
+        Group root = (Group) subScene.getRoot();
+        root.getChildren().removeIf(node -> node instanceof Sphere);
     }
 }

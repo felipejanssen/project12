@@ -1,8 +1,5 @@
 package Backend.SolarSystem;
 
-import Backend.SolarSystem.SolarSystemFunctions;
-import Backend.SolarSystem.Planet;
-import Backend.SolarSystem.CelestialObject;
 import Backend.Physics.SolarSystemEngine;
 import Backend.Physics.State;
 
@@ -13,7 +10,7 @@ public class SolarSystemSimulator {
     public static void main(String[] args) {
 
         // Load planets from CSV
-        ArrayList<Planet> solarSystemPlanets = SolarSystemFunctions
+        ArrayList<CelestialObject> solarSystemPlanets = SolarSystemFunctions
                 .GetAllPlanetsPlanetarySystem("SolarSystemValues.csv");
 
         // Convert to generic CelestialObjects (could include spacecraft later!)
@@ -38,7 +35,7 @@ public class SolarSystemSimulator {
                     State s = obj.getState();
                     double[] pos = s.getPos();
                     System.out.printf("%-10s: (%.2f, %.2f, %.2f)%n",
-                            ((Planet)obj).getName(), pos[0], pos[1], pos[2]);
+                            obj.getName(), pos[0], pos[1], pos[2]);
                 }
                 System.out.println();
             }

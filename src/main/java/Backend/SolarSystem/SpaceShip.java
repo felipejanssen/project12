@@ -27,7 +27,7 @@ public class SpaceShip extends Group implements  CelestialObject {
     private double mass;
     private double fuel;
 
-    private static final double SCALE = 1e6;
+    public double SCALE = 1e6;
 
     public SpaceShip(String spaceShipName, double[] position, double[] velocity, double weight, double fuel) {
         createSpaceShip(spaceShipName);
@@ -143,5 +143,8 @@ public class SpaceShip extends Group implements  CelestialObject {
         setTranslateX(newPosition[0]/SCALE);
         setTranslateY(newPosition[2]/SCALE);
         setTranslateZ(newPosition[1]/SCALE);
+    }
+    public void setScale(double scale) {
+        this.SCALE = scale;
     }
 }

@@ -9,6 +9,7 @@ public interface CelestialObject {
 
     void setState(State state);
     void setMass(double mass);
+    void setScale(double scale);
 
     void moveCelestialObject(double[] position);
 }
