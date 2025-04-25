@@ -198,7 +198,7 @@ public class SolarSystemApp extends Application {
         ArrayList<CelestialObject> bodies = new ArrayList<>(planetList); bodies.add(selectedShip);
 
         PerspectiveCamera camera = new PerspectiveCamera(true);
-        camera.setFarClip(1e6);
+        camera.setFarClip(1e8);
         camera.setNearClip(0.1);
         changeCameraPos(planetList.get(3), camera);
 
@@ -208,7 +208,7 @@ public class SolarSystemApp extends Application {
         VBox planetSelector = initPlanetSelector(planetList, camera);
         Button focusSpaceShipButton = initSpaceShipSelector(selectedShip, camera);
         ToggleButton playPauseButton = initPlayPauseButton();
-        HBox scaleControl = initScaleControl(SCALE, bodies, subScene);
+        HBox scaleControl = initScaleControl(SCALE, bodies, subScene, camera);
         HBox speedControl = initAnimationSpeedControl(animationSpeed);
         Button backToMenuButton = initBackToMenuButton(stage);
 
@@ -319,20 +319,20 @@ public class SolarSystemApp extends Application {
                 animationTimer.start();
                 playPauseButton.setStyle(
                         basicButtonStyle +
-                                "-fx-background-color: #165286; "
+                        "-fx-background-color: #165286; "
                 );
             } else {
                 playPauseButton.setText("Play");
                 animationTimer.stop();
                 playPauseButton.setStyle(
                         basicButtonStyle +
-                                "-fx-background-color: #3682ca; "
+                        "-fx-background-color: #3682ca; "
                 );
             }
         });
         return playPauseButton;
     }
-    private HBox initScaleControl(double initialScale, ArrayList<CelestialObject> bodies, SubScene subScene) {
+    private HBox initScaleControl(double initialScale, ArrayList<CelestialObject> bodies, SubScene subScene, PerspectiveCamera camera) {
         Label scaleLabel = new Label("Scale: ");
         scaleLabel.setStyle(
                 basicTextStyle
@@ -343,6 +343,7 @@ public class SolarSystemApp extends Application {
 
         scaleSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             setScale(newVal.doubleValue(), bodies, subScene);
+            changeCameraPos(currentFocusObject, camera);
         });
 
         HBox scaleControl = new HBox(10, scaleLabel, scaleSlider);
