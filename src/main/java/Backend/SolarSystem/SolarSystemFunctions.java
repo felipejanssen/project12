@@ -24,8 +24,10 @@ public class SolarSystemFunctions {
                 String[] data = line.split(",");
 
                 String name = data[0];
-                double[] position = {Double.parseDouble(data[1]), Double.parseDouble(data[2]), Double.parseDouble(data[3])};
-                double[] velocity = {Double.parseDouble(data[4]), Double.parseDouble(data[5]), Double.parseDouble(data[6])};
+                double[] position = { Double.parseDouble(data[1]), Double.parseDouble(data[2]),
+                        Double.parseDouble(data[3]) };
+                double[] velocity = { Double.parseDouble(data[4]), Double.parseDouble(data[5]),
+                        Double.parseDouble(data[6]) };
                 double mass = Double.parseDouble(data[7]);
                 int ringType = Integer.parseInt(data[8]);
 
@@ -46,11 +48,22 @@ public class SolarSystemFunctions {
     public static double estimateRadiusFromMass(double massKg) {
         double density = 1000;
         double volume = massKg / density;
-        double scaledRadius = (1e-6)*Math.cbrt((3 * volume) / (4 * Math.PI));
+        double scaledRadius = (1e-6) * Math.cbrt((3 * volume) / (4 * Math.PI));
 
         double minRadius = 5;
         double maxRadius = 50;
 
         return Math.max(minRadius, Math.min(scaledRadius, maxRadius));
+    }
+
+    // TODO: set proper starting state
+    public static SpaceShip getNewShip() {
+
+        double[] pos = new double[] { -1.47E+08, -2.97E+07, 2.75E+04 };
+        double[] vel = new double[] { .0, .0, .0 };
+        double m = 50000;
+        double fuelUsed = 0;
+
+        return new SpaceShip("Nebuchadnezzar", pos, vel, m, fuelUsed);
     }
 }

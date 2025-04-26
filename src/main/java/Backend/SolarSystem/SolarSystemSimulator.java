@@ -1,47 +1,79 @@
 package Backend.SolarSystem;
 
+import Backend.Physics.Impulse;
 import Backend.Physics.SolarSystemEngine;
 import Backend.Physics.State;
+import Backend.Physics.Trajectory;
+import Utils.vec;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SolarSystemSimulator {
 
-    public static void main(String[] args) {
+    ArrayList<CelestialObject> bodies;
+    SolarSystemEngine engine;
+    SpaceShip ship;
 
-        // Simulation parameters
-        double t0 = .0;
-        double h = 3600; // 1 hour in seconds
-        double endTime = 365.25 * 24 * 3600; // simulate 1 year
+    // Simulation parameters
+    double t0 = .0;
+    double h = 3600; // 1 hour in seconds
+    double endTime = 365.25 * 24 * 3600; // simulate 1 year
 
-        printState(simulate(t0, h, endTime));
-
+    public SolarSystemSimulator() {
+        initializeSystem();
     }
 
-    public static double[] simulate(double t0, double h, double endTime) {
+    public SolarSystemSimulator(double t0, double h, double endTime) {
+        this.t0 = t0;
+        this.h = h;
+        this.endTime = endTime;
+        initializeSystem();
+    }
+
+    public void initializeSystem() {
 
         // Load planets from CSV
         ArrayList<CelestialObject> solarSystemPlanets = SolarSystemFunctions
                 .GetAllPlanetsPlanetarySystem("SolarSystemValues.csv");
 
-        // Convert to generic CelestialObjects (could include spacecraft later!)
-        ArrayList<CelestialObject> bodies = new ArrayList<>(solarSystemPlanets);
+        this.bodies = new ArrayList<>(solarSystemPlanets);
+        // Add the spaceship as the last body
+        ship = SolarSystemFunctions.getNewShip();
+        bodies.add(ship);
 
         // Create the engine
-        SolarSystemEngine engine = new SolarSystemEngine(bodies);
+        this.engine = new SolarSystemEngine(bodies);
+    }
 
+    public Trajectory simulate(List<Impulse> impulses) {
+
+        initializeSystem();
+        Trajectory shipTrajectory = new Trajectory();
         double time = t0;
+        int nextImpulseIndex = 0; // First impulse is the first in the list
 
         // Run the simulation
         while (time < endTime) {
+            State shipState = ship.getState();
+            shipTrajectory.addState(shipState);
+            if (nextImpulseIndex < impulses.size()) {
+                Impulse nextImpulse = impulses.get(nextImpulseIndex);
+                if (Math.abs(time - nextImpulse.getTime()) < h / 2.0) {
+                    double[] dir = nextImpulse.getNormalizedDir();
+                    double scale = nextImpulse.getMag() / ship.getMass();
+                    double[] deltaV = vec.multiply(dir, scale);
+                    ship.applyImpulse(deltaV);
+                    nextImpulseIndex++; // move to the next one
+                }
+            }
             engine.evolve(time, h);
             time += h;
         }
-        System.out.println("Simulation complete.");
-        return engine.getCurrentState();
+        return shipTrajectory;
     }
 
-    public static double[] simulate(double t0, double h, double endTime, boolean print) {
+    public double[] simulate(double t0, double h, double endTime, boolean print) {
 
         // Load planets from CSV
         ArrayList<CelestialObject> solarSystemPlanets = SolarSystemFunctions
@@ -49,7 +81,8 @@ public class SolarSystemSimulator {
 
         // Convert to generic CelestialObjects (could include spacecraft later!)
         ArrayList<CelestialObject> bodies = new ArrayList<>(solarSystemPlanets);
-
+        SpaceShip ship = SolarSystemFunctions.getNewShip();
+        bodies.add(ship);
         // Create the engine
         SolarSystemEngine engine = new SolarSystemEngine(bodies);
 
@@ -75,13 +108,14 @@ public class SolarSystemSimulator {
         return engine.getCurrentState();
     }
 
-    private static void printState(double[] state) {
-        if (state.length != 66) {
-            System.err.println("Invalid state length: expected 66 but got " + state.length);
+    private void printState(double[] state) {
+        if (state.length % 6 != 0) {
+            System.err.println("Invalid state length: " + state.length + " not divisible by 6");
             return;
         }
+        int nBodies = state.length / 6;
 
-        for (int i = 0; i < 11; i++) {
+        for (int i = 0; i < nBodies; i++) {
             int index = i * 6;
             double x = state[index];
             double y = state[index + 1];

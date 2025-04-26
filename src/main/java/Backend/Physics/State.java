@@ -52,6 +52,19 @@ public class State {
      * @param vel
      */
     public void addVel(double[] vel) {
+        System.out.println("Satte before: " + this);
         this.velocity = vec.add(this.velocity, vel);
+        System.out.println("State after: " + this);
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "State at time %.2f s:\n" +
+                        "  Position -> (x: %.2f km, y: %.2f km, z: %.2f km)\n" +
+                        "  Velocity -> (vx: %.2f km/s, vy: %.2f km/s, vz: %.2f km/s)",
+                time,
+                position[0], position[1], position[2],
+                velocity[0], velocity[1], velocity[2]);
     }
 }

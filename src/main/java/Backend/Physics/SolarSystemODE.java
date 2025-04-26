@@ -6,7 +6,7 @@ import Utils.vec;
 import java.util.ArrayList;
 import java.util.function.BiFunction;
 
-public class SolarSystemODE {
+public abstract class SolarSystemODE {
 
     @SuppressWarnings("unused")
     public static BiFunction<Double, double[], double[]> create(ArrayList<CelestialObject> bodies) {
@@ -32,6 +32,15 @@ public class SolarSystemODE {
                 for (int j = 0; j < n; j++) {
                     if (i == j)
                         continue;
+
+                    // SKIP spaceship-to-planet attraction
+                    boolean iIsSpaceship = bodies.get(i).isSpaceship();
+                    boolean jIsSpaceship = bodies.get(j).isSpaceship();
+
+                    if (!iIsSpaceship && jIsSpaceship) {
+                        // i is a planet or moon, j is spaceship
+                        continue;
+                    }
 
                     int jdx = j * 6;
                     double[] pos_j = { state[jdx], state[jdx + 1], state[jdx + 2] };

@@ -1,6 +1,7 @@
 package Backend.Physics;
 
 import Backend.ODE.ODEsolver;
+import Backend.SolarSystem.CelestialObject;
 import Backend.SolarSystem.Planet;
 import Utils.vec;
 
@@ -8,7 +9,8 @@ import java.util.ArrayList;
 import java.util.function.BiFunction;
 
 public class Newton {
-    public static State computeNextPlanetState(Planet target, ArrayList<Planet> others, double time, double h,
+    public static State computeNextPlanetState(CelestialObject target, ArrayList<CelestialObject> others, double time,
+            double h,
             ODEsolver solver) {
         @SuppressWarnings("unused")
         BiFunction<Double, double[], double[]> ode = (t, state) -> {
@@ -21,7 +23,7 @@ public class Newton {
             derivative[2] = vel[2];
 
             double[] totalAccel = new double[3];
-            for (Planet other : others) {
+            for (CelestialObject other : others) {
                 if (other == target)
                     continue;
                 double[] rVec = vec.substract(other.getState().getPos(), pos);
@@ -43,10 +45,11 @@ public class Newton {
         return new State(time + h, nextState);
     }
 
-    public static ArrayList<State> computeAllNextStates(ArrayList<Planet> planets, double currentTime, double h) {
+    public static ArrayList<State> computeAllNextStates(ArrayList<CelestialObject> objects, double currentTime,
+            double h) {
         ArrayList<State> nextStates = new ArrayList<>();
-        for (Planet p : planets) {
-            ArrayList<Planet> others = new ArrayList<>(planets);
+        for (CelestialObject p : objects) {
+            ArrayList<CelestialObject> others = new ArrayList<>(objects);
             nextStates.add(computeNextPlanetState(p, others, currentTime, h, null)); // solver not used, since we pass a
                                                                                      // custom one
         }

@@ -4,9 +4,11 @@ import java.util.List;
 
 import Backend.Physics.Impulse;
 import Backend.Physics.Trajectory;
-import Backend.SolarSystem.SolarSystem;
+import Backend.SolarSystem.SolarSystemSimulator;
 
 public class Optimizer {
+
+    SolarSystemSimulator simulator = new SolarSystemSimulator();
 
     private double LEARNING_RATE = 0.001;
     private double tolerance = 1e-4;
@@ -51,7 +53,7 @@ public class Optimizer {
     public double computeCost(List<Impulse> impulses) {
 
         double totalFuel = .0;
-        Trajectory path = SolarSystem.simulateMission(impulses);
+        Trajectory path = simulator.simulate(impulses);
 
         for (Impulse imp : impulses) {
             totalFuel += imp.getFuelCost(); // CI = ||I|| * 1 m/s

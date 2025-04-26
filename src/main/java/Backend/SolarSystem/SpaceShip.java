@@ -13,15 +13,16 @@ import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 
 /**
- * The {@code SpaceShip} class extends {@code Group} to give it additional information needed to represent the SpaceShip in a javafx scene.
+ * The {@code SpaceShip} class extends {@code Group} to give it additional
+ * information needed to represent the SpaceShip in a javafx scene.
  * <ul>
- *     <li>contains {@code State} object</li>
- *     <li>contains {@code Mass} value</li>
- *     <li>contains {@code Fuel} value</li>
- *     <li>scales for JavaFX</li>
+ * <li>contains {@code State} object</li>
+ * <li>contains {@code Mass} value</li>
+ * <li>contains {@code Fuel} value</li>
+ * <li>scales for JavaFX</li>
  * </ul>
  */
-public class SpaceShip extends Group implements  CelestialObject {
+public class SpaceShip extends Group implements CelestialObject {
     private State state;
     private final String name;
     private double mass;
@@ -42,22 +43,27 @@ public class SpaceShip extends Group implements  CelestialObject {
     public String getName() {
         return this.name;
     }
+
     public State getState() {
         return this.state;
     }
+
     public double getMass() {
         return this.mass;
     }
+
     public double getFuel() {
         return this.fuel;
     }
-    
+
     public void setState(State state) {
         this.state = state;
     }
+
     public void setMass(double weight) {
         this.mass = weight;
     }
+
     public void setFuel(double fuel) {
         this.fuel = fuel;
     }
@@ -84,34 +90,29 @@ public class SpaceShip extends Group implements  CelestialObject {
             Cylinder mainBody = new Cylinder(4, 20);
             mainBody.setMaterial(bodyMaterial);
             mainBody.getTransforms().addAll(
-                    new Translate(0, 2, 0)
-            );
+                    new Translate(0, 2, 0));
 
             Cone noseCone = new Cone(4, 1, 4);
             noseCone.setMaterial(noseMaterial);
             noseCone.getTransforms().addAll(
-                    new Translate(0, -10, 0)
-            );
+                    new Translate(0, -10, 0));
 
             Sphere window = new Sphere(2);
             window.setMaterial(windowMaterial);
             window.getTransforms().addAll(
-                    new Translate(0, -2, -4)
-            );
+                    new Translate(0, -2, -4));
 
             Box fin1 = new Box(0.5, 10, 4);
             fin1.setMaterial(finMaterial);
             fin1.getTransforms().addAll(
                     new Translate(0, 13, 4),
-                    new Rotate(20, Rotate.X_AXIS)
-            );
+                    new Rotate(20, Rotate.X_AXIS));
 
             Box fin2 = new Box(0.5, 10, 4);
             fin2.setMaterial(finMaterial);
             fin2.getTransforms().addAll(
                     new Translate(0, 13, -4),
-                    new Rotate(-20, Rotate.X_AXIS)
-            );
+                    new Rotate(-20, Rotate.X_AXIS));
 
             Box fin3 = new Box(4, 10, 0.5);
             fin3.setMaterial(finMaterial);
@@ -125,14 +126,12 @@ public class SpaceShip extends Group implements  CelestialObject {
             fin4.setMaterial(finMaterial);
             fin4.getTransforms().addAll(
                     new Translate(-4, 13, 0),
-                    new Rotate(20, Rotate.Z_AXIS)
-            );
+                    new Rotate(20, Rotate.Z_AXIS));
 
             Cone rocketFlames = new Cone(0.4, 2, 8);
             rocketFlames.setMaterial(rocketFlamesMaterial);
             rocketFlames.getTransforms().addAll(
-                    new Translate(0, 13, 0)
-            );
+                    new Translate(0, 13, 0));
 
             getChildren().addAll(mainBody, noseCone, window, fin1, fin2, fin3, fin4, rocketFlames);
             getTransforms().add(new Scale(0.2, 0.2, 0.2));
@@ -140,11 +139,21 @@ public class SpaceShip extends Group implements  CelestialObject {
     }
 
     public void moveCelestialObject(double[] newPosition) {
-        setTranslateX(newPosition[0]/SCALE);
-        setTranslateY(newPosition[2]/SCALE);
-        setTranslateZ(newPosition[1]/SCALE);
+        setTranslateX(newPosition[0] / SCALE);
+        setTranslateY(newPosition[2] / SCALE);
+        setTranslateZ(newPosition[1] / SCALE);
     }
+
     public void setScale(double scale) {
         this.SCALE = scale;
+    }
+
+    @Override
+    public boolean isSpaceship() {
+        return true;
+    }
+
+    public void applyImpulse(double[] vel) {
+        this.state.addVel(vel);
     }
 }
