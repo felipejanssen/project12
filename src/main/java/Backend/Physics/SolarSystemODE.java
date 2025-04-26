@@ -8,6 +8,7 @@ import java.util.function.BiFunction;
 
 public class SolarSystemODE {
 
+    @SuppressWarnings("unused")
     public static BiFunction<Double, double[], double[]> create(ArrayList<CelestialObject> bodies) {
         return (time, state) -> {
             int n = bodies.size();
@@ -29,7 +30,8 @@ public class SolarSystemODE {
                 double[] acc = new double[3];
 
                 for (int j = 0; j < n; j++) {
-                    if (i == j) continue;
+                    if (i == j)
+                        continue;
 
                     int jdx = j * 6;
                     double[] pos_j = { state[jdx], state[jdx + 1], state[jdx + 2] };
@@ -37,7 +39,8 @@ public class SolarSystemODE {
 
                     double[] r_ij = vec.substract(pos_j, pos_i);
                     double dist = vec.magnitude(r_ij);
-                    if (dist == 0) continue;
+                    if (dist == 0)
+                        continue;
 
                     double G = 6.67430e-20;
                     double scale = G * m_j / (dist * dist);

@@ -22,12 +22,17 @@ public class SolarSystemEngine {
         solver = new ODEsolver(SolarSystemODE.create(bodies));
     }
 
-    public void evolve(double time, double h) {
-        // Step forward one timestep
+    public double[] getCurrentState() {
         double[] currentStates = new double[bodies.size() * 6];
         for (int i = 0; i < bodies.size(); i++) {
             System.arraycopy(bodies.get(i).getState().getState(), 0, currentStates, i * 6, 6);
         }
+        return currentStates;
+    }
+
+    public void evolve(double time, double h) {
+        // Step forward one timestep
+        double[] currentStates = getCurrentState();
 
         double[] nextStates = solver.RK4Step(time, currentStates, h);
 
@@ -36,11 +41,11 @@ public class SolarSystemEngine {
             System.arraycopy(nextStates, i * 6, nextState, 0, 6);
             bodies.get(i).setState(new State(time + h, nextState));
         }
-        //ANCHOR THE SYSTEM TO THE SUN
+        // ANCHOR THE SYSTEM TO THE SUN
         CelestialObject sun = bodies.get(0);
         double[] sunPos = sun.getState().getPos();
         double[] sunVel = sun.getState().getVel();
-        //CHANGE SUN MOVEMENT TO ACCOMODAATE THAT MOVEMENT
+        // CHANGE SUN MOVEMENT TO ACCOMODAATE THAT MOVEMENT
         for (CelestialObject obj : bodies) {
             State old = obj.getState();
             double[] newPos = vec.substract(old.getPos(), sunPos);

@@ -7,9 +7,10 @@ import Utils.vec;
 import java.util.ArrayList;
 import java.util.function.BiFunction;
 
-
 public class Newton {
-    public static State computeNextPlanetState(Planet target, ArrayList<Planet> others, double time, double h, ODEsolver solver) {
+    public static State computeNextPlanetState(Planet target, ArrayList<Planet> others, double time, double h,
+            ODEsolver solver) {
+        @SuppressWarnings("unused")
         BiFunction<Double, double[], double[]> ode = (t, state) -> {
             double[] derivative = new double[6];
             double[] pos = new double[] { state[0], state[1], state[2] };
@@ -21,7 +22,8 @@ public class Newton {
 
             double[] totalAccel = new double[3];
             for (Planet other : others) {
-                if (other == target) continue;
+                if (other == target)
+                    continue;
                 double[] rVec = vec.substract(other.getState().getPos(), pos);
                 double dist = vec.magnitude(rVec);
                 double forceMag = (6.67430e-20 * other.getMass()) / (dist * dist);
@@ -45,7 +47,8 @@ public class Newton {
         ArrayList<State> nextStates = new ArrayList<>();
         for (Planet p : planets) {
             ArrayList<Planet> others = new ArrayList<>(planets);
-            nextStates.add(computeNextPlanetState(p, others, currentTime, h, null)); // solver not used, since we pass a custom one
+            nextStates.add(computeNextPlanetState(p, others, currentTime, h, null)); // solver not used, since we pass a
+                                                                                     // custom one
         }
         return nextStates;
     }
