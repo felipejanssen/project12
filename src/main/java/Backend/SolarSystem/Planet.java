@@ -25,7 +25,8 @@ public class Planet extends Group implements CelestialObject {
     private double mass;
     private final double radius;
     private final Sphere sphere;
-
+    private final Rotate rotation;
+    private final double spinSpeed;
     public double SCALE = 1e6;
 
     public Planet(String name, double[] position, double[] velocity, double mass, int ringType) {
@@ -34,12 +35,15 @@ public class Planet extends Group implements CelestialObject {
         this.radius = SolarSystemFunctions.estimateRadiusFromMass(mass);
         this.sphere = new Sphere(radius);
         this.state = new State(0, position, velocity);
+        this.spinSpeed = Math.random() * 0.5 + 0.1;
+        this.rotation = new Rotate(0, Rotate.Y_AXIS);
 
         if (ringType != 0)
             setRing(ringType);
         setTexture(name + ".jpg");
         moveCelestialObject(position);
         addRandomTilt();
+        getTransforms().add(rotation);
 
         getChildren().add(sphere);
     }
@@ -107,6 +111,16 @@ public class Planet extends Group implements CelestialObject {
         Rotate rotateZ = new Rotate(tiltZ, Rotate.Z_AXIS);
 
         getTransforms().addAll(rotateX, rotateY, rotateZ);
+    }
+
+    public void spinPlanet () {
+        double currentAngle = rotation.getAngle();
+
+        rotation.setAngle(currentAngle + spinSpeed);
+
+        if (rotation.getAngle() >= 360) {
+            rotation.setAngle(rotation.getAngle() % 360);
+        }
     }
 
     public void moveCelestialObject(double[] newPosition) {

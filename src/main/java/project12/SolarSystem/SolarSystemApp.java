@@ -117,6 +117,8 @@ public class SolarSystemApp extends Application {
 
                     // move the visual node
                     body.moveCelestialObject(relPos);
+
+                    ((Planet) body).spinPlanet();
                 }
 
                 // 4) update camera to track current focus
