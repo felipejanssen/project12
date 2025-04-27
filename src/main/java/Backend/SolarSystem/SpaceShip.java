@@ -1,6 +1,7 @@
 package Backend.SolarSystem;
 
 import Backend.Physics.State;
+import Utils.vec;
 import com.almasb.fxgl.scene3d.Cone;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -26,7 +27,8 @@ public class SpaceShip extends Group implements CelestialObject {
     private State state;
     private final String name;
     private double mass;
-    private double fuel;
+    private double initialFuel;
+    private double currentFuel;
 
     public double SCALE = 1e6;
 
@@ -35,7 +37,8 @@ public class SpaceShip extends Group implements CelestialObject {
         this.name = spaceShipName;
         this.state = new State(0, position, velocity);
         this.mass = weight;
-        this.fuel = fuel;
+        this.initialFuel = fuel;
+        this.currentFuel = fuel;
 
         moveCelestialObject(position);
     }
@@ -43,30 +46,42 @@ public class SpaceShip extends Group implements CelestialObject {
     public String getName() {
         return this.name;
     }
-
     public State getState() {
         return this.state;
     }
-
     public double getMass() {
         return this.mass;
     }
-
     public double getFuel() {
-        return this.fuel;
+        return this.currentFuel;
     }
 
     public void setState(State state) {
         this.state = state;
     }
-
     public void setMass(double weight) {
         this.mass = weight;
     }
-
     public void setFuel(double fuel) {
-        this.fuel = fuel;
+        this.currentFuel = fuel;
     }
+
+    public double calculateEscapeVelocity(CelestialObject celestialBody){
+        double[] bodyPos = celestialBody.getState().getPos();
+        double[] shipPos = this.getState().getPos();
+        double[] relativePos = vec.substract(bodyPos, shipPos);
+        double distance = vec.magnitude(relativePos);
+
+        //Apply the escape velocity formula: v_escape = sqrt(2*G*M/r)
+        double G = 6.67430e-11; //Universal Gravitational Constant
+        return Math.sqrt(2*G*this.getMass()/distance);
+    }
+
+    public double getFuelPercentage(){
+        if (this.getFuel() == 0){return 0;}
+        return (this.getFuel()/this.initialFuel) * 100;
+    }
+
 
     private void createSpaceShip(String spaceShipName) {
         if (spaceShipName.equals("RocketShip")) {
@@ -155,5 +170,6 @@ public class SpaceShip extends Group implements CelestialObject {
 
     public void applyImpulse(double[] vel) {
         this.state.addVel(vel);
+        // missing fuel reduction calc
     }
 }
