@@ -81,6 +81,32 @@ public class SpaceShip extends Group implements CelestialObject {
         if (this.getFuel() == 0){return 0;}
         return (this.getFuel()/this.initialFuel) * 100;
     }
+    public void consumeFuel(double fuel) {
+        this.currentFuel -= fuel;
+    }
+
+    public boolean applyImpulse(double[] direction, double magnitude) {
+        // Check if we have enough fuel
+        if (this.currentFuel <= 0) {
+            System.out.println("Out of fuel!");
+            return false;
+        }
+
+        // Normalize the direction vector
+        double[] normalizedDir = vec.normalize(direction);
+
+        // Calculate velocity change based on impulse and mass
+        double scale = magnitude / mass;
+        double[] deltaV = vec.multiply(normalizedDir, scale);
+
+        // Update velocity
+        state.addVel(deltaV);
+
+        // Consume fuel (simple model: fuel consumption proportional to impulse)
+        consumeFuel(magnitude * 0.01); // Adjust the factor as needed
+
+        return true;
+    }
 
 
     private void createSpaceShip(String spaceShipName) {

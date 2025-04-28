@@ -63,7 +63,7 @@ public class SolarSystemSimulator {
                     double[] dir = nextImpulse.getNormalizedDir();
                     double scale = nextImpulse.getMag() / ship.getMass();
                     double[] deltaV = vec.multiply(dir, scale);
-                    ship.applyImpulse(deltaV);
+                    ship.applyImpulse(dir, scale); // new applyImpulse takes direction and scale of magnitude
                     nextImpulseIndex++; // move to the next one
                 }
             }

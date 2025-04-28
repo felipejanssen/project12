@@ -1,6 +1,8 @@
 package Backend;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import Backend.Physics.Impulse;
 import Backend.Physics.Trajectory;
@@ -61,6 +63,51 @@ public class Optimizer {
         double penalty = computePenalty(path);
 
         return totalFuel + penalty;
+    }
+
+    public double hillClimbing(int maxIterations, double stepSize) {
+        double currentCost = computeCost(impulses);
+        double bestCost = currentCost;
+        List<Impulse> bestImpulses = new ArrayList<>();
+
+        for (Impulse imp : impulses) {
+            bestImpulses.add(new Impulse(imp));
+
+        }
+        Random random = new Random();
+        for (int i = 0; i < maxIterations; i++) {
+            List<Impulse> tempImpulses = new ArrayList<>();
+            for (Impulse imp : impulses) {
+                tempImpulses.add(new Impulse(imp));
+            }
+            for (Impulse imp : tempImpulses) {
+                double perturbation = (random.nextDouble() * 2 -1) * stepSize;
+                imp.changeMagBy(perturbation);
+            }
+            double  newCost = computeCost(tempImpulses);
+            if (newCost < currentCost){
+                currentCost = newCost;
+
+                for (int j = 0; j < impulses.size(); j++ ) {
+                    impulses.get(j).changeMagBy(tempImpulses.get(j).getMag() - impulses.get(j).getMag());
+
+                }
+                if (newCost < bestCost){
+                    bestCost = newCost;
+                    bestImpulses.clear();
+                    for (Impulse imp : impulses) {
+                        bestImpulses.add(new Impulse(imp));
+                    }
+                }
+            }
+            if (currentCost < bestCost) {
+                break;
+            }
+        }
+        impulses.clear();
+        impulses.addAll(bestImpulses);
+
+        return bestCost;
     }
 
     // TODO: Implement real penalty (e.g. based on distance from goal)

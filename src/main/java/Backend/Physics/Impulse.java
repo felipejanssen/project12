@@ -17,6 +17,22 @@ public class Impulse {
         this.time = t;
     }
 
+    /**
+     * Copy constructor - creates a new Impulse that is a copy of the given Impulse
+     * @param other The Impulse to copy
+     */
+    public Impulse(Impulse other) {
+        // Create a new direction array to avoid reference sharing
+        this.direction = new double[other.direction.length];
+        // Copy each element of the direction array
+        for (int i = 0; i < other.direction.length; i++) {
+            this.direction[i] = other.direction[i];
+        }
+        // Copy the magnitude and time
+        this.magnitude = other.magnitude;
+        this.time = other.time;
+    }
+
     // TODO: Implement better fuel cost estimation
     public double getFuelCost() {
         return magnitude;
