@@ -63,11 +63,11 @@ public class SolarSystemApp extends Application {
     private final Queue<Sphere> trailSpheres = new LinkedList<>();
 
     private final ArrayList<SpaceShip> availableSpaceShips = new ArrayList<>(Arrays.asList(
-            new SpaceShip( "RocketShip", new double[]{-1.47E+08, -3E+07, 2.75E+04}, new double[]{0, 0, 0}, 50000, 0),
-            new SpaceShip("RocketShip", new double[]{-1.47E+08, -3E+07, 2.75E+04}, new double[]{0, 0, 0}, 50000, 0)
+            new SpaceShip( "RocketShip", new double[]{-1.47E+08, -3.1E+07, 2.75E+04}, new double[]{0, 0, 0}, 50000, 0),
+            new SpaceShip("XWing", new double[]{-1.47E+08, -3.1E+07, 2.75E+04}, new double[]{0, 0, 0}, 50000, 0)
     ));
 
-    private final String[] spaceShipNames = {"RocketShip", "StarDestroyer"};
+    private final String[] spaceShipNames = {"RocketShip", "X-Wing"};
 
     @Override
     public void start(Stage stage) {
@@ -202,7 +202,7 @@ public class SolarSystemApp extends Application {
         PerspectiveCamera camera = new PerspectiveCamera(true);
         camera.setFarClip(1e8);
         camera.setNearClip(0.1);
-        changeCameraPos(planetList.get(3), camera);
+        changeCameraPos(selectedShip, camera);
 
         SubScene subScene = createSubScene(planetList, selectedShip);
         subScene.setCamera(camera);
