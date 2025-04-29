@@ -175,7 +175,6 @@ public class SpaceShip extends Group implements CelestialObject {
                     new Translate(0, 13, 0));
 
             getChildren().addAll(mainBody, noseCone, window, fin1, fin2, fin3, fin4, rocketFlames);
-            getTransforms().add(new Scale(0.2, 0.2, 0.2));
         } else if (spaceShipName.equals("XWing")) {
             // Create colors
             PhongMaterial bodyMaterial = new PhongMaterial();
@@ -338,8 +337,8 @@ public class SpaceShip extends Group implements CelestialObject {
                     booster1, booster2, booster3, booster4,
                     gun1, gun2, gun3, gun4,
                     laser1, laser2, laser3, laser4);
-            getTransforms().add(new Scale(0.2, 0.2, 0.2));
         }
+        getTransforms().add(new Scale(0.01, 0.01, 0.01));
     }
 
     public void moveCelestialObject(double[] newPosition) {

@@ -67,7 +67,7 @@ public class SolarSystemApp extends Application {
             new SpaceShip("XWing", new double[]{-1.47E+08, -3.1E+07, 2.75E+04}, new double[]{0, 0, 0}, 50000, 0)
     ));
 
-    private final String[] spaceShipNames = {"RocketShip", "X-Wing"};
+    private final String[] spaceShipNames = {"Rocket Ship", "X-Wing"};
 
     @Override
     public void start(Stage stage) {
@@ -398,7 +398,7 @@ public class SolarSystemApp extends Application {
             } else {
                 cameraDistance /= zoomFactor;
             }
-            cameraDistance = Math.max(-20000, Math.min(-10, cameraDistance));
+            cameraDistance = Math.max(-20000, Math.min(-2, cameraDistance));
 
             camera.setTranslateX(currentFocus[0] / SCALE);
             camera.setTranslateY(currentFocus[2] / SCALE);
