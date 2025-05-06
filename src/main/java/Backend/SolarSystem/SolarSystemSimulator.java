@@ -4,7 +4,6 @@ import Backend.Physics.Impulse;
 import Backend.Physics.SolarSystemEngine;
 import Backend.Physics.State;
 import Backend.Physics.Trajectory;
-import Utils.vec;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,20 +13,30 @@ public class SolarSystemSimulator {
     ArrayList<CelestialObject> bodies;
     SolarSystemEngine engine;
     SpaceShip ship;
+    List<Impulse> impulses;
+    int nextImpulseIndex;
 
     // Simulation parameters
     double t0 = .0;
     double h = 3600; // 1 hour in seconds
     double endTime = 365.25 * 24 * 3600; // simulate 1 year
 
+    public ArrayList<CelestialObject> getBodies() {
+        return this.bodies;
+    }
+
     public SolarSystemSimulator() {
         initializeSystem();
     }
 
-    public SolarSystemSimulator(double t0, double h, double endTime) {
+    public SolarSystemSimulator(double t0, double h, double endTime, List<Impulse> impulsesList) {
         this.t0 = t0;
         this.h = h;
         this.endTime = endTime;
+        this.impulses = impulsesList;
+        if (impulsesList != null) {
+            this.nextImpulseIndex = 0;
+        }
         initializeSystem();
     }
 
@@ -46,7 +55,7 @@ public class SolarSystemSimulator {
         this.engine = new SolarSystemEngine(bodies);
     }
 
-    public Trajectory simulate(List<Impulse> impulses) {
+    public Trajectory simulate() {
 
         initializeSystem();
         Trajectory shipTrajectory = new Trajectory();
@@ -62,7 +71,6 @@ public class SolarSystemSimulator {
                 if (Math.abs(time - nextImpulse.getTime()) < h / 2.0) {
                     double[] dir = nextImpulse.getNormalizedDir();
                     double scale = nextImpulse.getMag() / ship.getMass();
-                    double[] deltaV = vec.multiply(dir, scale);
                     ship.applyImpulse(dir, scale); // new applyImpulse takes direction and scale of magnitude
                     nextImpulseIndex++; // move to the next one
                 }
@@ -73,38 +81,21 @@ public class SolarSystemSimulator {
         return shipTrajectory;
     }
 
-    public double[] simulate(double t0, double h, double endTime, boolean print) {
-
-        // Load planets from CSV
-        ArrayList<CelestialObject> solarSystemPlanets = SolarSystemFunctions
-                .GetAllPlanetsPlanetarySystem("SolarSystemValues.csv");
-
-        // Convert to generic CelestialObjects (could include spacecraft later!)
-        ArrayList<CelestialObject> bodies = new ArrayList<>(solarSystemPlanets);
-        SpaceShip ship = SolarSystemFunctions.getNewShip();
-        bodies.add(ship);
-        // Create the engine
-        SolarSystemEngine engine = new SolarSystemEngine(bodies);
+    public double[] simulate(double t0) {
 
         double time = t0;
-
-        // Run the simulation
-        while (time < endTime) {
-            engine.evolve(time, h);
-            time += h;
-
-            if (((int) (time / h) % 24 == 0) && time != 0) { // print once per day
-                System.out.printf("=== Time: %.2f hours ===%n", time / 3600);
-                for (CelestialObject obj : bodies) {
-                    State s = obj.getState();
-                    double[] pos = s.getPos();
-                    System.out.printf("%-10s: (%.2f, %.2f, %.2f)%n",
-                            obj.getName(), pos[0], pos[1], pos[2]);
-                }
-                System.out.println();
+        if (nextImpulseIndex < impulses.size()) {
+            Impulse nextImpulse = impulses.get(nextImpulseIndex);
+            if (Math.abs(time - nextImpulse.getTime()) < h / 2.0) {
+                double[] dir = nextImpulse.getNormalizedDir();
+                double scale = nextImpulse.getMag() / ship.getMass();
+                ship.applyImpulse(dir, scale); // new applyImpulse takes direction and scale of magnitude
+                nextImpulseIndex++; // move to the next one
             }
         }
-        System.out.println("Simulation complete.");
+        // Run the simulation
+        engine.evolve(time, h);
+
         return engine.getCurrentState();
     }
 
