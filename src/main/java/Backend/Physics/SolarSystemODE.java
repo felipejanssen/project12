@@ -40,6 +40,7 @@ public abstract class SolarSystemODE {
                     if (!iIsSpaceship && jIsSpaceship) {
                         // i is a planet or moon, j is spaceship
                         continue;
+
                     }
 
                     int jdx = j * 6;

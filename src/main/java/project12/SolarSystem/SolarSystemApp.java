@@ -31,7 +31,7 @@ public class SolarSystemApp extends Application {
     private final static int HEIGHT = 1000;
 
     private double SCALE = 1e6;
-    private double animationSpeed = 50;
+    private double animationSpeed = 3;
 
     private AnimationTimer animationTimer;
     private final static String csvpath = "SolarSystemValues.csv";
@@ -62,7 +62,7 @@ public class SolarSystemApp extends Application {
     private final Queue<Sphere> trailSpheres = new LinkedList<>();
 
     private final ArrayList<SpaceShip> availableSpaceShips = new ArrayList<>(Arrays.asList(
-            new SpaceShip("RocketShip", new double[] { -1.47E+08, -3.1E+07, 2.75E+04 }, new double[] { 0, 0, 0 }, 50000,
+            new SpaceShip("RocketShip", new double[] { -1.47E+08, -3.1E+07, 2.75E+04 }, new double[] { 11, 30, 2 }, 50000,
                     0),
             new SpaceShip("XWing", new double[] { -1.47E+08, -3.1E+07, 2.75E+04 }, new double[] { 0, 0, 0 }, 50000,
                     0)));
@@ -74,34 +74,30 @@ public class SolarSystemApp extends Application {
         showMenuScene(stage);
     }
 
-    private void startAnimation(ArrayList<CelestialObject> planets, SpaceShip spaceShip, SubScene subScene,
+    private void startAnimation(ArrayList<CelestialObject> bodies, SubScene subScene,
             PerspectiveCamera camera) {
-        // ArrayList<CelestialObject> allBodies = new ArrayList<>(planets);
 
         animationTimer = new AnimationTimer() {
             // ── physics state ──
             double simTime = 0.0;
             final double physicsDt = 3600.0; // 10 minutes per RK4 step
             double endTime = 365.25 * 24 * 3600;
-            SolarSystemSimulator sim = new SolarSystemSimulator(simTime, physicsDt, endTime, new ArrayList<>());
+            SolarSystemSimulator sim = new SolarSystemSimulator(bodies, simTime, physicsDt, endTime, new ArrayList<>());
 
             @Override
             public void handle(long now) {
                 Group root3D = (Group) subScene.getRoot();
 
                 // 1) advance N small physics steps
-                // for (int i = 0; i < animationSpeed; i++) {
-                // engine.evolve(simTime, physicsDt);
-                // }
-                sim.simulate(simTime);
-                simTime += physicsDt;
+                 for (int i = 0; i < animationSpeed; i++) {
+                     sim.simulate(simTime);
+                     simTime += physicsDt;
+                 }
 
                 // 2) draw each body and optional trail
                 for (CelestialObject body : sim.getBodies()) {
-                    // compute Sun-relative coordinates
                     double[] relPos = vec.substract(body.getState().getPos(), new double[] { 0, 0, 0 });
 
-                    // every 3 steps (≈30 min) drop a trail dot
                     if (((int) (simTime / physicsDt) % 3) == 0) {
                         Sphere trail = new Sphere(0.3);
                         trail.setTranslateX(relPos[0] / SCALE);
@@ -117,10 +113,11 @@ public class SolarSystemApp extends Application {
                         }
                     }
 
-                    // move the visual node
-                    body.moveCelestialObject(relPos);
+                    body.moveCelestialObject(body.getState().getPos());
 
-                    ((Planet) body).spinPlanet();
+                    if (!body.isSpaceship()) {
+                        ((Planet) body).spinPlanet();
+                    }
                 }
 
                 // 4) update camera to track current focus
@@ -246,7 +243,7 @@ public class SolarSystemApp extends Application {
         stage.setTitle("Solar System Explorer - " + spaceShipNames[spaceShipIndex]);
         stage.centerOnScreen();
         stage.show();
-        startAnimation(planetList, selectedShip, subScene, camera);
+        startAnimation(bodies, subScene, camera);
     }
 
     private SubScene createSubScene(ArrayList<CelestialObject> planetList, SpaceShip spaceShip) {

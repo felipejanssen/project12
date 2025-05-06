@@ -25,11 +25,11 @@ public class SolarSystemSimulator {
         return this.bodies;
     }
 
-    public SolarSystemSimulator() {
-        initializeSystem();
+    public SolarSystemSimulator(ArrayList<CelestialObject> bodies) {
+        initializeSystem(bodies);
     }
 
-    public SolarSystemSimulator(double t0, double h, double endTime, List<Impulse> impulsesList) {
+    public SolarSystemSimulator(ArrayList<CelestialObject> bodies, double t0, double h, double endTime, List<Impulse> impulsesList) {
         this.t0 = t0;
         this.h = h;
         this.endTime = endTime;
@@ -37,51 +37,44 @@ public class SolarSystemSimulator {
         if (impulsesList != null) {
             this.nextImpulseIndex = 0;
         }
-        initializeSystem();
+        initializeSystem(bodies);
     }
 
-    public void initializeSystem() {
+    public void initializeSystem(ArrayList<CelestialObject> bodies) {
 
-        // Load planets from CSV
-        ArrayList<CelestialObject> solarSystemPlanets = SolarSystemFunctions
-                .GetAllPlanetsPlanetarySystem("SolarSystemValues.csv");
-
-        this.bodies = new ArrayList<>(solarSystemPlanets);
-        // Add the spaceship as the last body
-        ship = SolarSystemFunctions.getNewShip();
-        bodies.add(ship);
+        this.bodies = new ArrayList<>(bodies);
 
         // Create the engine
         this.engine = new SolarSystemEngine(bodies);
     }
 
-    public Trajectory simulate() {
+//    public Trajectory simulate() {
+//
+//        initializeSystem();
+//        Trajectory shipTrajectory = new Trajectory();
+//        double time = t0;
+//        int nextImpulseIndex = 0; // First impulse is the first in the list
+//
+//        // Run the simulation
+//        while (time < endTime) {
+//            State shipState = ship.getState();
+//            shipTrajectory.addState(shipState);
+//            if (nextImpulseIndex < impulses.size()) {
+//                Impulse nextImpulse = impulses.get(nextImpulseIndex);
+//                if (Math.abs(time - nextImpulse.getTime()) < h / 2.0) {
+//                    double[] dir = nextImpulse.getNormalizedDir();
+//                    double scale = nextImpulse.getMag() / ship.getMass();
+//                    ship.applyImpulse(dir, scale); // new applyImpulse takes direction and scale of magnitude
+//                    nextImpulseIndex++; // move to the next one
+//                }
+//            }
+//            engine.evolve(time, h);
+//            time += h;
+//        }
+//        return shipTrajectory;
+//    }
 
-        initializeSystem();
-        Trajectory shipTrajectory = new Trajectory();
-        double time = t0;
-        int nextImpulseIndex = 0; // First impulse is the first in the list
-
-        // Run the simulation
-        while (time < endTime) {
-            State shipState = ship.getState();
-            shipTrajectory.addState(shipState);
-            if (nextImpulseIndex < impulses.size()) {
-                Impulse nextImpulse = impulses.get(nextImpulseIndex);
-                if (Math.abs(time - nextImpulse.getTime()) < h / 2.0) {
-                    double[] dir = nextImpulse.getNormalizedDir();
-                    double scale = nextImpulse.getMag() / ship.getMass();
-                    ship.applyImpulse(dir, scale); // new applyImpulse takes direction and scale of magnitude
-                    nextImpulseIndex++; // move to the next one
-                }
-            }
-            engine.evolve(time, h);
-            time += h;
-        }
-        return shipTrajectory;
-    }
-
-    public double[] simulate(double t0) {
+    public void simulate(double t0) {
 
         double time = t0;
         if (nextImpulseIndex < impulses.size()) {
@@ -95,8 +88,7 @@ public class SolarSystemSimulator {
         }
         // Run the simulation
         engine.evolve(time, h);
-
-        return engine.getCurrentState();
+        //return engine.getCurrentState();
     }
 
     private void printState(double[] state) {
