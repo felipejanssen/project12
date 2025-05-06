@@ -76,15 +76,14 @@ public class SolarSystemApp extends Application {
 
     private void startAnimation(ArrayList<CelestialObject> planets, SpaceShip spaceShip, SubScene subScene,
             PerspectiveCamera camera) {
-        ArrayList<CelestialObject> allBodies = new ArrayList<>(planets);
-
-        double endTime = 365.25 * 24 * 3600;
-        SolarSystemSimulator sim = new SolarSystemSimulator(0, 3600, endTime, new ArrayList<>());
+        // ArrayList<CelestialObject> allBodies = new ArrayList<>(planets);
 
         animationTimer = new AnimationTimer() {
             // ── physics state ──
-            private double simTime = 0.0;
-            private final double physicsDt = 600.0; // 10 minutes per RK4 step
+            double simTime = 0.0;
+            final double physicsDt = 3600.0; // 10 minutes per RK4 step
+            double endTime = 365.25 * 24 * 3600;
+            SolarSystemSimulator sim = new SolarSystemSimulator(simTime, physicsDt, endTime, new ArrayList<>());
 
             @Override
             public void handle(long now) {
