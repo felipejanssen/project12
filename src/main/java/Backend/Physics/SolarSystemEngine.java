@@ -8,27 +8,20 @@ import Utils.vec;
 import java.util.ArrayList;
 
 public class SolarSystemEngine {
-
+    private static final int DIM = 6;
     private ArrayList<CelestialObject> bodies;
     private ODEsolver solver;
 
     public SolarSystemEngine(ArrayList<CelestialObject> bodies) {
         this.bodies = bodies;
 
-        double[] initialStates = new double[bodies.size() * 6];
-        for (int i = 0; i < bodies.size(); i++) {
-            System.arraycopy(bodies.get(i).getState().getState(), 0, initialStates, i * 6, 6);
-        }
+        double[] initialStates = flattenStates();
 
         solver = new ODEsolver(SolarSystemODE.create(bodies));
     }
 
     public double[] getCurrentState() {
-        double[] currentStates = new double[bodies.size() * 6];
-        for (int i = 0; i < bodies.size(); i++) {
-            System.arraycopy(bodies.get(i).getState().getState(), 0, currentStates, i * 6, 6);
-        }
-        return currentStates;
+        return flattenStates();
     }
 
     public void evolve(double time, double h) {
@@ -38,8 +31,8 @@ public class SolarSystemEngine {
         double[] nextStates = solver.RK4Step(time, currentStates, h);
 
         for (int i = 0; i < bodies.size(); i++) {
-            double[] nextState = new double[6];
-            System.arraycopy(nextStates, i * 6, nextState, 0, 6);
+            double[] nextState = new double[DIM];
+            System.arraycopy(nextStates, i * DIM, nextState, 0, DIM);
             bodies.get(i).setState(new State(time + h, nextState));
         }
         // ANCHOR THE SYSTEM TO THE SUN
@@ -53,6 +46,19 @@ public class SolarSystemEngine {
             double[] newVel = vec.substract(old.getVel(), sunVel);
             obj.setState(new State(old.getTime(), newPos, newVel));
         }
+    }
+
+    //helper method to flatten States in one array
+    private double[] flattenStates() {
+        double[] flat = new double[bodies.size() * DIM];
+        for (int i = 0; i < bodies.size(); i++) {
+            System.arraycopy(bodies.get(i).getState().getState(), 0,
+                    flat,
+                    i * DIM,
+                    DIM
+            );
+        }
+        return flat;
     }
 
 }

@@ -8,22 +8,23 @@ import java.util.function.BiFunction;
  * each body has a state vector and gravitational accelerations are computed using Newton's law of universal gravitation
  */
 public class CelestialTrajectoryCalculator {
-    private static final double G = 6.67430e-20;
 
+    private static final double G = 6.67430e-20;
+    private static final int DIM = 6;
     public static double[] computeGravitationalDerivatives(double t, double[] state, double[] masses) {
        int amountBodies = masses.length;
        int stateSize = state.length;
        double[] derivativeState = new double[stateSize];
 
        for (int i = 0; i < amountBodies; i++) { // fill velocity parts of derivative vector
-           int idx = i * 6;
+           int idx = i * DIM;
            derivativeState[idx] = state[idx + 3];
            derivativeState[idx + 1] = state[idx + 4];
            derivativeState[idx + 2] = state[idx + 5];
        }
 
        for (int i = 0; i < amountBodies; i++) { // use gravitational laws to calculate acceleration part of the derivative vector
-           int idx = i * 6;
+           int idx = i * DIM;
            double xi = state[idx];
            double yi = state[idx + 1];
            double zi = state[idx + 2];
@@ -33,7 +34,7 @@ public class CelestialTrajectoryCalculator {
 
            for (int j = 0; j < amountBodies; j++) {
                if (i == j) continue;
-               int idxj = j * 6;
+               int idxj = j * DIM;
                double xj = state[idxj];
                double yj = state[idxj + 1];
                double zj = state[idxj + 2];
