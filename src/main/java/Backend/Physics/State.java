@@ -52,9 +52,7 @@ public class State {
      * @param vel
      */
     public void addVel(double[] vel) {
-        System.out.println("Satte before: " + this);
         this.velocity = vec.add(this.velocity, vel);
-        System.out.println("State after: " + this);
     }
 
     @Override

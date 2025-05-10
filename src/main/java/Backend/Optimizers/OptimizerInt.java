@@ -10,8 +10,9 @@ import java.util.List;
 public interface OptimizerInt {
     /**
      * Runs the optimization on the given impulses.
+     * 
      * @param impulses the sequence of impulse maneuvers to tune
      * @return the best cost found
      */
-    double optimize(List<Impulse> impulses);
+    List<Impulse> optimize(List<Impulse> impulses);
 }

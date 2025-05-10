@@ -1,48 +1,60 @@
 package Backend.Optimizers;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import Backend.Physics.Impulse;
+import Backend.Physics.State;
+import Backend.Physics.Trajectory;
+import Backend.SolarSystem.SolarSystemSimulator;
+import Utils.vec;
 
 public abstract class AbstractOptimizer implements OptimizerInt {
     protected final int maxIterations;
     protected final double tolerance;
-    protected final double learningRate;      // you may ignore in HC
-    protected double finiteDifference;  // you may ignore in HC
+    protected final double learningRate; // you may ignore in HC
+    protected double epsilon; // you may ignore in HC
+
+    private final SolarSystemSimulator simulator = new SolarSystemSimulator();
 
     protected AbstractOptimizer(int maxIterations,
-                                double tolerance,
-                                double learningRate,
-                                double finiteDifference)
-    {
-        this.maxIterations   = maxIterations;
-        this.tolerance       = tolerance;
-        this.learningRate    = learningRate;
-        this.finiteDifference= finiteDifference;
+            double tolerance,
+            double learningRate,
+            double epsilon) {
+        this.maxIterations = maxIterations;
+        this.tolerance = tolerance;
+        this.learningRate = learningRate;
+        this.epsilon = epsilon;
+        System.out.println("IT: " + this.maxIterations + ", Tol: " + this.tolerance + ", LR: " + this.learningRate
+                + ", E" + this.epsilon);
     }
 
     @Override
-    public double optimize(List<Impulse> impulses) {
-        double lastCost = Double.POSITIVE_INFINITY;
-        double cost    = computeCost(impulses);
+    public List<Impulse> optimize(List<Impulse> impulses) {
+
+        List<Impulse> currentBest = new ArrayList<>();
+        double lastCost = computeCost(impulses);
 
         for (int iter = 0; iter < maxIterations; iter++) {
-            step(impulses);                  // ← algorithm-specific tweak
-            cost = computeCost(impulses);
+            System.out.println("Optimizer iteration: " + iter);
+            currentBest = update(impulses);
 
-            if (Math.abs(lastCost - cost) < tolerance) {
+            double currentCost = computeCost(impulses);
+            System.out.println("Error: " + Math.abs(lastCost - currentCost));
+            if (Math.abs(lastCost - currentCost) < tolerance) {
                 break;
             }
-            lastCost = cost;
+            lastCost = currentCost;
         }
 
-        return cost;
+        return currentBest;
     }
 
     /**
      * Perform one iteration’s worth of updates on the impulse list.
      * Concrete subclasses must implement this.
      */
-    protected abstract void step(List<Impulse> impulses);
+    protected abstract List<Impulse> update(List<Impulse> impulses);
 
     /**
      * Default cost: sum of fuel plus penalty on the resulting trajectory.
@@ -53,11 +65,28 @@ public abstract class AbstractOptimizer implements OptimizerInt {
                 .mapToDouble(Impulse::getFuelCost)
                 .sum();
         // hook out to simulator: subclasses can set this.simulator
-        return fuel + penaltyFor(impulses);
+        double penalty = penaltyFor(impulses);
+        double cost = fuel + penalty;
+        // System.out.println("Cost: " + cost);
+        return cost;
     }
 
     /**
      * Hook for computing the trajectory penalty; subclasses must supply it.
      */
-    protected abstract double penaltyFor(List<Impulse> impulses);
+    protected double penaltyFor(List<Impulse> impulses) {
+
+        Trajectory[] trajectories = simulator.simulate(impulses);
+        Trajectory shipTraj = trajectories[0];
+        Trajectory titanTrajectory = trajectories[1];
+
+        State lastShipState = shipTraj.getLastState();
+        double[] lastShipPos = lastShipState.getPos();
+        State lastTitanState = titanTrajectory.getLastState();
+        double[] lastTitanPos = lastTitanState.getPos();
+
+        double penalty = vec.euclideanDistance(lastTitanPos, lastShipPos);
+        // System.out.println("Penalty: " + penalty);
+        return penalty; // or inline your penalty fn
+    }
 }

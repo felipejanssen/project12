@@ -11,14 +11,22 @@ public class Impulse {
     // when to apply it
     private double time;
 
+    private double[] impulseVec;
+
     public Impulse(double[] dir, double mag, double t) {
         this.direction = dir;
         this.magnitude = mag;
         this.time = t;
     }
 
+    public Impulse(double[] impVec, double t) {
+        this.impulseVec = impVec;
+        this.time = t;
+    }
+
     /**
      * Copy constructor - creates a new Impulse that is a copy of the given Impulse
+     * 
      * @param other The Impulse to copy
      */
     public Impulse(Impulse other) {
@@ -33,13 +41,25 @@ public class Impulse {
         this.time = other.time;
     }
 
-    // TODO: Implement better fuel cost estimation
-    public double getFuelCost() {
-        return magnitude;
+    public double[] getImpulseVec() {
+        return this.impulseVec;
     }
 
+    public void changeImpulse(int pos, double value) {
+        this.impulseVec[pos] += value;
+    }
+
+    // TODO: Implement better fuel cost estimation
+    public double getFuelCost() {
+        return getMag();
+    }
+
+    /**
+     * 
+     * @return NOT normalized direction vector
+     */
     public double[] getDir() {
-        return this.direction;
+        return this.impulseVec;
     }
 
     public double[] getNormalizedDir() {
@@ -50,8 +70,12 @@ public class Impulse {
         return this.time;
     }
 
+    /**
+     * 
+     * @return vec.magnitude(impulseVec)
+     */
     public double getMag() {
-        return this.magnitude;
+        return vec.magnitude(impulseVec);
     }
 
     public double changeMagBy(double value) {

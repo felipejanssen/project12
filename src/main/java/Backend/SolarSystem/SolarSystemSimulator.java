@@ -8,8 +8,9 @@ import Backend.Physics.Trajectory;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class SolarSystemSimulator {
+
+    String csvpath = "SolarSystemValues.csv";
 
     ArrayList<CelestialObject> bodies;
     SolarSystemEngine engine;
@@ -26,11 +27,19 @@ public class SolarSystemSimulator {
         return this.bodies;
     }
 
+    public SolarSystemSimulator() {
+        ArrayList<CelestialObject> bodies = SolarSystemFunctions.GetAllPlanetsPlanetarySystem(csvpath);
+        this.ship = SolarSystemFunctions.getNewShip();
+        bodies.add(this.ship);
+        initializeSystem(bodies);
+    }
+
     public SolarSystemSimulator(ArrayList<CelestialObject> bodies) {
         initializeSystem(bodies);
     }
 
-    public SolarSystemSimulator(ArrayList<CelestialObject> bodies, double t0, double h, double endTime, List<Impulse> impulsesList) {
+    public SolarSystemSimulator(ArrayList<CelestialObject> bodies, double t0, double h, double endTime,
+            List<Impulse> impulsesList) {
         this.t0 = t0;
         this.h = h;
         this.endTime = endTime;
@@ -49,35 +58,37 @@ public class SolarSystemSimulator {
         this.engine = new SolarSystemEngine(bodies);
     }
 
-//    public Trajectory simulate() {
-//
-//        initializeSystem();
-//        Trajectory shipTrajectory = new Trajectory();
-//        double time = t0;
-//        int nextImpulseIndex = 0; // First impulse is the first in the list
-//
-//        // Run the simulation
-//        while (time < endTime) {
-//            State shipState = ship.getState();
-//            shipTrajectory.addState(shipState);
-//            if (nextImpulseIndex < impulses.size()) {
-//                Impulse nextImpulse = impulses.get(nextImpulseIndex);
-//                if (Math.abs(time - nextImpulse.getTime()) < h / 2.0) {
-//                    double[] dir = nextImpulse.getNormalizedDir();
-//                    double scale = nextImpulse.getMag() / ship.getMass();
-//                    ship.applyImpulse(dir, scale); // new applyImpulse takes direction and scale of magnitude
-//                    nextImpulseIndex++; // move to the next one
-//                }
-//            }
-//            engine.evolve(time, h);
-//            time += h;
-//        }
-//        return shipTrajectory;
-//    }
+    public Trajectory[] simulate(List<Impulse> imp) {
+
+        Trajectory shipTrajectory = new Trajectory();
+        Trajectory titanTrajectory = new Trajectory();
+        double time = t0;
+        int nextImpulseIndex = 0; // First impulse is the first in the list
+
+        // Run the simulation
+        while (time < endTime) {
+            State shipState = ship.getState();
+            shipTrajectory.addState(shipState);
+            titanTrajectory.addState(engine.getTitanState());
+            if (nextImpulseIndex < imp.size()) {
+                Impulse nextImpulse = imp.get(nextImpulseIndex);
+                double nextTime = nextImpulse.getTime();
+                if (Math.abs(time - nextTime) < h / 2.0) {
+                    double[] dir = nextImpulse.getNormalizedDir();
+                    double scale = nextImpulse.getMag() / ship.getMass();
+                    ship.applyImpulse(dir, scale); // new applyImpulse takes direction and scale of magnitude
+                    nextImpulseIndex++; // move to the next one
+                }
+            }
+            engine.evolve(time, h);
+            time += h;
+        }
+        return new Trajectory[] { shipTrajectory, titanTrajectory };
+    }
 
     public void simulate(double t0) {
 
-        if(ship == null) {
+        if (ship == null) {
             throw new IllegalStateException("Ship has not been initialized");
         }
 
@@ -93,7 +104,7 @@ public class SolarSystemSimulator {
         }
         // Run the simulation
         engine.evolve(time, h);
-        //return engine.getCurrentState();
+        // return engine.getCurrentState();
     }
 
     private void printState(double[] state) {

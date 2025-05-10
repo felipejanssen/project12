@@ -48,17 +48,30 @@ public class SolarSystemEngine {
         }
     }
 
-    //helper method to flatten States in one array
+    // helper method to flatten States in one array
     private double[] flattenStates() {
         double[] flat = new double[bodies.size() * DIM];
         for (int i = 0; i < bodies.size(); i++) {
             System.arraycopy(bodies.get(i).getState().getState(), 0,
                     flat,
                     i * DIM,
-                    DIM
-            );
+                    DIM);
         }
         return flat;
+    }
+
+    public double[] getTitanPos() {
+        CelestialObject titan = this.bodies.get(8);
+        System.out.println(titan.getName());
+        double[] pos = titan.getState().getPos();
+
+        return pos;
+    }
+
+    public State getTitanState() {
+        CelestialObject titan = this.bodies.get(8);
+
+        return titan.getState();
     }
 
 }

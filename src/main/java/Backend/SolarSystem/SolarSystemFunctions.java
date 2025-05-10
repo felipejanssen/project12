@@ -62,8 +62,8 @@ public class SolarSystemFunctions {
         double[] pos = new double[] { -1.47E+08, -2.97E+07, 2.75E+04 };
         double[] vel = new double[] { .0, .0, .0 };
         double m = 50000;
-        double fuelUsed = 0;
+        double initFuel = 9999;
 
-        return new SpaceShip("Nebuchadnezzar", pos, vel, m, fuelUsed);
+        return new SpaceShip("Nebuchadnezzar", pos, vel, m, initFuel);
     }
 }

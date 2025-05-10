@@ -19,6 +19,10 @@ public class Trajectory {
         }
     }
 
+    public State getLastState() {
+        return this.states.get(states.size() - 1);
+    }
+
     public State getState(double time) {
         if (time < 0)
             throw new IllegalArgumentException(new String("Bro you can't travel back in time :("));
