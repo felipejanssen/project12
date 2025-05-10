@@ -6,6 +6,7 @@ import Backend.Physics.State;
 import Backend.Physics.Trajectory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SolarSystemSimulator {
@@ -28,10 +29,7 @@ public class SolarSystemSimulator {
     }
 
     public SolarSystemSimulator() {
-        ArrayList<CelestialObject> bodies = SolarSystemFunctions.GetAllPlanetsPlanetarySystem(csvpath);
-        this.ship = SolarSystemFunctions.getNewShip();
-        bodies.add(this.ship);
-        initializeSystem(bodies);
+        resetSim();
     }
 
     public SolarSystemSimulator(ArrayList<CelestialObject> bodies) {
@@ -58,26 +56,36 @@ public class SolarSystemSimulator {
         this.engine = new SolarSystemEngine(bodies);
     }
 
-    public Trajectory[] simulate(List<Impulse> imp) {
+    private void resetSim() {
+        ArrayList<CelestialObject> bodies = SolarSystemFunctions.GetAllPlanetsPlanetarySystem(csvpath);
+        this.ship = SolarSystemFunctions.getNewShip();
+        bodies.add(this.ship);
+        initializeSystem(bodies);
+    }
 
+    public Trajectory[] simulate(List<Impulse> imp) {
+        resetSim();
         Trajectory shipTrajectory = new Trajectory();
         Trajectory titanTrajectory = new Trajectory();
-        double time = t0;
-        int nextImpulseIndex = 0; // First impulse is the first in the list
+        double time = 0;
+        int nextIndex = 0; // First impulse is the first in the list
 
         // Run the simulation
         while (time < endTime) {
             State shipState = ship.getState();
             shipTrajectory.addState(shipState);
             titanTrajectory.addState(engine.getTitanState());
-            if (nextImpulseIndex < imp.size()) {
-                Impulse nextImpulse = imp.get(nextImpulseIndex);
+            if (nextIndex < imp.size()) {
+                Impulse nextImpulse = imp.get(nextIndex);
                 double nextTime = nextImpulse.getTime();
                 if (Math.abs(time - nextTime) < h / 2.0) {
                     double[] dir = nextImpulse.getNormalizedDir();
+                    // System.out.println("Applying impulse: ");
+                    // System.out.println("dir: " + Arrays.toString(dir));
                     double scale = nextImpulse.getMag() / ship.getMass();
+                    // System.out.println("Scale: " + scale);
                     ship.applyImpulse(dir, scale); // new applyImpulse takes direction and scale of magnitude
-                    nextImpulseIndex++; // move to the next one
+                    nextIndex++; // move to the next one
                 }
             }
             engine.evolve(time, h);
