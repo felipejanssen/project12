@@ -7,17 +7,17 @@ import java.util.List;
 
 public class GradientDescentOpt extends AbstractOptimizer {
 
-    private static final double LEARNING_RATE = 0.001;
-    private static final double TOLERANCE = 1e-4;
-    private static final double EPSILON = 1e-4;
     private static final int MAX_ITERATIONS = 1000;
+    private static final double TOLERANCE = 1e-4;
+    private static final double LEARNING_RATE = 0.001;
+    private static final double EPSILON = 1e-4;
 
     public GradientDescentOpt() {
         super(MAX_ITERATIONS, TOLERANCE, LEARNING_RATE, EPSILON);
     }
 
-    public GradientDescentOpt(double lr, double fd, double tol, int maxIters) {
-        super(maxIters, tol, lr, fd);
+    public GradientDescentOpt(int maxIters, double tol, double lr, double e) {
+        super(maxIters, tol, lr, e);
     }
 
     @Override
