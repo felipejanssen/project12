@@ -51,7 +51,7 @@ public class SolarSystemSimulator {
     public void initializeSystem(ArrayList<CelestialObject> bodies) {
 
         this.bodies = new ArrayList<>(bodies);
-
+        this.ship = (SpaceShip) bodies.getLast();
         // Create the engine
         this.engine = new SolarSystemEngine(bodies);
     }

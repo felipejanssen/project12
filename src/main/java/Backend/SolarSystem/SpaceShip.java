@@ -353,6 +353,12 @@ public class SpaceShip extends Group implements CelestialObject {
                 setTranslateZ(newPosition[1] / SCALE);
         }
 
+        public void pointSpaceShip(double[] oldPosition) {
+                // needa make this
+        }
+
+
+
         public void setScale(double scale) {
                 this.SCALE = scale;
         }
