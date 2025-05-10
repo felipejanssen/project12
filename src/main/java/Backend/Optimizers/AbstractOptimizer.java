@@ -142,7 +142,7 @@ public abstract class AbstractOptimizer implements OptimizerInt {
         double[] lastShipPos = lastShipState.getPos();
         State lastTitanState = titanTrajectory.getLastState();
         double[] lastTitanPos = lastTitanState.getPos();
-        // System.out.println("Ship pos: " + Arrays.toString(lastShipPos));
+        System.out.println("Ship pos: " + Arrays.toString(lastShipPos));
         // System.out.println("Titan pos: " + Arrays.toString(lastTitanPos));
         double rawDist = vec.euclideanDistance(lastTitanPos, lastShipPos);
         double penalty = Math.log1p(rawDist);
