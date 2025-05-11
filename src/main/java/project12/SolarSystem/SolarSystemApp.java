@@ -21,17 +21,17 @@ import javafx.scene.control.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class SolarSystemApp extends Application {
     private final static int WIDTH = 1600;
     private final static int HEIGHT = 1000;
 
     private double SCALE = 1e6;
-    private double animationSpeed = 3;
+    private double animationSpeed = 1;
+    LocalDate startDate = LocalDate.of(2025, 4, 1);
     private SpaceShip ship;
 
     private AnimationTimer animationTimer;
@@ -64,9 +64,9 @@ public class SolarSystemApp extends Application {
     private final Queue<Sphere> trailSpheres = new LinkedList<>();
 
     private final ArrayList<SpaceShip> availableSpaceShips = new ArrayList<>(Arrays.asList(
-            new SpaceShip("RocketShip", shipLocation, new double[] { 11, 30, 2 }, 50000,
+            new SpaceShip("RocketShip", shipLocation, new double[] { 60, -30, -10 }, 50000,
                     0),
-            new SpaceShip("XWing", shipLocation, new double[] {11.929442925486418, -1.2355766348477637, -0.40217143978693926}, 50000,
+            new SpaceShip("XWing", shipLocation, new double[] { 60, -30, -10 }, 50000,
                     0)));
 
     private final String[] spaceShipNames = { "Rocket Ship", "X-Wing" };
@@ -77,13 +77,13 @@ public class SolarSystemApp extends Application {
     }
 
     private void startAnimation(ArrayList<CelestialObject> bodies, SubScene subScene,
-            PerspectiveCamera camera) {
+            PerspectiveCamera camera, VBox velocityLabels ,Label dateLabel) {
 
         animationTimer = new AnimationTimer() {
             // ── physics state ──
             double simTime = 0.0;
-            final double physicsDt = 3600.0; // 10 minutes per RK4 step
-            double endTime = 365.25 * 24 * 3600;
+            final double physicsDt = 600.0; // 10 minutes per RK4 step
+            final double endTime = 365 * 24 * 3600;
             final SolarSystemSimulator sim = new SolarSystemSimulator(bodies, simTime, physicsDt, endTime, new ArrayList<>());
 
             @Override
@@ -91,16 +91,17 @@ public class SolarSystemApp extends Application {
                 Group root3D = (Group) subScene.getRoot();
 
                 // 1) advance N small physics steps
-                 for (int i = 0; i < animationSpeed; i++) {
-                     sim.simulate(simTime);
-                     simTime += physicsDt;
-                 }
+                for (int i = 0; i < animationSpeed; i++) {
+                    sim.simulate(simTime);
+                    simTime += physicsDt;
+                }
+                boolean makeTrail = (long) (simTime / physicsDt) % 25 == 0;
 
                 // 2) draw each body and optional trail
                 for (CelestialObject body : sim.getBodies()) {
                     double[] relPos = vec.substract(body.getState().getPos(), new double[] { 0, 0, 0 });
 
-                    if (((int) (simTime / physicsDt) % 3) == 0) {
+                    if (makeTrail) {
                         Sphere trail;
                         if (body.isSpaceship()) {
                             trail = new Sphere(0.01);
@@ -132,6 +133,14 @@ public class SolarSystemApp extends Application {
 
                 // 4) update camera to track current focus
                 changeCameraPos(currentFocusObject, camera);
+
+                updateVelocityLabels(velocityLabels);
+
+                long daysPassed = (long)(simTime / 86400);
+                LocalDate currentDate = startDate.plusDays(daysPassed);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d", Locale.ENGLISH);
+                String formattedDate = currentDate.format(formatter);
+                dateLabel.setText(formattedDate);
             }
         };
     }
@@ -219,13 +228,19 @@ public class SolarSystemApp extends Application {
         ToggleButton playPauseButton = initPlayPauseButton();
         HBox scaleControl = initScaleControl(SCALE, bodies, subScene, camera);
         HBox speedControl = initAnimationSpeedControl(animationSpeed);
+        VBox velocityLabels = initVelocityLabels();
+        Label dateLabel = new Label("April 1");
+        dateLabel.setPrefWidth(120);
+        dateLabel.setStyle(
+                basicButtonStyle +
+                        "-fx-background-color: #283d5c; ");
         Button backToMenuButton = initBackToMenuButton(stage);
 
         HBox leftControls = new HBox(15, planetSelector, focusSpaceShipButton, playPauseButton, scaleControl,
                 speedControl);
         leftControls.setAlignment(Pos.CENTER_LEFT);
 
-        HBox rightControls = new HBox(backToMenuButton);
+        HBox rightControls = new HBox(15, velocityLabels, dateLabel, backToMenuButton);
         rightControls.setAlignment(Pos.CENTER_RIGHT);
 
         Label controlsTitle = new Label("Navigation Controls");
@@ -256,7 +271,7 @@ public class SolarSystemApp extends Application {
         stage.setTitle("Solar System Explorer - " + spaceShipNames[spaceShipIndex]);
         stage.centerOnScreen();
         stage.show();
-        startAnimation(bodies, subScene, camera);
+        startAnimation(bodies, subScene, camera, velocityLabels, dateLabel);
     }
     private SubScene createSubScene(ArrayList<CelestialObject> planetList, SpaceShip spaceShip) {
         Group SolarSystem = new Group();
@@ -361,7 +376,7 @@ public class SolarSystemApp extends Application {
         Label speedLabel = new Label("Animation Speed: ");
         speedLabel.setStyle(
                 basicTextStyle);
-        Slider speedSlider = new Slider(1, 20, initialSpeed);
+        Slider speedSlider = new Slider(1, 50, initialSpeed);
         speedSlider.setPrefWidth(200);
         speedSlider.setStyle("-fx-control-inner-background: #263547;");
 
@@ -373,6 +388,22 @@ public class SolarSystemApp extends Application {
         speedControl.setAlignment(Pos.CENTER);
 
         return speedControl;
+    }
+    private VBox initVelocityLabels() {
+        Label xVelLabel = new Label(String.format("X: %.5f km/s", ship.getState().getVel()[0]));
+        xVelLabel.setStyle(basicTextStyle);
+        Label yVelLabel = new Label(String.format("Y: %.5f km/s", ship.getState().getVel()[1]));
+        yVelLabel.setStyle(basicTextStyle);
+        Label zVelLabel = new Label(String.format("Z: %.5f km/s", ship.getState().getVel()[2]));
+        zVelLabel.setStyle(basicTextStyle);
+
+        VBox velocityLabels = new VBox(0.1, xVelLabel, yVelLabel, zVelLabel);
+        velocityLabels.setPrefWidth(180);
+        velocityLabels.setStyle(
+                basicButtonStyle +
+                        "-fx-background-color: #263547; "
+        );
+        return velocityLabels;
     }
     private Button initBackToMenuButton(Stage stage) {
         Button backToMenuButton = new Button("Return to Menu");
@@ -450,6 +481,13 @@ public class SolarSystemApp extends Application {
             obj.moveCelestialObject(pos);
         }
         clearTrails(subScene);
+    }
+    private void updateVelocityLabels(VBox velocityBox) {
+        double[] velocity = ship.getState().getVel();
+        ((Label) velocityBox.getChildren().get(0)).setText(String.format("X: %.5f km/s", velocity[0]));
+        ((Label) velocityBox.getChildren().get(1)).setText(String.format("Y: %.5f km/s", velocity[1]));
+        ((Label) velocityBox.getChildren().get(2)).setText(String.format("Z: %.5f km/s", velocity[2]));
+
     }
     private void clearTrails(SubScene subScene) {
         Group root = (Group) subScene.getRoot();
