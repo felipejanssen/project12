@@ -115,7 +115,6 @@ public class ODEsolver {
      * @return
      */
     public double[] eulerSolve(int steps, double time0, double[] xCurrent, double h) {
-
         double[] x = xCurrent.clone();
         double time = time0;
 
