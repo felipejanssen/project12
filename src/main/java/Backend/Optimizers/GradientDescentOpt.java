@@ -3,6 +3,7 @@ package Backend.Optimizers;
 import Backend.Physics.Impulse;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GradientDescentOpt extends AbstractOptimizer {
@@ -24,21 +25,30 @@ public class GradientDescentOpt extends AbstractOptimizer {
     protected List<Impulse> update(List<Impulse> impulses) {
 
         List<Impulse> newImpulses = new ArrayList<>();
+        double[] originalImp;
         for (Impulse imp : impulses) {
             double[] vec = imp.getImpulseVec();
+            originalImp = vec.clone();
             double[] newImpulseVec = new double[vec.length];
             for (int i = 0; i < vec.length; i++) {
                 // Positiove change
                 imp.changeImpulse(i, epsilon);
                 double costP = computeCost(impulses);
+                // System.out.println("Cost P: " + costP);
                 // Negative change
                 imp.changeImpulse(i, -2 * epsilon);
                 double costM = computeCost(impulses);
-                double grad = (costP - costM) / (2 * epsilon);
+                // System.out.println("Cost M: " + costM);
+                double costDiff = (costP - costM);
+                // System.out.println("Cost diff = " + costDiff);
+                double grad = costDiff / (2 * epsilon);
                 // Reset
-                imp.changeImpulse(i, epsilon);
+                imp.setImpulse(originalImp);
                 // Adjust
-                newImpulseVec[i] = vec[i] + (-learningRate * grad);
+                // System.out.println("Gradient = " + grad);
+                // System.out.println("Adjustment = " + (learningRate * grad));
+
+                newImpulseVec[i] = vec[i] - (learningRate * grad);
             }
             // Add modified impulse to the list
             newImpulses.add(new Impulse(newImpulseVec, imp.getTime()));

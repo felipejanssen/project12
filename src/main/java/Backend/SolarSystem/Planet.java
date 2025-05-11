@@ -79,7 +79,7 @@ public class Planet extends Group implements CelestialObject {
             sphere.setMaterial(material);
 
         } catch (Exception e) {
-            System.err.println("Error loading planet texture: " + e.getMessage());
+            // System.err.println("Error loading planet texture: " + e.getMessage());
             sphere.setMaterial(new PhongMaterial(Color.GRAY));
         }
     }
@@ -113,7 +113,7 @@ public class Planet extends Group implements CelestialObject {
         getTransforms().addAll(rotateX, rotateY, rotateZ);
     }
 
-    public void spinPlanet () {
+    public void spinPlanet() {
         double currentAngle = rotation.getAngle();
 
         rotation.setAngle(currentAngle + spinSpeed);

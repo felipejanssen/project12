@@ -1,5 +1,7 @@
 package Backend.Physics;
 
+import java.util.Arrays;
+
 import Utils.vec;
 
 public class Impulse {
@@ -39,6 +41,11 @@ public class Impulse {
         // Copy the magnitude and time
         this.magnitude = other.magnitude;
         this.time = other.time;
+        this.impulseVec = other.impulseVec;
+    }
+
+    public Impulse clone() {
+        return new Impulse(this);
     }
 
     public double[] getImpulseVec() {
@@ -46,7 +53,15 @@ public class Impulse {
     }
 
     public void changeImpulse(int pos, double value) {
+        // System.out.println("at: " + pos + " - before: " +
+        // Arrays.toString(this.impulseVec));
         this.impulseVec[pos] += value;
+        // System.out.println("at: " + pos + " - after: " +
+        // Arrays.toString(this.impulseVec));
+    }
+
+    public void setImpulse(double[] vec) {
+        this.impulseVec = vec;
     }
 
     // TODO: Implement better fuel cost estimation
@@ -63,7 +78,7 @@ public class Impulse {
     }
 
     public double[] getNormalizedDir() {
-        return vec.normalize(this.direction);
+        return vec.normalize(this.impulseVec);
     }
 
     public double getTime() {

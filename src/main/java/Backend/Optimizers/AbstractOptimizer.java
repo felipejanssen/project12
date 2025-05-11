@@ -1,6 +1,11 @@
 package Backend.Optimizers;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import Backend.Physics.Impulse;
@@ -32,19 +37,72 @@ public abstract class AbstractOptimizer implements OptimizerInt {
     @Override
     public List<Impulse> optimize(List<Impulse> impulses) {
 
+        // Create deep copy
         List<Impulse> currentBest = new ArrayList<>();
-        double lastCost = computeCost(impulses);
+        for (Impulse impulse : impulses) {
+            currentBest.add(impulse.clone());
+        }
 
-        for (int iter = 0; iter < maxIterations; iter++) {
-            System.out.println("Optimizer iteration: " + iter);
-            currentBest = update(impulses);
+        double lastCost = computeCost(currentBest);
 
-            double currentCost = computeCost(impulses);
-            System.out.println("Error: " + Math.abs(lastCost - currentCost));
-            if (Math.abs(lastCost - currentCost) < tolerance) {
-                break;
+        String directoryPath = "src/main/java/Data/GradientDescent";
+        File directory = new File(directoryPath);
+        if (!directory.exists()) {
+            directory.mkdirs(); // create directories if they don't exist
+        }
+
+        // Find a unique filename
+        String baseName = "GD_optimization";
+        String extension = ".csv";
+        int counter = 1;
+        File file = new File(directory, baseName + extension);
+        while (file.exists()) {
+            file = new File(directory, baseName + "_" + counter + extension);
+            counter++;
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            // Write CSV header
+            writer.write("iteration,error,currentInitImpulse");
+            writer.newLine();
+
+            for (int iter = 0; iter < maxIterations; iter++) {
+                System.out.println();
+                System.out.println("Optimizer iteration: " + iter);
+                currentBest = update(currentBest);
+
+                double currentCost = computeCost(currentBest);
+                double error = Math.abs(lastCost - currentCost);
+                // System.out.println("Error: " + Math.abs(lastCost - currentCost));
+
+                double[] currentInitImpulse = currentBest.get(0).getImpulseVec();
+                StringBuilder impulseStr = new StringBuilder();
+                for (int i = 0; i < currentInitImpulse.length; i++) {
+                    impulseStr.append(currentInitImpulse[i]);
+                    if (i < currentInitImpulse.length - 1) {
+                        impulseStr.append(" ");
+                    }
+                }
+                // System.out.println("Init: " + Arrays.toString(currentInitImpulse));
+                // Write data to file
+                writer.write(iter + "," + error + "," + impulseStr.toString());
+                writer.newLine();
+
+                // Titan's orbit is approximately at 52800km radius
+                if (currentCost < 5e4) {
+                    System.out.println("In orbit");
+                    break;
+                }
+
+                if (error < tolerance) {
+                    System.out.println("Diminishing return");
+                    break;
+                }
+                lastCost = currentCost;
+
             }
-            lastCost = currentCost;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return currentBest;
@@ -68,7 +126,7 @@ public abstract class AbstractOptimizer implements OptimizerInt {
         double penalty = penaltyFor(impulses);
         double cost = fuel + penalty;
         // System.out.println("Cost: " + cost);
-        return cost;
+        return penalty;
     }
 
     /**
@@ -84,9 +142,12 @@ public abstract class AbstractOptimizer implements OptimizerInt {
         double[] lastShipPos = lastShipState.getPos();
         State lastTitanState = titanTrajectory.getLastState();
         double[] lastTitanPos = lastTitanState.getPos();
-
-        double penalty = vec.euclideanDistance(lastTitanPos, lastShipPos);
+        System.out.println("Ship pos: " + Arrays.toString(lastShipPos));
+        // System.out.println("Titan pos: " + Arrays.toString(lastTitanPos));
+        double rawDist = vec.euclideanDistance(lastTitanPos, lastShipPos);
+        double penalty = Math.log1p(rawDist);
         // System.out.println("Penalty: " + penalty);
-        return penalty; // or inline your penalty fn
+        // System.out.println();
+        return rawDist;
     }
 }
