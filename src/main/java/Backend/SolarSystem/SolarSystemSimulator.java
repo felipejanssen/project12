@@ -88,9 +88,9 @@ public class SolarSystemSimulator {
 
     public void simulate(double t0) {
 
-        if (ship == null) {
-            throw new IllegalStateException("Ship has not been initialized");
-        }
+//        if (ship == null) {
+//            throw new IllegalStateException("Ship has not been initialized");
+//        }
 
         double time = t0;
         if (nextImpulseIndex < impulses.size()) {
