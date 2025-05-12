@@ -19,4 +19,6 @@ module project12.application {
 
     exports project12.SolarSystem;
     opens project12.SolarSystem to javafx.fxml;
+    exports project12.DifferentialSolver.OldSolverGUI;
+    opens project12.DifferentialSolver.OldSolverGUI to javafx.fxml;
 }
