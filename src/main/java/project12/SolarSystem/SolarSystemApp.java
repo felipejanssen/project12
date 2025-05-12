@@ -65,9 +65,9 @@ public class SolarSystemApp extends Application {
 
     private final ArrayList<SpaceShip> availableSpaceShips = new ArrayList<>(Arrays.asList(
             new SpaceShip("RocketShip", shipLocation, new double[] { 60, -30, -10 }, 50000,
-                    0),
+                    Double.MAX_VALUE),
             new SpaceShip("XWing", shipLocation, new double[] { 60, -30, -10 }, 50000,
-                    0)));
+                    Double.MAX_VALUE )));
 
     private final String[] spaceShipNames = { "Rocket Ship", "X-Wing" };
 

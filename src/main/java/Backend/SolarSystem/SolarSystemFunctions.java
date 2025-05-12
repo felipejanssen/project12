@@ -64,6 +64,6 @@ public class SolarSystemFunctions {
         double m = 50000;
         double initFuel = 9999;
 
-        return new SpaceShip("Nebuchadnezzar", pos, vel, m, initFuel);
+        return new SpaceShip("Nebuchadnezzar", pos, vel, m, Double.MAX_VALUE);
     }
 }
