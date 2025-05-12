@@ -64,9 +64,9 @@ public class SolarSystemApp extends Application {
     private final Queue<Sphere> trailSpheres = new LinkedList<>();
 
     private final ArrayList<SpaceShip> availableSpaceShips = new ArrayList<>(Arrays.asList(
-            new SpaceShip("RocketShip", shipLocation, new double[] { 60, -30, -10 }, 50000,
+            new SpaceShip("RocketShip", shipLocation, new double[] { 60, -32.8, -6.4 }, 50000,
                     0),
-            new SpaceShip("XWing", shipLocation, new double[] { 60, -30, -10 }, 50000,
+            new SpaceShip("XWing", shipLocation, new double[] { 60, -32.8, -6.4 }, 50000,
                     0)));
 
     private final String[] spaceShipNames = { "Rocket Ship", "X-Wing" };
@@ -265,7 +265,7 @@ public class SolarSystemApp extends Application {
         initZoomControl(scene, camera);
         changeCameraPos(selectedShip, camera);
         SCALE = 1e6;
-        animationSpeed = 3;
+        animationSpeed = 1;
 
         stage.setScene(scene);
         stage.setTitle("Solar System Explorer - " + spaceShipNames[spaceShipIndex]);
