@@ -104,7 +104,7 @@ public class SpaceShip extends Group implements CelestialObject {
                 double[] normalizedDir = vec.normalize(direction);
 
                 // Calculate velocity change based on impulse and mass
-                double scale = magnitude / mass;
+                double scale = magnitude / mass; //Newtons F=ma
                 double[] deltaV = vec.multiply(normalizedDir, scale);
 
                 // Update velocity
