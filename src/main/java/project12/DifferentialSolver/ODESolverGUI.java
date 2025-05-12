@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.Vector;
 import java.util.function.BiFunction;
 
-import Backend.ODE.ODEsolver;
 import Backend.ODE.ODEParser;
+import Backend.ODE.ODEsolver;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -170,7 +170,7 @@ public class ODESolverGUI extends Application {
 
         initialConditionsBox = new VBox(5);
         addInitialConditionField("x0 = ", "1.0");
-        addInitialConditionField("x1 = ", "0.0");
+        // Removed the second initial condition to start with just one variable
 
         Button addConditionButton = new Button("+ Add Variable");
         addConditionButton.setStyle(BUTTON_STYLE);
