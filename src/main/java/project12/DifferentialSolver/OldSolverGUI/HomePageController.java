@@ -1,4 +1,4 @@
-package project12.DifferentialSolver;
+package project12.DifferentialSolver.OldSolverGUI;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

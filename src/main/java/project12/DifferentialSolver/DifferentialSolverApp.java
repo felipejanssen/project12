@@ -1,26 +1,28 @@
 package project12.DifferentialSolver;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.stage.Stage;
 
-import java.io.IOException;
-
+/**
+ * Main entry point for the Differential Equation Solver application.
+ */
 public class DifferentialSolverApp extends Application {
-    @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(DifferentialSolverApp.class.getResource("main.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 600, 527);
-        Image icon = new Image(getClass().getResource("/images/G.png").toString());
-        stage.getIcons().add(icon);
-        stage.setTitle("Project 1-2 Group 3");
-        stage.setScene(scene);
-        stage.show();
+
+    /**
+     * Main method to launch the application.
+     *
+     * @param args Command line arguments
+     */
+    public static void main(String[] args) {
+        launch(args);
     }
 
-    public static void main(String[] args) {
-        launch();
+    @Override
+    public void start(javafx.stage.Stage primaryStage) {
+        Image icon = new Image(getClass().getResource("/images/G.png").toString());
+        primaryStage.getIcons().add(icon);
+        primaryStage.setTitle("Projet 1-2 Group 3 - Differential Equation Solver");
+        ODESolverGUI gui = new ODESolverGUI();
+        gui.start(primaryStage);
     }
 }

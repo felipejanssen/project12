@@ -1,4 +1,4 @@
-package project12.DifferentialSolver;
+package project12.DifferentialSolver.OldSolverGUI;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.BorderPane;
