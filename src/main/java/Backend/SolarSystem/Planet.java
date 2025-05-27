@@ -137,4 +137,6 @@ public class Planet extends Group implements CelestialObject {
     public boolean isSpaceship() {
         return false;
     }
+    @Override
+    public boolean isProbe(){return false;}
 }

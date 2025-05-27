@@ -44,7 +44,10 @@ public class SolarSystemEngineJUnitTest {
             public boolean isSpaceship() {
                 return false;
             }
-
+            @Override
+            public boolean isProbe(){
+                return false;
+            }
             @Override
             public void setState(State s) {
             this.state = s;
@@ -85,6 +88,9 @@ public class SolarSystemEngineJUnitTest {
 
             @Override
             public boolean isSpaceship() {
+                return false;
+            }
+            public boolean isProbe(){
                 return false;
             }
 

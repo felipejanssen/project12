@@ -10,7 +10,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project12.DifferentialSolver.OldSolverGUI.EulerController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUIs.DifferentialSolver.OldSolverGUI.RKController">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#aebecd" height="189.0" layoutX="14.0" layoutY="204.0" opacity="0.11" stroke="BLACK" strokeType="INSIDE" width="161.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#aebecd" height="230.0" layoutX="181.0" layoutY="7.0" opacity="0.11" stroke="BLACK" strokeType="INSIDE" width="414.0" />
@@ -25,7 +25,7 @@
       <Label layoutX="31.0" layoutY="338.0" text="Y" />
       <Label layoutX="235.0" layoutY="65.0" prefHeight="0.0" prefWidth="66.0" text="Step Size" />
       <TextField fx:id="stepSize" layoutX="228.0" layoutY="85.0" prefHeight="25.0" prefWidth="79.0" />
-      <Label layoutX="189.0" layoutY="13.0" text="Euler ODE Solver">
+      <Label layoutX="189.0" layoutY="13.0" text="Runge-Kutta-4 ODE Solver">
          <font>
             <Font name="Berlin Sans FB" size="26.0" />
          </font>
@@ -56,10 +56,10 @@
             <Font name="Bodoni MT Italic" size="21.0" />
          </font>
       </Label>
-      <TextField fx:id="param1" layoutX="231.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
-      <TextField fx:id="param2" layoutX="307.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
-      <TextField fx:id="param3" layoutX="383.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
-      <TextField fx:id="param4" layoutX="459.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
+      <TextField fx:id="alpha" layoutX="231.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
+      <TextField fx:id="beta" layoutX="307.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
+      <TextField fx:id="gamma" layoutX="383.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
+      <TextField fx:id="delta" layoutX="459.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
       <Label layoutX="235.0" layoutY="139.0" prefHeight="0.0" prefWidth="66.0" text="a" />
       <Label layoutX="307.0" layoutY="139.0" prefHeight="0.0" prefWidth="66.0" text="b" />
       <Label layoutX="382.0" layoutY="139.0" prefHeight="0.0" prefWidth="66.0" text="epsilon" />

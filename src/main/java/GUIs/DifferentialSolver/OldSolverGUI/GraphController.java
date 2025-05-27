@@ -1,4 +1,4 @@
-package project12.DifferentialSolver.OldSolverGUI;
+package GUIs.DifferentialSolver.OldSolverGUI;
 
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;

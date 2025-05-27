@@ -1,4 +1,4 @@
-package project12.DifferentialSolver;
+package GUIs.DifferentialSolver;
 
 import java.util.Arrays;
 import java.util.Vector;

@@ -1,11 +1,6 @@
-package project12.SolarSystem;
+package GUIs.SolarSystem;
 
-import Backend.Physics.SolarSystemEngine;
-import Backend.SolarSystem.CelestialObject;
-import Backend.SolarSystem.Planet;
-import Backend.SolarSystem.SpaceShip;
-import Backend.SolarSystem.SolarSystemFunctions;
-import Backend.SolarSystem.SolarSystemSimulator;
+import Backend.SolarSystem.*;
 import Utils.vec;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -105,7 +100,7 @@ public class SolarSystemApp extends Application {
                         Sphere trail;
                         if (body.isSpaceship()) {
                             trail = new Sphere(0.01);
-                            ship.pointSpaceShip(shipLocation);
+                            ship.pointVessel(shipLocation);
                             shipLocation = ship.getState().getPos();
 
                         } else {

@@ -6,10 +6,10 @@ public interface CelestialObject {
     String getName();
 
     double getMass();
-
     State getState();
 
     boolean isSpaceship();
+    boolean isProbe();
 
     void setState(State state);
 

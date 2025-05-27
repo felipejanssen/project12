@@ -153,7 +153,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>project12.application/project12.DifferentialSolver.DifferentialSolverApp</mainClass>
+                            <mainClass>GUIs.application/GUIs.DifferentialSolver.DifferentialSolverApp</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

@@ -115,4 +115,4 @@ The application uses JavaFX for its user interface:
 
 ### Running the Application
 
-Execute the main application class: (`project12.DifferentialSolver.DifferentialSolverApp.java`)
+Execute the main application class: (`GUIs.DifferentialSolver.DifferentialSolverApp.java`)

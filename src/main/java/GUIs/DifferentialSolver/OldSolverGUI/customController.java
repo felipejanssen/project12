@@ -1,4 +1,4 @@
-package project12.DifferentialSolver.OldSolverGUI;
+package GUIs.DifferentialSolver.OldSolverGUI;
 import java.util.Vector;
 import java.util.function.BiFunction;
 import Backend.ODE.ODEsolver;

@@ -1,4 +1,4 @@
-module project12.application {
+module GUIs.application {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.graphics;
@@ -14,11 +14,11 @@ module project12.application {
     requires java.desktop;
     requires java.scripting;
 
-    exports project12.DifferentialSolver;
-    opens project12.DifferentialSolver to javafx.fxml;
+    exports GUIs.DifferentialSolver;
+    opens GUIs.DifferentialSolver to javafx.fxml;
 
-    exports project12.SolarSystem;
-    opens project12.SolarSystem to javafx.fxml;
-    exports project12.DifferentialSolver.OldSolverGUI;
-    opens project12.DifferentialSolver.OldSolverGUI to javafx.fxml;
+    exports GUIs.SolarSystem;
+    opens GUIs.SolarSystem to javafx.fxml;
+    exports GUIs.DifferentialSolver.OldSolverGUI;
+    opens GUIs.DifferentialSolver.OldSolverGUI to javafx.fxml;
 }

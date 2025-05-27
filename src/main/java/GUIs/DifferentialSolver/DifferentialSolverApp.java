@@ -1,4 +1,4 @@
-package project12.DifferentialSolver;
+package GUIs.DifferentialSolver;
 
 import javafx.application.Application;
 import javafx.scene.image.Image;

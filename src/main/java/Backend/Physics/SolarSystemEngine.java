@@ -1,7 +1,6 @@
 package Backend.Physics;
 
 import Backend.SolarSystem.CelestialObject;
-import Backend.SolarSystem.SpaceShip;
 import Backend.ODE.ODEsolver;
 import Utils.vec;
 

@@ -10,22 +10,22 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project12.DifferentialSolver.OldSolverGUI.RKController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUIs.DifferentialSolver.OldSolverGUI.EulerController">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#aebecd" height="189.0" layoutX="14.0" layoutY="204.0" opacity="0.11" stroke="BLACK" strokeType="INSIDE" width="161.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#aebecd" height="230.0" layoutX="181.0" layoutY="7.0" opacity="0.11" stroke="BLACK" strokeType="INSIDE" width="414.0" />
-      <TextField layoutX="71.0" layoutY="282.0" prefHeight="25.0" prefWidth="91.0" fx:id="x" />
-      <Label layoutX="51.0" layoutY="241.0" text="Input Vector">
+      <TextField layoutX="70.0" layoutY="257.0" prefHeight="25.0" prefWidth="91.0" fx:id="x" />
+      <Label layoutX="50.0" layoutY="227.0" text="Input Vector">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Label layoutX="34.0" layoutY="286.0" text="X" />
-      <TextField fx:id="y" layoutX="71.0" layoutY="334.0" prefHeight="25.0" prefWidth="91.0" />
-      <Label layoutX="31.0" layoutY="338.0" text="Y" />
+      <Label layoutX="33.0" layoutY="261.0" text="X" />
+      <TextField fx:id="y" layoutX="70.0" layoutY="301.0" prefHeight="25.0" prefWidth="91.0" />
+      <Label layoutX="34.0" layoutY="304.0" text="Y" />
       <Label layoutX="235.0" layoutY="65.0" prefHeight="0.0" prefWidth="66.0" text="Step Size" />
       <TextField fx:id="stepSize" layoutX="228.0" layoutY="85.0" prefHeight="25.0" prefWidth="79.0" />
-      <Label layoutX="189.0" layoutY="13.0" text="Runge-Kutta-4 ODE Solver">
+      <Label layoutX="189.0" layoutY="13.0" text="Euler ODE Solver">
          <font>
             <Font name="Berlin Sans FB" size="26.0" />
          </font>
@@ -41,7 +41,7 @@
       <Button layoutX="240.0" layoutY="200.0" mnemonicParsing="false" onAction="#confirmAction" prefHeight="25.0" prefWidth="298.0" text="Confirm" />
       <TextField fx:id="initialTime" layoutX="349.0" layoutY="85.0" prefHeight="25.0" prefWidth="79.0" />
       <Label layoutX="355.0" layoutY="65.0" prefHeight="0.0" prefWidth="66.0" text="Inital Time" />
-      <TextField fx:id="output" layoutX="315.0" layoutY="290.0" prefHeight="1.0" prefWidth="238.0">
+      <TextField fx:id="output" layoutX="315.0" layoutY="283.0" prefHeight="1.0" prefWidth="238.0">
          <font>
             <Font name="Bodoni MT Bold" size="13.0" />
          </font>
@@ -51,26 +51,32 @@
             <Image url="@../../images/G.png" />
          </image>
       </ImageView>
-      <Label fx:id="label" layoutX="16.0" layoutY="95.0" text="Lotka-Volterra">
+      <Label fx:id="label" layoutX="34.0" layoutY="94.0" text="SIR-Model">
          <font>
             <Font name="Bodoni MT Italic" size="26.0" />
          </font>
       </Label>
-      <TextField fx:id="alpha" layoutX="231.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
-      <TextField fx:id="beta" layoutX="307.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
-      <TextField fx:id="gamma" layoutX="383.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
-      <TextField fx:id="delta" layoutX="459.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
-      <Label layoutX="235.0" layoutY="139.0" prefHeight="0.0" prefWidth="66.0" text="Alpha" />
-      <Label layoutX="307.0" layoutY="139.0" prefHeight="0.0" prefWidth="66.0" text="Beta" />
-      <Label layoutX="382.0" layoutY="139.0" prefHeight="0.0" prefWidth="66.0" text="Gamma" />
-      <Label layoutX="459.0" layoutY="139.0" prefHeight="0.0" prefWidth="66.0" text="Delta" />
+      <TextField fx:id="param1" layoutX="231.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
+      <TextField fx:id="param2" layoutX="307.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
+      <TextField fx:id="param3" layoutX="383.0" layoutY="156.0" prefHeight="25.0" prefWidth="51.0" />
+      <Label layoutX="235.0" layoutY="139.0" prefHeight="0.0" prefWidth="66.0" text="K" />
+      <Label layoutX="307.0" layoutY="139.0" prefHeight="0.0" prefWidth="66.0" text="Gamma" />
+      <Label layoutX="382.0" layoutY="139.0" prefHeight="0.0" prefWidth="66.0" text="Mu" />
       <Line endX="262.5" layoutX="307.0" layoutY="128.0" startX="-100.0" />
-      <TextField fx:id="output2" layoutX="315.0" layoutY="325.0" prefHeight="1.0" prefWidth="238.0">
+      <TextField fx:id="output2" layoutX="315.0" layoutY="314.0" prefHeight="1.0" prefWidth="238.0">
          <font>
             <Font name="Bodoni MT Bold" size="13.0" />
          </font>
       </TextField>
-      <Label layoutX="203.0" layoutY="295.0" text="Prey Poplualation" />
-      <Label layoutX="203.0" layoutY="330.0" text="Predator Population" />
+      <Label layoutX="240.0" layoutY="288.0" text="Suspectible" />
+      <Label layoutX="240.0" layoutY="319.0" text="Infected" />
+      <TextField fx:id="z" layoutX="70.0" layoutY="343.0" prefHeight="25.0" prefWidth="91.0" />
+      <Label layoutX="34.0" layoutY="347.0" text="Z" />
+      <TextField fx:id="output3" layoutX="315.0" layoutY="343.0" prefHeight="1.0" prefWidth="238.0">
+         <font>
+            <Font name="Bodoni MT Bold" size="13.0" />
+         </font>
+      </TextField>
+      <Label layoutX="240.0" layoutY="348.0" text="Recovered" />
    </children>
 </AnchorPane>

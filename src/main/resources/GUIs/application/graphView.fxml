@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.chart.*?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="project12.DifferentialSolver.OldSolverGUI.GraphController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="GUIs.DifferentialSolver.OldSolverGUI.GraphController">
     <!-- Method selection dropdown -->
     <ComboBox fx:id="methodSelector" layoutX="20" layoutY="10" onAction="#onMethodSelected"/>
 
