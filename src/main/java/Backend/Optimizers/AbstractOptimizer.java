@@ -67,20 +67,23 @@ public abstract class AbstractOptimizer implements OptimizerInt {
             // Write CSV header
             writer.write("iteration,error,currentInitImpulse");
             writer.newLine();
-
+            double lastDistanceMeters = 0;
             for (int iter = 0; iter < maxIterations; iter++) {
                 System.out.println();
                 System.out.println("Optimizer iteration: " + iter);
                 currentBest = update(currentBest);
 
                 double currentCost = computeCost(currentBest);
-                double distanceKm = currentCost / 1000.0;
-                System.out.println("Distance to Titan: " + String.format("%.1f", distanceKm) + " km");
-
                 double fuel = currentBest.stream().mapToDouble(Impulse::getFuelCost).sum();
+                double actualDistanceMeters = penaltyFor(currentBest); // This is the real distance in meters
+                double actualDistanceKm = actualDistanceMeters / 1000.0; // This is the real distance in km
+
+                System.out.println("Distance to Titan: " + String.format("%.1f", actualDistanceKm) + " km");
                 System.out.println("Fuel cost: " + fuel);
-                System.out.println("Total cost (should be fuel + distance): " + (fuel + distanceKm));
-                System.out.println("Distance improvement this iteration: " + String.format("%.1f", (lastCost - currentCost)/1000.0) + " km");
+                System.out.println("Total cost: " + currentCost);
+                System.out.println("Distance improvement this iteration: " + String.format("%.1f",
+                        (lastDistanceMeters - actualDistanceMeters)/1000.0) + " km");
+                lastDistanceMeters = penaltyFor(currentBest);
 
 
                 double error = Math.abs(lastCost - currentCost);
@@ -100,7 +103,8 @@ public abstract class AbstractOptimizer implements OptimizerInt {
                 writer.newLine();
 
                 // Titan's orbit is approximately at 52800km radius
-                if (currentCost < 300000) {
+                double actualDistanceKmm = penaltyFor(currentBest) / 1000.0;
+                if (actualDistanceKmm < 300) { // 300 km from Titan, not 300,000 cost units
                     System.out.println("In orbit");
                     break;
                 }
@@ -131,9 +135,18 @@ public abstract class AbstractOptimizer implements OptimizerInt {
      */
     protected double computeCost(List<Impulse> impulses) {
         double fuel = impulses.stream().mapToDouble(Impulse::getFuelCost).sum();
-        double penalty = penaltyFor(impulses);
-        double cost = fuel + penalty;
-        return cost;  //
+        double distanceMeters = penaltyFor(impulses);
+
+        // Option 1: Weighted sum (prioritize distance)
+        double cost = fuel * 0.001 + distanceMeters; // Reduce fuel weight
+
+        // Option 2: Logarithmic scaling
+        // double cost = Math.log1p(fuel) + distanceMeters;
+
+        // Option 3: Separate objectives (Pareto optimization)
+        // return distanceMeters; // Minimize distance first, worry about fuel later
+
+        return cost;
     }
 
     /**

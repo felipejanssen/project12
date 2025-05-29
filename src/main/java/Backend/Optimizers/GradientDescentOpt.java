@@ -46,14 +46,18 @@ public class GradientDescentOpt extends AbstractOptimizer {
         }
 
         // Adaptive learning rate based on distance
-        double distanceKm = currentCost / 1000.0;
-        if (distanceKm > 500000) {
+        double actualDistanceMeters = penaltyFor(impulses); // This is the real distance penalty
+        double actualDistanceKm = actualDistanceMeters / 1000.0; // Real distance in km
+
+        System.out.println("🔍 DEBUG - Actual distance: " + String.format("%.1f", actualDistanceKm) + " km, Total cost: " + String.format("%.1f", currentCost));
+
+        if (actualDistanceKm > 500000) {
             currentLearningRate = initialLearningRate * 2.0; // Aggressive for far distances
-        } else if (distanceKm > 100000) {
+        } else if (actualDistanceKm > 100000) {
             currentLearningRate = initialLearningRate * 1.0; // Normal
-        } else if (distanceKm > 50000) {
+        } else if (actualDistanceKm > 50000) {
             currentLearningRate = initialLearningRate * 0.5; // Careful
-        } else if (distanceKm > 10000) {
+        } else if (actualDistanceKm > 10000) {
             currentLearningRate = initialLearningRate * 0.1; // Very careful
         } else {
             currentLearningRate = initialLearningRate * 0.01; // Ultra precise
@@ -103,9 +107,7 @@ public class GradientDescentOpt extends AbstractOptimizer {
             newImpulses.add(new Impulse(newImpulseVec, imp.getTime()));
         }
 
-        System.out.println("🎯 SMART OPTIMIZER - LR: " + String.format("%.4f", currentLearningRate) +
-                " | Best Ever: " + String.format("%.1f", bestCostEver/1000.0) + " km" +
-                " | No Improve: " + noImprovementCounter);
+
 
         return newImpulses;
     }

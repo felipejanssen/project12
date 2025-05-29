@@ -11,8 +11,8 @@ public class Optimizer {
 
     private static final int MAX_ITERATIONS = 1000;
     private static final double TOLERANCE = 1e-3;
-    private static final double LEARNING_RATE = 0.1; // Much more reasonable
-    private static final double EPSILON = 1e-3;
+    private static final double LEARNING_RATE = 10; // Much more reasonable
+    private static final double EPSILON = 1e-4;
 
     // Use a MUCH better optimizer
     private static final GradientDescentOpt opt = new GradientDescentOpt(
