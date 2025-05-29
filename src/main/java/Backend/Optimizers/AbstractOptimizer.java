@@ -20,7 +20,7 @@ public abstract class AbstractOptimizer implements OptimizerInt {
     protected final double learningRate; // you may ignore in HC
     protected double epsilon; // you may ignore in HC
 
-    private final SolarSystemSimulator simulator = new SolarSystemSimulator();
+    public final SolarSystemSimulator simulator = new SolarSystemSimulator();
 
     protected AbstractOptimizer(int maxIterations,
             double tolerance,
@@ -137,17 +137,38 @@ public abstract class AbstractOptimizer implements OptimizerInt {
         double fuel = impulses.stream().mapToDouble(Impulse::getFuelCost).sum();
         double distanceMeters = penaltyFor(impulses);
 
-        // Option 1: Weighted sum (prioritize distance)
-        double cost = fuel * 0.001 + distanceMeters; // Reduce fuel weight
 
-        // Option 2: Logarithmic scaling
-        // double cost = Math.log1p(fuel) + distanceMeters;
 
-        // Option 3: Separate objectives (Pareto optimization)
-        // return distanceMeters; // Minimize distance first, worry about fuel later
+        // Balance all three objectives
+        double cost = fuel * 0.001 + distanceMeters;
 
         return cost;
     }
+
+//    private double smartVelocityPenalty(List<Impulse> impulses) {
+//        Trajectory[] trajectories = simulator.simulate(impulses);
+//        Trajectory shipTraj = trajectories[0];
+//
+//        double totalPenalty = 0.0;
+//        final double MAX_VELOCITY = 60.0;
+//        final double SOFT_LIMIT = 55.0; // Start penalizing before hard limit
+//
+//        for (State state : shipTraj.getStates()) {
+//            double speed = vec.magnitude(state.getVel());
+//
+//            if (speed > MAX_VELOCITY) {
+//                // Heavy penalty for exceeding hard limit
+//                double violation = speed - MAX_VELOCITY;
+//                totalPenalty += violation * violation * 1000000; // Quadratic penalty!
+//            } else if (speed > SOFT_LIMIT) {
+//                // Gentle penalty approaching the limit
+//                double approach = (speed - SOFT_LIMIT) / (MAX_VELOCITY - SOFT_LIMIT);
+//                totalPenalty += approach * approach * 100000; // Encourage staying below 55 m/s
+//            }
+//        }
+//
+//        return totalPenalty;
+//    }
 
     /**
      * Hook for computing the trajectory penalty; subclasses must supply it.

@@ -37,14 +37,16 @@ public class SpaceShip extends SpaceVessel implements Thrust{
         double[] normalizedDir = vec.normalize(direction);
 
         // Calculate velocity change based on impulse and mass
-        double scale = magnitude / mass; //Newtons F=ma
+        double scale = magnitude / mass;
         double[] deltaV = vec.multiply(normalizedDir, scale);
 
-        // Update velocity
-        state.addVel(deltaV);
+        // Get current velocity
+        double[] currentVel = state.getVel();
 
-        // Consume fuel (simple model: fuel consumption proportional to impulse)
-        // consumeFuel(magnitude * 0.01); // Adjust the factor as needed
+
+
+        // Update velocity with the capped deltaV
+        state.addVel(deltaV);
 
         return true;
     }

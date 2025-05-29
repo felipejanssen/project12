@@ -1,5 +1,6 @@
 package Backend.SolarSystem;
 
+import Utils.vec;
 import Backend.Physics.Impulse;
 import Backend.Physics.SolarSystemEngine;
 import Backend.Physics.State;
@@ -18,6 +19,8 @@ public class SolarSystemSimulator {
     SpaceShip ship;
     List<Impulse> impulses;
     int nextImpulseIndex;
+    final double MAX_VELOCITY = 60.0; // Velocity cap
+
 
     // Simulation parameters
     double t0 = .0;
@@ -89,6 +92,17 @@ public class SolarSystemSimulator {
                 }
             }
             engine.evolve(time, h);
+
+
+            double[] postPhysicsVel = ship.getState().getVel();
+            double postPhysicsSpeed = vec.magnitude(postPhysicsVel);
+            if (postPhysicsSpeed > MAX_VELOCITY) {
+                double[] cappedVel = vec.multiply(vec.normalize(postPhysicsVel), MAX_VELOCITY);
+                ship.getState().setVel(cappedVel);
+                System.out.println("🌍 Physics velocity capped from " +
+                        String.format("%.2f", postPhysicsSpeed) + " to " + MAX_VELOCITY + " m/s");
+            }
+
             time += h;
         }
         return new Trajectory[] { shipTrajectory, titanTrajectory };
