@@ -79,7 +79,9 @@ public abstract class AbstractOptimizer implements OptimizerInt {
 
                 double fuel = currentBest.stream().mapToDouble(Impulse::getFuelCost).sum();
                 System.out.println("Fuel cost: " + fuel);
-                System.out.println("Total cost (should be fuel + distance): " + (fuel + currentCost));
+                System.out.println("Total cost (should be fuel + distance): " + (fuel + distanceKm));
+                System.out.println("Distance improvement this iteration: " + String.format("%.1f", (lastCost - currentCost)/1000.0) + " km");
+
 
                 double error = Math.abs(lastCost - currentCost);
                 // System.out.println("Error: " + Math.abs(lastCost - currentCost));
@@ -98,7 +100,7 @@ public abstract class AbstractOptimizer implements OptimizerInt {
                 writer.newLine();
 
                 // Titan's orbit is approximately at 52800km radius
-                if (currentCost < 30000) {
+                if (currentCost < 300000) {
                     System.out.println("In orbit");
                     break;
                 }
