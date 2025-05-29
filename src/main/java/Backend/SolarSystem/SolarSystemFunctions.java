@@ -60,7 +60,7 @@ public class SolarSystemFunctions {
     public static SpaceShip getNewShip() {
 
         double[] pos = new double[] { -1.47E+08, -2.97E+07, 2.75E+04 };
-        double[] vel = new double[] { .0, .0, .0 };
+        double[] vel = new double[] {5.306839723370035E+00,-2.934993232297309E+01,6.693785809943620E-04};
         double m = 50000;
         double initFuel = 9999;
 

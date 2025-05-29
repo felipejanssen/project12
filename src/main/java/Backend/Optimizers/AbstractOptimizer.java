@@ -37,6 +37,8 @@ public abstract class AbstractOptimizer implements OptimizerInt {
     @Override
     public List<Impulse> optimize(List<Impulse> impulses) {
 
+
+
         // Create deep copy
         List<Impulse> currentBest = new ArrayList<>();
         for (Impulse impulse : impulses) {
@@ -72,6 +74,13 @@ public abstract class AbstractOptimizer implements OptimizerInt {
                 currentBest = update(currentBest);
 
                 double currentCost = computeCost(currentBest);
+                double distanceKm = currentCost / 1000.0;
+                System.out.println("Distance to Titan: " + String.format("%.1f", distanceKm) + " km");
+
+                double fuel = currentBest.stream().mapToDouble(Impulse::getFuelCost).sum();
+                System.out.println("Fuel cost: " + fuel);
+                System.out.println("Total cost (should be fuel + distance): " + (fuel + currentCost));
+
                 double error = Math.abs(lastCost - currentCost);
                 // System.out.println("Error: " + Math.abs(lastCost - currentCost));
 
@@ -89,7 +98,7 @@ public abstract class AbstractOptimizer implements OptimizerInt {
                 writer.newLine();
 
                 // Titan's orbit is approximately at 52800km radius
-                if (currentCost < 300) {
+                if (currentCost < 30000) {
                     System.out.println("In orbit");
                     break;
                 }
@@ -122,7 +131,7 @@ public abstract class AbstractOptimizer implements OptimizerInt {
         double fuel = impulses.stream().mapToDouble(Impulse::getFuelCost).sum();
         double penalty = penaltyFor(impulses);
         double cost = fuel + penalty;
-        return penalty;  // ❌ RETURNING ONLY PENALTY, NOT TOTAL COST!
+        return cost;  //
     }
 
     /**

@@ -31,7 +31,7 @@ public class Optimizer {
 
         // Add velocity for interplanetary transfer (Hohmann-like transfer)
         // Need about 3.5 km/s additional velocity for Saturn transfer
-        double[] transferVel = vec.multiply(unitToTitan, 3.5);
+        double[] transferVel = vec.multiply(unitToTitan, 11.2);
 
         // CRITICAL: Start with Earth's velocity + transfer velocity
         double[] initVelocity = vec.add(earthVel, transferVel);
