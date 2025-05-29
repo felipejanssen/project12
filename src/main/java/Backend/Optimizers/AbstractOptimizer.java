@@ -89,7 +89,7 @@ public abstract class AbstractOptimizer implements OptimizerInt {
                 writer.newLine();
 
                 // Titan's orbit is approximately at 52800km radius
-                if (currentCost < 5e4) {
+                if (currentCost < 300) {
                     System.out.println("In orbit");
                     break;
                 }
@@ -119,14 +119,10 @@ public abstract class AbstractOptimizer implements OptimizerInt {
      * You can override if you need something more exotic.
      */
     protected double computeCost(List<Impulse> impulses) {
-        double fuel = impulses.stream()
-                .mapToDouble(Impulse::getFuelCost)
-                .sum();
-        // hook out to simulator: subclasses can set this.simulator
+        double fuel = impulses.stream().mapToDouble(Impulse::getFuelCost).sum();
         double penalty = penaltyFor(impulses);
         double cost = fuel + penalty;
-        // System.out.println("Cost: " + cost);
-        return penalty;
+        return penalty;  // ❌ RETURNING ONLY PENALTY, NOT TOTAL COST!
     }
 
     /**
