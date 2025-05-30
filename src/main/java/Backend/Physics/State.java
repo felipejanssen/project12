@@ -58,15 +58,7 @@ public class State {
     public void addVel(double[] vel) {
         double[] newVelocity = vec.add(this.velocity, vel);
 
-        // Enforce velocity cap
-        final double MAX_VELOCITY = 60.0;
-        double speed = vec.magnitude(newVelocity);
 
-        if (speed > MAX_VELOCITY) {
-            System.out.println("⚡ addVel() capped from " +
-                    String.format("%.2f", speed) + " m/s to " + MAX_VELOCITY + " m/s");
-            newVelocity = vec.multiply(vec.normalize(newVelocity), MAX_VELOCITY);
-        }
 
         this.velocity = newVelocity;
     }

@@ -23,9 +23,9 @@ public abstract class AbstractOptimizer implements OptimizerInt {
     public final SolarSystemSimulator simulator = new SolarSystemSimulator();
 
     protected AbstractOptimizer(int maxIterations,
-            double tolerance,
-            double learningRate,
-            double epsilon) {
+                                double tolerance,
+                                double learningRate,
+                                double epsilon) {
         this.maxIterations = maxIterations;
         this.tolerance = tolerance;
         this.learningRate = learningRate;
@@ -36,8 +36,6 @@ public abstract class AbstractOptimizer implements OptimizerInt {
 
     @Override
     public List<Impulse> optimize(List<Impulse> impulses) {
-
-
 
         // Create deep copy
         List<Impulse> currentBest = new ArrayList<>();
@@ -65,7 +63,7 @@ public abstract class AbstractOptimizer implements OptimizerInt {
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             // Write CSV header
-            writer.write("iteration,error,currentInitImpulse");
+            writer.write("iteration,error,currentInitImpulse,velocityViolations,maxSpeed");
             writer.newLine();
             double lastDistanceMeters = 0;
             for (int iter = 0; iter < maxIterations; iter++) {
@@ -75,19 +73,23 @@ public abstract class AbstractOptimizer implements OptimizerInt {
 
                 double currentCost = computeCost(currentBest);
                 double fuel = currentBest.stream().mapToDouble(Impulse::getFuelCost).sum();
-                double actualDistanceMeters = penaltyFor(currentBest); // This is the real distance in meters
-                double actualDistanceKm = actualDistanceMeters / 1000.0; // This is the real distance in km
+                double actualDistanceMeters = getDistanceToTitan(currentBest); // Pure distance
+                double actualDistanceKm = actualDistanceMeters / 1000.0;
+                double velocityPenalty = balancedVelocityPenalty(currentBest);
+                double maxSpeed = getMaxTrajectorySpeed(currentBest);
+                int violations = countSpeedViolations(currentBest);
 
                 System.out.println("Distance to Titan: " + String.format("%.1f", actualDistanceKm) + " km");
                 System.out.println("Fuel cost: " + fuel);
+                System.out.println("Velocity penalty: " + String.format("%.0f", velocityPenalty));
+                System.out.println("Max speed in trajectory: " + String.format("%.2f", maxSpeed) + " m/s");
+                System.out.println("Speed violations: " + violations);
                 System.out.println("Total cost: " + currentCost);
                 System.out.println("Distance improvement this iteration: " + String.format("%.1f",
                         (lastDistanceMeters - actualDistanceMeters)/1000.0) + " km");
-                lastDistanceMeters = penaltyFor(currentBest);
-
+                lastDistanceMeters = actualDistanceMeters;
 
                 double error = Math.abs(lastCost - currentCost);
-                // System.out.println("Error: " + Math.abs(lastCost - currentCost));
 
                 double[] currentInitImpulse = currentBest.get(0).getImpulseVec();
                 StringBuilder impulseStr = new StringBuilder();
@@ -97,15 +99,14 @@ public abstract class AbstractOptimizer implements OptimizerInt {
                         impulseStr.append(" ");
                     }
                 }
-                // System.out.println("Init: " + Arrays.toString(currentInitImpulse));
-                // Write data to file
-                writer.write(iter + "," + error + "," + impulseStr.toString());
+
+                // Write data to file with velocity info
+                writer.write(iter + "," + error + "," + impulseStr.toString() + "," + violations + "," + String.format("%.2f", maxSpeed));
                 writer.newLine();
 
                 // Titan's orbit is approximately at 52800km radius
-                double actualDistanceKmm = penaltyFor(currentBest) / 1000.0;
-                if (actualDistanceKmm < 300) { // 300 km from Titan, not 300,000 cost units
-                    System.out.println("In orbit");
+                if (actualDistanceKm < 300) { // 300 km from Titan
+                    System.out.println("🎯 SUCCESS! In orbit around Titan!");
                     break;
                 }
 
@@ -114,7 +115,6 @@ public abstract class AbstractOptimizer implements OptimizerInt {
                     break;
                 }
                 lastCost = currentCost;
-
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -124,57 +124,29 @@ public abstract class AbstractOptimizer implements OptimizerInt {
     }
 
     /**
-     * Perform one iteration’s worth of updates on the impulse list.
+     * Perform one iteration's worth of updates on the impulse list.
      * Concrete subclasses must implement this.
      */
     protected abstract List<Impulse> update(List<Impulse> impulses);
 
     /**
-     * Default cost: sum of fuel plus penalty on the resulting trajectory.
-     * You can override if you need something more exotic.
+     * BALANCED cost function - strong velocity penalty but allows optimization progress
      */
     protected double computeCost(List<Impulse> impulses) {
         double fuel = impulses.stream().mapToDouble(Impulse::getFuelCost).sum();
-        double distanceMeters = penaltyFor(impulses);
+        double distanceMeters = getDistanceToTitan(impulses);
+        double velocityPenalty = balancedVelocityPenalty(impulses);
 
-
-
-        // Balance all three objectives
-        double cost = fuel * 0.001 + distanceMeters;
+        // Scale velocity penalty to be significant but not overwhelming
+        double cost = fuel * 0.001 + distanceMeters + velocityPenalty * 0.1;
 
         return cost;
     }
 
-//    private double smartVelocityPenalty(List<Impulse> impulses) {
-//        Trajectory[] trajectories = simulator.simulate(impulses);
-//        Trajectory shipTraj = trajectories[0];
-//
-//        double totalPenalty = 0.0;
-//        final double MAX_VELOCITY = 60.0;
-//        final double SOFT_LIMIT = 55.0; // Start penalizing before hard limit
-//
-//        for (State state : shipTraj.getStates()) {
-//            double speed = vec.magnitude(state.getVel());
-//
-//            if (speed > MAX_VELOCITY) {
-//                // Heavy penalty for exceeding hard limit
-//                double violation = speed - MAX_VELOCITY;
-//                totalPenalty += violation * violation * 1000000; // Quadratic penalty!
-//            } else if (speed > SOFT_LIMIT) {
-//                // Gentle penalty approaching the limit
-//                double approach = (speed - SOFT_LIMIT) / (MAX_VELOCITY - SOFT_LIMIT);
-//                totalPenalty += approach * approach * 100000; // Encourage staying below 55 m/s
-//            }
-//        }
-//
-//        return totalPenalty;
-//    }
-
     /**
-     * Hook for computing the trajectory penalty; subclasses must supply it.
+     * Get pure distance to Titan without any penalties
      */
-    protected double penaltyFor(List<Impulse> impulses) {
-
+    private double getDistanceToTitan(List<Impulse> impulses) {
         Trajectory[] trajectories = simulator.simulate(impulses);
         Trajectory shipTraj = trajectories[0];
         Trajectory titanTrajectory = trajectories[1];
@@ -183,11 +155,85 @@ public abstract class AbstractOptimizer implements OptimizerInt {
         double[] lastShipPos = lastShipState.getPos();
         State lastTitanState = titanTrajectory.getLastState();
         double[] lastTitanPos = lastTitanState.getPos();
-        // System.out.println("Titan pos: " + Arrays.toString(lastTitanPos));
-        double rawDist = vec.euclideanDistance(lastTitanPos, lastShipPos);
-        double penalty = Math.log1p(rawDist);
-        // System.out.println("Penalty: " + penalty);
-        // System.out.println();
-        return rawDist;
+
+        return vec.euclideanDistance(lastTitanPos, lastShipPos);
+    }
+
+    /**
+     * BALANCED velocity penalty - strong enough to prevent violations,
+     * but allows speed optimization within limits
+     */
+    private double balancedVelocityPenalty(List<Impulse> impulses) {
+        Trajectory[] trajectories = simulator.simulate(impulses);
+        Trajectory shipTraj = trajectories[0];
+
+        double totalPenalty = 0.0;
+        final double MAX_VELOCITY = 60.0;
+        final double SOFT_LIMIT = 55.0; // More reasonable soft limit
+        final double EFFICIENCY_TARGET = 45.0; // Encourage efficient speeds
+
+        for (State state : shipTraj.getStates()) {
+            double speed = vec.magnitude(state.getVel());
+
+            if (speed > MAX_VELOCITY) {
+                // MASSIVE penalty for hard violations - this should almost never happen
+                double violation = speed - MAX_VELOCITY;
+                totalPenalty += violation * violation * 50000000; // Quadratic, but huge multiplier
+                System.out.println("🚨 HARD VIOLATION: " + String.format("%.2f", speed) + " m/s");
+            } else if (speed > SOFT_LIMIT) {
+                // Strong penalty approaching the limit - discourages getting close
+                double approach = (speed - SOFT_LIMIT) / (MAX_VELOCITY - SOFT_LIMIT);
+                totalPenalty += approach * approach * 5000000; // Quadratic scaling
+            } else if (speed > EFFICIENCY_TARGET) {
+                // Gentle penalty for inefficient speeds - allows optimization
+                double inefficiency = (speed - EFFICIENCY_TARGET) / (SOFT_LIMIT - EFFICIENCY_TARGET);
+                totalPenalty += inefficiency * inefficiency * 100000; // Much gentler
+            }
+            // No penalty below 45 m/s - allows free optimization in efficient range
+        }
+
+        return totalPenalty;
+    }
+
+    /**
+     * Get the maximum speed in the entire trajectory
+     */
+    private double getMaxTrajectorySpeed(List<Impulse> impulses) {
+        Trajectory[] trajectories = simulator.simulate(impulses);
+        Trajectory shipTraj = trajectories[0];
+
+        double maxSpeed = 0.0;
+        for (State state : shipTraj.getStates()) {
+            double speed = vec.magnitude(state.getVel());
+            maxSpeed = Math.max(maxSpeed, speed);
+        }
+        return maxSpeed;
+    }
+
+    /**
+     * Count how many states exceed the speed limit
+     */
+    private int countSpeedViolations(List<Impulse> impulses) {
+        Trajectory[] trajectories = simulator.simulate(impulses);
+        Trajectory shipTraj = trajectories[0];
+
+        int violations = 0;
+        final double MAX_VELOCITY = 60.0;
+
+        for (State state : shipTraj.getStates()) {
+            double speed = vec.magnitude(state.getVel());
+            if (speed > MAX_VELOCITY) {
+                violations++;
+            }
+        }
+        return violations;
+    }
+
+    /**
+     * Hook for computing the trajectory penalty; subclasses must supply it.
+     * NOW ONLY RETURNS DISTANCE - velocity penalty is handled separately
+     */
+    protected double penaltyFor(List<Impulse> impulses) {
+        return getDistanceToTitan(impulses);
     }
 }

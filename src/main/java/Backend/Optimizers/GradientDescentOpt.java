@@ -17,10 +17,11 @@ public class GradientDescentOpt extends AbstractOptimizer {
     private double beta = 0.9;
     private int iterationCount = 0;
     private double bestCostEver = Double.MAX_VALUE;
+    private double bestDistanceEver = Double.MAX_VALUE; // NEW: Track best distance separately!
     private List<Impulse> bestSolutionEver;
     private int noImprovementCounter = 0;
+    private int noDistanceImprovementCounter = 0; // NEW: Separate counter for distance
     int velocityViolations;
-
 
     public GradientDescentOpt(int maxIters, double tol, double lr, double e) {
         super(maxIters, tol, lr, e);
@@ -28,7 +29,6 @@ public class GradientDescentOpt extends AbstractOptimizer {
         this.currentLearningRate = lr;
         this.momentum = new ArrayList<>();
     }
-
 
     @Override
     protected List<Impulse> update(List<Impulse> impulses) {
@@ -39,9 +39,11 @@ public class GradientDescentOpt extends AbstractOptimizer {
                 momentum.add(new double[imp.getImpulseVec().length]);
             }
             bestSolutionEver = deepCopy(impulses);
+            bestDistanceEver = penaltyFor(impulses); // Initialize best distance
         }
 
         double currentCost = computeCost(impulses);
+        double currentDistance = penaltyFor(impulses); // Get pure distance
 
         double maxVelocity = checkMaxVelocity(impulses);
         System.out.println("🚀 Max velocity in trajectory: " + String.format("%.2f", maxVelocity) + " m/s");
@@ -51,76 +53,87 @@ public class GradientDescentOpt extends AbstractOptimizer {
             velocityViolations++;
         }
 
-
-        if (velocityViolations > 10) { // Too many violations
+        if (velocityViolations > 10) {
             System.out.println("⚠️ TOO MANY VELOCITY VIOLATIONS! Reducing learning rate aggressively");
-            currentLearningRate = initialLearningRate * 0.1; // Much smaller steps
+            currentLearningRate = initialLearningRate * 0.1;
         } else if (velocityViolations > 5) {
             System.out.println("⚠️ Some velocity violations, reducing learning rate");
             currentLearningRate = initialLearningRate * 0.3;
         }
 
-        if (currentCost < bestCostEver) {
+        // Track BOTH cost improvement AND distance improvement
+        boolean costImproved = currentCost < bestCostEver;
+        boolean distanceImproved = currentDistance < bestDistanceEver;
+
+        if (costImproved) {
             bestCostEver = currentCost;
-            bestSolutionEver = deepCopy(impulses);
             noImprovementCounter = 0;
         } else {
             noImprovementCounter++;
         }
 
-        double actualDistanceKm = penaltyFor(impulses) / 1000.0;
+        // NEW: Track distance improvement separately
+        if (distanceImproved) {
+            bestDistanceEver = currentDistance;
+            bestSolutionEver = deepCopy(impulses); // Save best solution based on distance!
+            noDistanceImprovementCounter = 0;
+            System.out.println("🎯 NEW BEST DISTANCE! " + String.format("%.1f", currentDistance/1000.0) + " km");
+        } else {
+            noDistanceImprovementCounter++;
+        }
+
+        double actualDistanceKm = currentDistance / 1000.0;
 
         System.out.println("🎯 SMART OPTIMIZER - LR: " + String.format("%.4f", currentLearningRate) +
-                " | Best Ever: " + String.format("%.1f", bestCostEver/1000.0) + " km | No Improve: " + noImprovementCounter);
+                " | Best Distance: " + String.format("%.1f", bestDistanceEver/1000.0) + " km" +
+                " | Violations: " + velocityViolations +
+                " | No Improve: " + noDistanceImprovementCounter); // Use distance counter!
 
-
-        // MUCH LESS AGGRESSIVE learning rate reduction - this was your main problem!
+        // Learning rate adjustment based on distance, not total cost
         if (actualDistanceKm > 500000) {
             currentLearningRate = initialLearningRate * 2.0;
         } else if (actualDistanceKm > 100000) {
-            currentLearningRate = initialLearningRate * 1.5; // Don't reduce!
+            currentLearningRate = initialLearningRate * 1.5;
         } else if (actualDistanceKm > 50000) {
-            currentLearningRate = initialLearningRate * 1.0; // Keep normal!
+            currentLearningRate = initialLearningRate * 1.0;
         } else if (actualDistanceKm > 10000) {
-            currentLearningRate = initialLearningRate * 0.8; // Only slight reduction
+            currentLearningRate = initialLearningRate * 0.8;
         } else {
-            currentLearningRate = initialLearningRate * 0.3; // Still reasonable
+            currentLearningRate = initialLearningRate * 0.3;
         }
 
-        // ENHANCED escape mechanisms
-        if (noImprovementCounter > 8) { // Trigger earlier
-            System.out.println("🌪️ RANDOM PERTURBATION ESCAPE!");
+        // MODIFIED: Use distance improvement counter for escape mechanisms
+        if (noDistanceImprovementCounter > 8) { // Trigger based on distance, not cost
+            System.out.println("🌪️ RANDOM PERTURBATION ESCAPE! (No distance improvement for 8 iterations)");
             List<Impulse> perturbed = deepCopy(bestSolutionEver);
             Random rnd = new Random();
 
             for (Impulse imp : perturbed) {
                 double[] vec = imp.getImpulseVec();
                 for (int i = 0; i < vec.length; i++) {
-                    // Add 20% random noise
                     vec[i] += vec[i] * (rnd.nextGaussian() * 0.2);
                 }
             }
 
-            noImprovementCounter = 0;
-            currentLearningRate = initialLearningRate * 2.0; // Boost after reset
+            noDistanceImprovementCounter = 0;
+            currentLearningRate = initialLearningRate * 2.0;
             return perturbed;
         }
 
-        if (noImprovementCounter > 20) {
-            System.out.println("💥 BIG EXPLORATION JUMP!");
+        if (noDistanceImprovementCounter > 20) {
+            System.out.println("💥 BIG EXPLORATION JUMP! (No distance improvement for 20 iterations)");
             List<Impulse> jumped = deepCopy(bestSolutionEver);
             Random rnd = new Random();
 
             for (Impulse imp : jumped) {
                 double[] vec = imp.getImpulseVec();
                 for (int i = 0; i < vec.length; i++) {
-                    // 50% variation - major exploration
                     vec[i] += vec[i] * (rnd.nextGaussian() * 0.5);
                 }
             }
 
-            noImprovementCounter = 0;
-            currentLearningRate = initialLearningRate * 3.0; // Major boost
+            noDistanceImprovementCounter = 0;
+            currentLearningRate = initialLearningRate * 3.0;
             return jumped;
         }
 
@@ -135,7 +148,6 @@ public class GradientDescentOpt extends AbstractOptimizer {
             double[] m = momentum.get(impIdx);
 
             for (int i = 0; i < vec.length; i++) {
-                // LESS conservative epsilon
                 double adaptiveEpsilon = Math.max(epsilon * 0.5, Math.abs(vec[i]) * 0.01);
 
                 // Calculate gradient
@@ -155,8 +167,8 @@ public class GradientDescentOpt extends AbstractOptimizer {
                 // Apply momentum
                 m[i] = beta * m[i] + currentLearningRate * grad;
 
-                // ALLOW BIGGER CHANGES - this was limiting you!
-                double maxChange = Math.max(0.5, Math.abs(vec[i]) * 0.3); // 30% change allowed
+                // ALLOW BIGGER CHANGES
+                double maxChange = Math.max(0.5, Math.abs(vec[i]) * 0.3);
                 double update = Math.max(-maxChange, Math.min(maxChange, m[i]));
 
                 newImpulseVec[i] = vec[i] - update;
@@ -167,6 +179,7 @@ public class GradientDescentOpt extends AbstractOptimizer {
 
         return newImpulses;
     }
+
     private List<Impulse> deepCopy(List<Impulse> impulses) {
         List<Impulse> copy = new ArrayList<>();
         for (Impulse imp : impulses) {
@@ -176,14 +189,13 @@ public class GradientDescentOpt extends AbstractOptimizer {
     }
 
     private double checkMaxVelocity(List<Impulse> impulses) {
-        // Use the inherited simulator from AbstractOptimizer
         Trajectory[] trajectories = super.simulator.simulate(impulses);
         Trajectory shipTraj = trajectories[0];
 
         double maxSpeed = 0.0;
         for (State state : shipTraj.getStates()) {
             double[] velocity = state.getVel();
-            double speed = vec.magnitude(velocity); // You'll need to import Utils.vec
+            double speed = vec.magnitude(velocity);
             maxSpeed = Math.max(maxSpeed, speed);
         }
 

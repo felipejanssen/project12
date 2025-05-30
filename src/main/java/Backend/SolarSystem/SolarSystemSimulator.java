@@ -99,8 +99,6 @@ public class SolarSystemSimulator {
             if (postPhysicsSpeed > MAX_VELOCITY) {
                 double[] cappedVel = vec.multiply(vec.normalize(postPhysicsVel), MAX_VELOCITY);
                 ship.getState().setVel(cappedVel);
-                System.out.println("🌍 Physics velocity capped from " +
-                        String.format("%.2f", postPhysicsSpeed) + " to " + MAX_VELOCITY + " m/s");
             }
 
             time += h;
